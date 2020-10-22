@@ -1,0 +1,95 @@
+[tool.badabump]
+changelog_format_type_file = "rst"
+
+[tool.black]
+line_length = 79
+target_version = ["py36"]
+
+[tool.coverage.run]
+branch = true
+source = ["badabump"]
+
+[tool.coverage.paths]
+source = ["src/"]
+
+[tool.coverage.report]
+fail_under = 50
+skip_covered = true
+show_missing = true
+
+[tool.poetry]
+name = "badabump"
+version = "20.1.0a0"
+description = "Manage changelog and bump project version number using conventional commits from latest git tag. Support Python, JavaScript projects. Understand CalVer, SemVer version schemas. Designed to run at GitHub Actions."
+authors = ["Igor Davydenko <iam@igordavydenko.com>"]
+license = "BSD-3-Clause"
+readme = "README.md"
+homepage = "https://igordavydenko.com/projects/#badabump"
+repository = "https://github.com/playpauseandstop/badabump"
+packages = [
+  {include = "badabump", from = "src"},
+]
+keywords = ["changelog", "conventional commit", "bump", "version", "calver", "semver", "pre release"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: System Administrators",
+  "Environment :: Console",
+  "License :: OSI Approved :: BSD License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Software Development",
+  "Topic :: Utilities",
+  "Typing :: Typed"
+]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+attr = "^0.3.1"
+attrs = "^20.2.0"
+toml = "^0.10.1"
+
+[tool.poetry.dev-dependencies]
+coverage = {extras = ["toml"], version = "^5.3"}
+pytest = "^6.1.1"
+pytest-cov = "^2.10.1"
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/playpauseandstop/badabump/issues"
+
+[tool.pytest.ini_options]
+minversion = "6.1.1"
+testpaths = ["tests/"]
+addopts = "--cov --no-cov-on-fail"
+log_level = "info"
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+envlist = py36,py37,py38,py39
+skipsdist = True
+
+[gh-actions]
+python =
+  3.6: py36
+  3.7: py37
+  3.8: py38
+  3.9: py39
+
+[testenv]
+passenv =
+  PYTHONPATH
+  PYTEST_ADDOPTS
+setenv =
+  PYTHONPATH=.
+skip_install = True
+whitelist_externals = poetry
+commands_pre =
+  poetry install
+commands =
+  poetry run python -m pytest
+"""
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

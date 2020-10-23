@@ -13,7 +13,7 @@ env:
 
 jobs:
   create_release_tag:
-    if: "startsWith(github.event.head_ref, 'chore/release-') && github.event.pull_request.merged == true"
+    if: "startsWith(github.head_ref, 'chore/release-') && github.event.pull_request.merged == 'true'"
     name: "Create release tag"
 
     runs-on: "ubuntu-latest"
@@ -44,8 +44,8 @@ jobs:
         run: |
           set -e
 
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+          git config user.name badabump-release-bot[bot]
+          git config user.email badabump-release-bot[bot]@users.noreply.github.com
 
           git tag -a ${{ steps.badabump.outputs.tag_name }} -m "${{ steps.badabump.outputs.tag_message }}"
           git push --tag

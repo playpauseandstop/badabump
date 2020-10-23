@@ -86,7 +86,13 @@ jobs:
         run: "poetry install --no-dev"
 
       - name: "Import package"
-        run: "poetry run python -c 'import badabump'"
+        run: "poetry run python3 -c 'import badabump'"
+
+      - name: "Invoke cli via Python"
+        run: "poetry run python3 -m badabump --help"
+
+      - name: "Invoke cli via shortcut"
+        run: "poetry run badabump --help"
 
   test:
     needs: ["commitizen"]

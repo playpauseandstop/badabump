@@ -11,9 +11,12 @@ from .constants import (
     DEFAULT_CHANGELOG_FILE_INCLUDE_DATE,
     DEFAULT_CHANGELOG_FORMAT_TYPE_FILE,
     DEFAULT_CHANGELOG_FORMAT_TYPE_GIT,
+    DEFAULT_PR_BRANCH_FORMAT,
+    DEFAULT_PR_TITLE_FORMAT,
     DEFAULT_PROJECT_TYPE,
     DEFAULT_SEMVER_SCHEMA,
     DEFAULT_TAG_FORMAT,
+    DEFAULT_TAG_SUBJECT_FORMAT,
     DEFAULT_VERSION_SCHEMA,
     DEFAULT_VERSION_TYPE,
 )
@@ -31,6 +34,9 @@ class ProjectConfig:
     version_files: Tuple[str, ...] = attr.Factory(tuple)
 
     tag_format: str = DEFAULT_TAG_FORMAT
+    tag_subject_format: str = DEFAULT_TAG_SUBJECT_FORMAT
+    pr_branch_format: str = DEFAULT_PR_BRANCH_FORMAT
+    pr_title_format: str = DEFAULT_PR_TITLE_FORMAT
 
     changelog_format_type_file: FormatTypeEnum = (
         DEFAULT_CHANGELOG_FORMAT_TYPE_FILE
@@ -70,6 +76,16 @@ class ProjectConfig:
             ),
             version_files=tuple(config_data.get("version_files") or ()),
             tag_format=config_data.get("tag_format") or DEFAULT_TAG_FORMAT,
+            tag_subject_format=(
+                config_data.get("tag_subject_format")
+                or DEFAULT_TAG_SUBJECT_FORMAT
+            ),
+            pr_branch_format=(
+                config_data.get("pr_branch_format") or DEFAULT_PR_BRANCH_FORMAT
+            ),
+            pr_title_format=(
+                config_data.get("pr_title_format") or DEFAULT_PR_TITLE_FORMAT
+            ),
             changelog_format_type_file=guess_changelog_format_type_file(
                 config_data.get("changelog_format_type_file"), path
             ),

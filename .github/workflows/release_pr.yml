@@ -1,0 +1,66 @@
+defaults:
+  run:
+    shell: "bash"
+
+on:
+  workflow_dispatch:
+    inputs:
+      args:
+        description: "Badabump arguments (pass `--pre` to start or keep pre-release cycle)"
+        required: true
+        default: ""
+
+env:
+  POETRY_VERSION: "1.1.3"
+  PYTHON_VERSION: "3.9.0"
+  PYTHONUNBUFFERED: "1"
+
+jobs:
+  create_release_pr:
+    if: "github.actor == 'playpauseandstop'"
+    name: "Create release PR"
+
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - uses: "actions/checkout@v2.3.3"
+        with:
+          ref: "master"
+
+      - name: "Fetch git tags"
+        run: |
+          set -e
+          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+          git fetch --prune --unshallow
+
+      - name: "Install Python"
+        uses: "actions/setup-python@v2.1.4"
+        with:
+          python-version: "${{ env.PYTHON_VERSION }}"
+
+      - name: "Install poetry"
+        uses: "dschep/install-poetry-action@v1.3"
+        with:
+          version: "${{ env.POETRY_VERSION }}"
+
+      - name: "Install badabump"
+        run: "poetry install --no-dev"
+
+      - id: "badabump"
+        name: "Run badabump"
+        run: "python3 -m badabump --ci ${{ github.event.inputs.args }}"
+
+      - name: "Create pull request with changed files"
+        uses: "peter-evans/create-pull-request@v3.4.1"
+        with:
+          commit-message: |
+            ${{ steps.badabump.outputs.pr_title }}
+
+            ${{ steps.badabump.outputs.changelog }}
+          branch: "${{ steps.badabump.outputs.pr_branch }}"
+          delete-branch: true
+          title: "${{ steps.badabump.outputs.pr_title }}"
+          body: "${{ steps.badabump.outputs.changelog }}"
+          labels: "chore"
+          reviewers: "playpauseandstop"
+          assignees: "playpauseandstop"

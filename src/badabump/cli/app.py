@@ -1,23 +1,21 @@
 import argparse
 import os
 import sys
-from pathlib import Path
-from typing import Sequence
 
-from . import __app__, __version__
-from .changelog import ChangeLog
+from .arguments import add_path_argument
 from .commands import (
     run_post_bump_hook,
     update_changelog_file,
     update_version_files,
 )
-from .configs import ProjectConfig, UpdateConfig
-from .enums import ChangeLogTypeEnum
-from .git import Git
-from .versions import Version
-
-
-Argv = Sequence[str]
+from .output import echo_value, github_actions_output
+from .. import __app__, __version__
+from ..annotations import Argv
+from ..changelog import ChangeLog
+from ..configs import ProjectConfig, UpdateConfig
+from ..enums import ChangeLogTypeEnum
+from ..git import Git
+from ..versions import Version
 
 
 def create_update_config(
@@ -40,40 +38,20 @@ def create_update_config(
     return UpdateConfig(**kwargs)
 
 
-def echo(
-    label: str, value: str, *, is_ci: bool = False, ci_name: str = None
-) -> None:
-    if is_ci and ci_name:
-        github_actions_output(ci_name, value)
-    else:
-        print(f"{label}{value}")
-
-
-def github_actions_output(name: str, value: str) -> None:
-    value = value.replace("%", "%25")
-    value = value.replace("\n", "%0A")
-    value = value.replace("\r", "%0D")
-    print(f"::set-output name={name}::{value}")
-
-
 def parse_args(argv: Argv) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         prog=__app__,
         description=(
-            "Bump project version number basing on conventional commits from "
-            "latest tag."
+            "Manage changelog and bump project version number using "
+            "conventional commits from latest git tag. Support Python, "
+            "JavaScript projects. Understand CalVer, SemVer version schemas. "
+            "Designed to run at GitHub Actions."
         ),
     )
     parser.add_argument(
         "-v", "--version", action="version", version=__version__
     )
-    parser.add_argument(
-        "-C",
-        "--path",
-        default=Path.cwd(),
-        help="Directory with project. By default: current working directory",
-        type=Path,
-    )
+    add_path_argument(parser)
     parser.add_argument(
         "-d",
         "--dry-run",
@@ -108,11 +86,13 @@ def main(argv: Argv = None) -> int:
     # Read latest git tag and parse current version
     git = Git(path=project_config.path)
 
-    latest_tag = git.retrieve_latest_tag()
-    echo("Current tag: ", latest_tag, is_ci=args.is_ci, ci_name="current_tag")
+    current_tag = git.retrieve_last_tag()
+    echo_value(
+        "Current tag: ", current_tag, is_ci=args.is_ci, ci_name="current_tag"
+    )
 
-    current_version = Version.from_tag(latest_tag, config=project_config)
-    echo(
+    current_version = Version.from_tag(current_tag, config=project_config)
+    echo_value(
         "Current version: ",
         current_version.format(config=project_config),
         is_ci=args.is_ci,
@@ -120,25 +100,28 @@ def main(argv: Argv = None) -> int:
     )
 
     # Read commits from last tag
+    # TODO: Allow to release final version without commits from last
+    # pre-release
     try:
-        git_commits = git.list_commits(latest_tag)
+        git_commits = git.list_commits(current_tag)
         if not git_commits:
             raise ValueError("No commits, nothing to release :(")
     except ValueError:
         print(
-            f"ERROR: No commits found after: {latest_tag!r}. Exit...",
+            f"ERROR: No commits found after: {current_tag!r}. Exit...",
             file=sys.stderr,
         )
         return 1
 
     # Create changelog using commits from last tag
     changelog = ChangeLog.from_git_commits(git_commits)
-    echo(
+    git_changelog = changelog.format(
+        ChangeLogTypeEnum.git_commit,
+        project_config.changelog_format_type_git,
+    )
+    echo_value(
         "\nChangeLog\n\n",
-        changelog.format(
-            ChangeLogTypeEnum.git_commit,
-            project_config.changelog_format_type_git,
-        ),
+        git_changelog,
         is_ci=args.is_ci,
         ci_name="changelog",
     )
@@ -147,9 +130,10 @@ def main(argv: Argv = None) -> int:
     update_config = create_update_config(changelog, args.is_pre_release)
 
     next_version = current_version.update(update_config)
-    echo(
+    next_version_str = next_version.format(config=project_config)
+    echo_value(
         "\nNext version: ",
-        next_version.format(config=project_config),
+        next_version_str,
         is_ci=args.is_ci,
         ci_name="next_version",
     )
@@ -177,6 +161,32 @@ def main(argv: Argv = None) -> int:
     update_changelog_file(
         project_config, next_version, changelog, is_dry_run=args.is_dry_run
     )
+
+    # Supply necessary CI output
+    if args.is_ci:
+        github_actions_output(
+            "next_tag",
+            project_config.tag_format.format(version=next_version_str),
+        )
+        github_actions_output(
+            "next_tag_message",
+            "\n\n".join(
+                (
+                    project_config.tag_subject_format.format(
+                        version=next_version_str
+                    ),
+                    git_changelog,
+                )
+            ),
+        )
+        github_actions_output(
+            "pr_branch",
+            project_config.pr_branch_format.format(version=next_version_str),
+        )
+        github_actions_output(
+            "pr_title",
+            project_config.pr_title_format.format(version=next_version_str),
+        )
 
     print("All OK!")
     return 0

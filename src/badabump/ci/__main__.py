@@ -1,4 +1,4 @@
-from badabump.cli.app import main
+from badabump.cli.ci_app import main
 
 
 if __name__ == "__main__":

@@ -94,6 +94,12 @@ jobs:
       - name: "Invoke cli via shortcut"
         run: "poetry run badabump --help"
 
+      - name: "Invoke CI cli via Python"
+        run: "poetry run python3 -m badabump.ci --help"
+
+      - name: "Invoke CI cli via shortcut"
+        run: "poetry run badabump-ci --help"
+
   test:
     needs: ["commitizen"]
     name: "Python ${{ matrix.python-version }}"
@@ -188,37 +194,29 @@ jobs:
           git fetch --depth=1 origin +refs/tags/*:refs/tags/*
           git fetch --prune --unshallow
 
-      - id: "release-info"
+      - name: "Install Python"
+        uses: "actions/setup-python@v2.1.4"
+        with:
+          python-version: "${{ env.DEV_PYTHON_VERSION }}"
+
+      - name: "Install poetry"
+        uses: "dschep/install-poetry-action@v1.3"
+        with:
+          version: "${{ env.POETRY_VERSION }}"
+
+      - name: "Install badabump"
+        run: "poetry install --no-dev"
+
+      - id: "badabump"
         name: "Prepare release info"
-        run: |
-          set -e
-
-          tag_name=${GITHUB_REF:10}
-          echo "::set-output name=tag_name::${tag_name}"
-
-          subject=$(git tag -l --format="%(subject)" ${tag_name})
-          echo "::set-output name=subject::${subject}"
-
-          body=$(git tag -l --format="%(body)" ${tag_name})
-          # Preserve multiline strings as per
-          # https://github.community/t/set-output-truncates-multiline-strings/16852/5
-          body="${body//'%'/'%25'}"
-          body="${body//$'\n'/'%0A'}"
-          body="${body//$'\r'/'%0D'}"
-          echo "::set-output name=body::${body}"
-
-          prerelease=false
-          if [ -z "${tag_name##*a*}" -o -z "${tag_name##*b*}" -o -z "${tag_name##*rc*}" ]; then
-            prerelease=true
-          fi
-          echo "::set-output name=prerelease::${prerelease}"
+        run: "poetry run python -m badabump.ci prepare_release"
 
       - name: "Create new release"
         uses: "actions/create-release@v1.1.4"
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         with:
-          tag_name: "${{ steps.release-info.outputs.tag_name }}"
-          release_name: "${{ steps.release-info.outputs.subject }}"
-          body: "${{ steps.release-info.outputs.body }}"
-          prerelease: "${{ steps.release-info.outputs.prerelease }}"
+          tag_name: "${{ steps.badabump.outputs.tag_name }}"
+          release_name: "${{ steps.badabump.outputs.release_name }}"
+          body: "${{ steps.badabump.outputs.release_body }}"
+          prerelease: "${{ steps.badabump.outputs.is_pre_release }}"

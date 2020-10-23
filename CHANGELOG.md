@@ -1,5 +1,11 @@
 # 20.1.0 (In Development)
 
+## 20.1.0a2 (2020-10-23)
+
+### Features:
+
+- Properly clean commit body on preparing release tag (#8)
+
 ## 20.1.0a1 (2020-10-23)
 
 ### Features:

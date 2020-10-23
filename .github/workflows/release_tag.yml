@@ -38,7 +38,7 @@ jobs:
 
       - id: "badabump"
         name: "Run badabump"
-        run: "python3 -m badabump.ci prepare_tag"
+        run: "poetry run python3 -m badabump.ci prepare_tag"
 
       - name: "Create release tag from latest commit"
         run: |

@@ -48,7 +48,7 @@ jobs:
 
       - id: "badabump"
         name: "Run badabump"
-        run: "python3 -m badabump --ci ${{ github.event.inputs.args }}"
+        run: "poetry run python3 -m badabump --ci ${{ github.event.inputs.args }}"
 
       - name: "Create pull request with changed files"
         uses: "peter-evans/create-pull-request@v3.4.1"

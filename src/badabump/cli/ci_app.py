@@ -1,7 +1,6 @@
 import argparse
 import json
 import os
-import re
 import sys
 from typing import cast
 
@@ -9,23 +8,11 @@ from .arguments import add_path_argument
 from .output import github_actions_output
 from .. import __app__, __version__
 from ..annotations import Argv
+from ..cleaners import clean_body, clean_commit_subject, clean_tag_ref
 from ..configs import ProjectConfig
 from ..git import Git
 from ..regexps import to_regexp
 from ..versions import Version
-
-
-COMMIT_SUBJECT_WITH_PR_RE = re.compile(r"^(?P<subject>.+) \(\#\d+\)$")
-
-
-def clean_commit_subject(value: str) -> str:
-    return COMMIT_SUBJECT_WITH_PR_RE.sub(r"\1", value)
-
-
-def clean_tag_ref(value: str) -> str:
-    if value[:10] == "refs/tags/":
-        return value[10:]
-    return value
 
 
 def parse_args(argv: Argv) -> argparse.Namespace:
@@ -47,11 +34,10 @@ def parse_args(argv: Argv) -> argparse.Namespace:
 
     prepare_release_parser = subparsers.add_parser("prepare_release")
     prepare_release_parser.add_argument(
-        "-r",
-        "--ref",
+        "ref",
         default=os.getenv("GITHUB_REF"),
         help="Tag reference. By default: GITHUB_REF env var",
-        required=True,
+        metavar="REF",
     )
     prepare_release_parser.set_defaults(func=prepare_release)
 
@@ -104,7 +90,7 @@ def prepare_tag(args: argparse.Namespace, *, config: ProjectConfig) -> int:
         "\n\n".join(
             (
                 config.tag_subject_format.format(version=version),
-                "\n".join(body),
+                clean_body(body),
             )
         ),
     )

@@ -209,7 +209,7 @@ jobs:
 
       - id: "badabump"
         name: "Prepare release info"
-        run: "poetry run python -m badabump.ci prepare_release"
+        run: "poetry run python3 -m badabump.ci prepare_release \"${{ github.ref }}\""
 
       - name: "Create new release"
         uses: "actions/create-release@v1.1.4"

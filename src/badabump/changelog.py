@@ -168,7 +168,7 @@ class ChangeLog:
         return cls(
             commits=tuple(
                 ConventionalCommit.from_git_commit(item)
-                for item in git_commits
+                for item in reversed(git_commits)
             )
         )
 

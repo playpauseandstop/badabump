@@ -1,35 +1,22 @@
 import subprocess
-from difflib import ndiff
 from pathlib import Path
 from typing import Set, Tuple
 
 import toml
 
-from .changelog import ChangeLog, in_development_header, version_header
-from .configs import find_changelog_file, ProjectConfig
-from .constants import (
+from .output import diff, echo_message
+from ..changelog import ChangeLog, in_development_header, version_header
+from ..configs import find_changelog_file, ProjectConfig
+from ..constants import (
     CHANGELOG_UPPER,
     FILE_PACKAGE_JSON,
     FILE_PACKAGE_LOCK_JSON,
     FILE_PYPROJECT_TOML,
     FILE_YARN_LOCK,
 )
-from .enums import ChangeLogTypeEnum, FormatTypeEnum, ProjectTypeEnum
-from .exceptions import ConfigError
-from .versions import Version
-
-
-def diff(current_content: str, next_content: str) -> str:
-    items = ndiff(
-        current_content.splitlines(keepends=True),
-        next_content.splitlines(keepends=True),
-    )
-    return "".join(item for item in items if item.startswith(("-", "+", "?")))
-
-
-def echo(message: str, *, is_dry_run: bool) -> None:
-    prefix = "[DRY-RUN] " if is_dry_run else ""
-    print(f"{prefix}{message}")
+from ..enums import ChangeLogTypeEnum, FormatTypeEnum, ProjectTypeEnum
+from ..exceptions import ConfigError
+from ..versions import Version
 
 
 def find_changelog_path(config: ProjectConfig) -> Path:
@@ -107,7 +94,7 @@ def run_post_bump_hook(
     if cmd is None:
         return None
 
-    echo(f"Running post-bump hook: {cmd}", is_dry_run=is_dry_run)
+    echo_message(f"Running post-bump hook: {cmd}", is_dry_run=is_dry_run)
     if is_dry_run:
         return None
 
@@ -130,7 +117,7 @@ def update_changelog_file(
     changelog_path = find_changelog_path(config)
     next_version_str = next_version.format(config=config)
 
-    echo(
+    echo_message(
         f"Adding {next_version_str} release notes to {changelog_path.name} "
         "file",
         is_dry_run=is_dry_run,
@@ -207,7 +194,7 @@ def update_file(
         return False
 
     next_content = content.replace(current_content, next_content)
-    echo(diff(content, next_content), is_dry_run=False)
+    echo_message(diff(content, next_content), is_dry_run=False)
 
     path.write_text(next_content)
     return True
@@ -241,7 +228,7 @@ def update_version_files(
                 f"{item}"
             )
 
-        echo(
+        echo_message(
             f"Updating version in {item}: {current_version_str} -> "
             f"{next_version_str}",
             is_dry_run=is_dry_run,

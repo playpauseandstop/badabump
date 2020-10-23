@@ -1,0 +1,51 @@
+defaults:
+  run:
+    shell: "bash"
+
+on:
+  pull_request:
+    types: ["closed"]
+
+env:
+  BADABUMP_VERSION: "20.1.0a0"
+  PYTHON_VERSION: "3.9.0"
+  PYTHONUNBUFFERED: "1"
+
+jobs:
+  create_release_tag:
+    if: "startsWith(github.event.head_ref, 'chore/release-') && github.event.pull_request.merged == true"
+    name: "Create release tag"
+
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - uses: "actions/checkout@v2.3.3"
+        with:
+          ref: "master"
+
+      - name: "Install Python"
+        uses: "actions/setup-python@v2.1.4"
+        with:
+          python-version: "${{ env.PYTHON_VERSION }}"
+
+      - name: "Install poetry"
+        uses: "dschep/install-poetry-action@v1.3"
+        with:
+          version: "${{ env.POETRY_VERSION }}"
+
+      - name: "Install badabump"
+        run: "poetry install --no-dev"
+
+      - id: "badabump"
+        name: "Run badabump"
+        run: "python3 -m badabump.ci prepare_tag"
+
+      - name: "Create release tag from latest commit"
+        run: |
+          set -e
+
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+
+          git tag -a ${{ steps.badabump.outputs.tag_name }} -m "${{ steps.badabump.outputs.tag_message }}"
+          git push --tag

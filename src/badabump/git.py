@@ -21,8 +21,21 @@ class Git:
         ).splitlines()
         return tuple(iter_commtis(commit_ids))
 
-    def retrieve_latest_tag(self) -> str:
+    def retrieve_last_commit(self) -> str:
+        return self._check_output(["git", "log", "-1", "--format=%B"])
+
+    def retrieve_last_tag(self) -> str:
         return self._check_output(["git", "describe", "--abbrev=0", "--tags"])
+
+    def retrieve_tag_body(self, tag: str) -> str:
+        return self._check_output(
+            ["git", "tag", "-l", "--format=%(body)", tag]
+        )
+
+    def retrieve_tag_subject(self, tag: str) -> str:
+        return self._check_output(
+            ["git", "tag", "-l", "--format=%(subject)", tag]
+        )
 
     def _check_output(self, args: List[str]) -> str:
         maybe_output = subprocess.check_output(args, cwd=self.path)

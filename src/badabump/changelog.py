@@ -50,10 +50,10 @@ class ConventionalCommit:
     def format(self, format_type: FormatTypeEnum) -> str:  # noqa: A003
         prefix = ""
         if self.scope:
-            prefix = f"{bold(self.scope)}: "
+            prefix = f"({bold(self.scope)}) "
 
         if self.is_breaking_change:
-            prefix = f"{bold(BREAKING_CHANGE_IN_BODY)}: {prefix}"
+            prefix = f"{bold(BREAKING_CHANGE_IN_BODY)} {prefix}"
 
         issues = self.issues
         if issues:

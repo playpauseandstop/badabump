@@ -11,7 +11,7 @@ on:
         default: ""
 
 env:
-  POETRY_VERSION: "1.1.3"
+  POETRY_VERSION: "1.1.4"
   PYTHON_VERSION: "3.9.0"
   PYTHONUNBUFFERED: "1"
 

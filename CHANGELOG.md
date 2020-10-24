@@ -1,5 +1,11 @@
 # 20.1.0 (In Development)
 
+## 20.1.0a3 (2020-10-24)
+
+### Fixes:
+
+- Fix commit format rules (#10)
+
 ## 20.1.0a2 (2020-10-23)
 
 ### Features:

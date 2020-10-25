@@ -7,7 +7,7 @@ on:
     inputs:
       args:
         description: "Badabump arguments (pass `--pre` to start or keep pre-release cycle)"
-        required: true
+        required: false
         default: ""
 
 env:

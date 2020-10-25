@@ -1,5 +1,15 @@
 # 20.1.0 (In Development)
 
+## 20.1.0b0 (2020-10-25)
+
+### Fixes:
+
+- **BREAKING CHANGE:** Update logic behind formatting & updating changelog (#12)
+
+### Other:
+
+- Badabump args is optional input for release PR workflow (#13)
+
 ## 20.1.0a3 (2020-10-24)
 
 ### Fixes:

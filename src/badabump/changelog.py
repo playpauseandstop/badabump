@@ -1,6 +1,6 @@
 import datetime
 import re
-from typing import List, Optional, Tuple
+from typing import Iterator, List, Optional, Tuple
 
 import attr
 
@@ -125,7 +125,11 @@ class ChangeLog:
         object.__setattr__(self, "other_commits", tuple(other_commits))
 
     def format(  # noqa: A003
-        self, changelog_type: ChangeLogTypeEnum, format_type: FormatTypeEnum
+        self,
+        changelog_type: ChangeLogTypeEnum,
+        format_type: FormatTypeEnum,
+        *,
+        is_pre_release: bool = False,
     ) -> str:
         is_git_commit = changelog_type == ChangeLogTypeEnum.git_commit
         is_rst = format_type == FormatTypeEnum.rst
@@ -141,21 +145,27 @@ class ChangeLog:
                 header = bold(label)
             elif is_git_commit:
                 header = markdown_h2(label, git_safe=True)
-            else:
+            elif is_pre_release:
                 header = markdown_h3(label)
+            else:
+                header = markdown_h2(label)
 
-            commits_list = "\n".join(
-                ul_li(item.format(format_type))
-                for item in commits
-                if item.is_breaking_change
+            breaking_items = format_commits(
+                item for item in commits if item.is_breaking_change
             )
-            commits_list += "\n".join(
-                ul_li(item.format(format_type))
-                for item in commits
-                if not item.is_breaking_change
+            regular_items = format_commits(
+                item for item in commits if not item.is_breaking_change
+            )
+            items = "\n".join(
+                item for item in (breaking_items, regular_items) if item
             )
 
-            return "\n\n".join((header, commits_list))
+            return "\n\n".join((header, items))
+
+        def format_commits(commits: Iterator[ConventionalCommit]) -> str:
+            return "\n".join(
+                f"- {item.format(format_type)}" for item in commits
+            )
 
         features = format_block("Features:", self.feature_commits)
         fixes = format_block("Fixes:", self.fix_commits)

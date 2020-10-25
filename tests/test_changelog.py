@@ -1,9 +1,11 @@
+import pytest
+
 from badabump.changelog import (
     ChangeLog,
     COMMIT_TYPE_FEATURE,
     ConventionalCommit,
 )
-from badabump.enums import FormatTypeEnum
+from badabump.enums import ChangeLogTypeEnum, FormatTypeEnum
 
 
 CI_BREAKING_COMMIT = "ci!: Use badabump release bot for pushing tags"
@@ -20,6 +22,52 @@ FEATURE_COMMIT = """feat: Export necessary types from the package (#31)
 
 Issue: IFXND-55
 """
+
+CHANGELOG_FILE_MD = """## Features:
+
+- [IFXND-55] Export necessary types from the package (#31)
+
+## Other:
+
+- **BREAKING CHANGE:** Use badabump release bot for pushing tags
+- [#123] (**openapi**) Update descriptions in OpenAPI schema"""
+CHANGELOG_FILE_MD_PRE = """### Features:
+
+- [IFXND-55] Export necessary types from the package (#31)
+
+### Other:
+
+- **BREAKING CHANGE:** Use badabump release bot for pushing tags
+- [#123] (**openapi**) Update descriptions in OpenAPI schema"""
+CHANGELOG_FILE_RST = """**Features:**
+
+- [IFXND-55] Export necessary types from the package (#31)
+
+**Other:**
+
+- **BREAKING CHANGE:** Use badabump release bot for pushing tags
+- [#123] (**openapi**) Update descriptions in OpenAPI schema"""
+
+
+@pytest.mark.parametrize(
+    "format_type, is_pre_release, expected",
+    (
+        (FormatTypeEnum.markdown, False, CHANGELOG_FILE_MD),
+        (FormatTypeEnum.markdown, True, CHANGELOG_FILE_MD_PRE),
+        (FormatTypeEnum.rst, False, CHANGELOG_FILE_RST),
+        (FormatTypeEnum.rst, True, CHANGELOG_FILE_RST),
+    ),
+)
+def test_changelog_format_file(format_type, is_pre_release, expected):
+    changelog = ChangeLog.from_git_commits(
+        [FEATURE_COMMIT, CI_BREAKING_COMMIT, DOCS_SCOPE_COMMIT]
+    )
+    content = changelog.format(
+        ChangeLogTypeEnum.changelog_file,
+        format_type,
+        is_pre_release=is_pre_release,
+    )
+    assert content == expected
 
 
 def test_changelog_with_feature_commit():

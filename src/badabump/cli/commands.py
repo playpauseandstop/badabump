@@ -129,7 +129,9 @@ def update_changelog_file(
         next_version.version.format(), config.changelog_format_type_file
     )
     changelog_content = changelog.format(
-        ChangeLogTypeEnum.changelog_file, config.changelog_format_type_file
+        ChangeLogTypeEnum.changelog_file,
+        config.changelog_format_type_file,
+        is_pre_release=next_version.pre_release is not None,
     )
 
     if next_version.pre_release is None:
@@ -142,7 +144,6 @@ def update_changelog_file(
                     include_date=config.changelog_file_include_date,
                 ),
                 changelog_content,
-                "",
             )
         )
     else:
@@ -156,27 +157,26 @@ def update_changelog_file(
                     include_date=config.changelog_file_include_date,
                 ),
                 changelog_content,
-                "",
             )
         )
+
+    next_version_changelog = f"{next_version_changelog}\n\n"
 
     if not changelog_path.exists():
         changelog_path.write_text(f"{next_version_changelog.strip()}\n")
     else:
-        update_file(
-            changelog_path,
-            f"{dev_header}\n\n",
-            next_version_changelog,
-            check_exists=False,
-        )
+        if not update_file(
+            changelog_path, f"{dev_header}\n\n", next_version_changelog
+        ):
+            changelog_path.write_text(
+                "".join((next_version_changelog, changelog_path.read_text()))
+            )
 
 
 def update_file(
     path: Path,
     current_content: str,
     next_content: str,
-    *,
-    check_exists: bool = True,
 ) -> bool:
     """
     Attempt to read file if it exists and update current content to next
@@ -190,7 +190,7 @@ def update_file(
 
     # TODO: Do not read whole file output for make replacement
     content = path.read_text()
-    if check_exists and current_content not in content:
+    if current_content not in content:
         return False
 
     next_content = content.replace(current_content, next_content)

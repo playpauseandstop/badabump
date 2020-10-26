@@ -12,7 +12,7 @@ CI_BREAKING_COMMIT = "ci!: Use badabump release bot for pushing tags"
 
 DOCS_SCOPE_COMMIT = """docs(openapi): Update descriptions in OpenAPI schema
 
-Issue: #123
+Ref: #123
 """
 
 FEATURE_COMMIT = """feat: Export necessary types from the package (#31)
@@ -23,11 +23,24 @@ FEATURE_COMMIT = """feat: Export necessary types from the package (#31)
 Issue: IFXND-55
 """
 
+FIX_COMMIT = "fix: Update logic behind math operations"
+
+INVALID_COMMIT = "something"
+
+REFACTOR_COMMIT = """refactor: Change algorigthm to use
+
+Fixes: DEV-1010
+"""
+
 CHANGELOG_EMPTY = "No changes since last pre-release"
 
 CHANGELOG_FILE_MD = """## Features:
 
 - [IFXND-55] Export necessary types from the package (#31)
+
+## Fixes:
+
+- Update logic behind math operations
 
 ## Other:
 
@@ -38,16 +51,40 @@ CHANGELOG_FILE_MD_PRE = """### Features:
 
 - [IFXND-55] Export necessary types from the package (#31)
 
+### Fixes:
+
+- Update logic behind math operations
+
 ### Other:
 
 - **BREAKING CHANGE:** Use badabump release bot for pushing tags
 - [#123] (**openapi**) Update descriptions in OpenAPI schema"""
 
-CHANGELOG_FILE_RST = """**Features:**
+CHANGELOG_FILE_RST = CHANGELOG_GIT_RST = """**Features:**
 
 - [IFXND-55] Export necessary types from the package (#31)
 
+**Fixes:**
+
+- Update logic behind math operations
+
 **Other:**
+
+- **BREAKING CHANGE:** Use badabump release bot for pushing tags
+- [#123] (**openapi**) Update descriptions in OpenAPI schema"""
+
+CHANGELOG_GIT_MD = """Features:
+---------
+
+- [IFXND-55] Export necessary types from the package (#31)
+
+Fixes:
+------
+
+- Update logic behind math operations
+
+Other:
+------
 
 - **BREAKING CHANGE:** Use badabump release bot for pushing tags
 - [#123] (**openapi**) Update descriptions in OpenAPI schema"""
@@ -91,7 +128,7 @@ def test_changelog_empty(changelog_type, format_type, expected):
 )
 def test_changelog_format_file(format_type, is_pre_release, expected):
     changelog = ChangeLog.from_git_commits(
-        [FEATURE_COMMIT, CI_BREAKING_COMMIT, DOCS_SCOPE_COMMIT]
+        [FEATURE_COMMIT, FIX_COMMIT, CI_BREAKING_COMMIT, DOCS_SCOPE_COMMIT]
     )
     content = changelog.format(
         ChangeLogTypeEnum.changelog_file,
@@ -101,11 +138,44 @@ def test_changelog_format_file(format_type, is_pre_release, expected):
     assert content == expected
 
 
+@pytest.mark.parametrize(
+    "format_type, is_pre_release, expected",
+    (
+        (FormatTypeEnum.markdown, False, CHANGELOG_GIT_MD),
+        (FormatTypeEnum.markdown, True, CHANGELOG_GIT_MD),
+        (FormatTypeEnum.rst, False, CHANGELOG_GIT_RST),
+        (FormatTypeEnum.rst, True, CHANGELOG_GIT_RST),
+    ),
+)
+def test_changelog_format_git(format_type, is_pre_release, expected):
+    changelog = ChangeLog.from_git_commits(
+        [FEATURE_COMMIT, FIX_COMMIT, CI_BREAKING_COMMIT, DOCS_SCOPE_COMMIT]
+    )
+    content = changelog.format(
+        ChangeLogTypeEnum.git_commit,
+        format_type,
+        is_pre_release=is_pre_release,
+    )
+    assert content == expected
+
+
+def test_changelog_invalid_commit():
+    with pytest.raises(ValueError):
+        ChangeLog.from_git_commits([INVALID_COMMIT])
+
+
 def test_changelog_with_feature_commit():
     changelog = ChangeLog.from_git_commits([FEATURE_COMMIT])
     assert changelog.has_breaking_change is False
     assert changelog.has_minor_change is True
     assert changelog.has_micro_change is False
+
+
+def test_changelog_with_fix_commit():
+    changelog = ChangeLog.from_git_commits([FIX_COMMIT])
+    assert changelog.has_breaking_change is False
+    assert changelog.has_minor_change is False
+    assert changelog.has_micro_change is True
 
 
 def test_commit_ci_breaking():
@@ -129,7 +199,7 @@ def test_commit_docs_scope():
     assert commit.commit_type == "docs"
     assert commit.description == "Update descriptions in OpenAPI schema"
     assert commit.is_breaking_change is False
-    assert commit.body == "Issue: #123"
+    assert commit.body == "Ref: #123"
     assert commit.scope == "openapi"
     assert (
         commit.format(FormatTypeEnum.markdown)
@@ -163,3 +233,9 @@ Issue: IFXND-55"""
     assert commit.format(FormatTypeEnum.markdown) == commit.format(
         FormatTypeEnum.rst
     )
+
+
+def test_commit_refactor():
+    commit = ConventionalCommit.from_git_commit(REFACTOR_COMMIT)
+    assert commit.commit_type == "refactor"
+    assert commit.issues == ("DEV-1010",)

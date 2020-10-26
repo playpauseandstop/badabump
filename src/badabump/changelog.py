@@ -22,7 +22,9 @@ COMMIT_TYPE_SCOPE_RE = re.compile(
     r"^(?P<commit_type>[^\(]+)\((?P<scope>[^\)]+)\)$"
 )
 
-ISSUE_RE = re.compile(r"^Issue: (?P<issue>.+)$", re.M)
+ISSUE_RE = re.compile(
+    r"^(Closes|Fixes|Issue|Ref|Relates): (?P<issue>.+)$", re.M
+)
 
 
 @attr.dataclass(frozen=True, slots=True)
@@ -88,7 +90,7 @@ class ConventionalCommit:
     def issues(self) -> Tuple[str, ...]:
         if self.body is None:
             return ()
-        return tuple(item.strip() for item in ISSUE_RE.findall(self.body))
+        return tuple(item.strip() for _, item in ISSUE_RE.findall(self.body))
 
     @property
     def scope(self) -> Optional[str]:

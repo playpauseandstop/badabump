@@ -23,6 +23,8 @@ FEATURE_COMMIT = """feat: Export necessary types from the package (#31)
 Issue: IFXND-55
 """
 
+CHANGELOG_EMPTY = "No changes since last pre-release"
+
 CHANGELOG_FILE_MD = """## Features:
 
 - [IFXND-55] Export necessary types from the package (#31)
@@ -31,6 +33,7 @@ CHANGELOG_FILE_MD = """## Features:
 
 - **BREAKING CHANGE:** Use badabump release bot for pushing tags
 - [#123] (**openapi**) Update descriptions in OpenAPI schema"""
+
 CHANGELOG_FILE_MD_PRE = """### Features:
 
 - [IFXND-55] Export necessary types from the package (#31)
@@ -39,6 +42,7 @@ CHANGELOG_FILE_MD_PRE = """### Features:
 
 - **BREAKING CHANGE:** Use badabump release bot for pushing tags
 - [#123] (**openapi**) Update descriptions in OpenAPI schema"""
+
 CHANGELOG_FILE_RST = """**Features:**
 
 - [IFXND-55] Export necessary types from the package (#31)
@@ -47,6 +51,33 @@ CHANGELOG_FILE_RST = """**Features:**
 
 - **BREAKING CHANGE:** Use badabump release bot for pushing tags
 - [#123] (**openapi**) Update descriptions in OpenAPI schema"""
+
+
+@pytest.mark.parametrize(
+    "changelog_type, format_type, expected",
+    (
+        (
+            ChangeLogTypeEnum.changelog_file,
+            FormatTypeEnum.markdown,
+            CHANGELOG_EMPTY,
+        ),
+        (
+            ChangeLogTypeEnum.changelog_file,
+            FormatTypeEnum.rst,
+            CHANGELOG_EMPTY,
+        ),
+        (
+            ChangeLogTypeEnum.git_commit,
+            FormatTypeEnum.markdown,
+            CHANGELOG_EMPTY,
+        ),
+        (ChangeLogTypeEnum.git_commit, FormatTypeEnum.rst, CHANGELOG_EMPTY),
+    ),
+)
+def test_changelog_empty(changelog_type, format_type, expected):
+    changelog = ChangeLog.from_git_commits([])
+    content = changelog.format(changelog_type, format_type)
+    assert content == expected
 
 
 @pytest.mark.parametrize(

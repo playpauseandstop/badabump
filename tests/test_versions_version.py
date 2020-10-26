@@ -91,7 +91,7 @@ def test_version_from_tag(tag, config, expected):
         # Micro change
         ("1.0", UpdateConfig(), "1.1"),
         ("1.0", UpdateConfig(is_pre_release=True), "1.1a0"),
-        ("1.0a0", UpdateConfig(), "1.1"),
+        ("1.0a0", UpdateConfig(), "1.0"),
         ("1.0a0", UpdateConfig(is_pre_release=True), "1.0a1"),
         # Minor change
         (
@@ -111,7 +111,7 @@ def test_version_from_tag(tag, config, expected):
         (
             "1.1a0",
             UpdateConfig(is_minor_change=True, is_micro_change=False),
-            "2.0",
+            "1.1",
         ),
         (
             "1.1a0",
@@ -140,7 +140,7 @@ def test_version_from_tag(tag, config, expected):
         (
             "1.1a0",
             UpdateConfig(is_breaking_change=True, is_micro_change=False),
-            "2.0",
+            "1.1",
         ),
         (
             "1.1a0",
@@ -170,7 +170,7 @@ def test_version_update_calver(current_suffix, update_config, expected_suffix):
         # Micro change
         ("1.0.0", UpdateConfig(), "1.0.1"),
         ("1.0.0", UpdateConfig(is_pre_release=True), "1.0.1a0"),
-        ("1.0.0a0", UpdateConfig(), "1.0.1"),
+        ("1.0.0a0", UpdateConfig(), "1.0.0"),
         ("1.0.0a0", UpdateConfig(is_pre_release=True), "1.0.0a1"),
         # Minor change
         (
@@ -190,7 +190,7 @@ def test_version_update_calver(current_suffix, update_config, expected_suffix):
         (
             "1.0.0a0",
             UpdateConfig(is_minor_change=True, is_micro_change=False),
-            "1.1.0",
+            "1.0.0",
         ),
         (
             "1.0.0a0",
@@ -219,7 +219,7 @@ def test_version_update_calver(current_suffix, update_config, expected_suffix):
         (
             "1.0.0a0",
             UpdateConfig(is_breaking_change=True, is_micro_change=False),
-            "2.0.0",
+            "1.0.0",
         ),
         (
             "1.0.0a0",

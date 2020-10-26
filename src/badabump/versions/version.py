@@ -75,7 +75,7 @@ class Version:
     def update(self, config: UpdateConfig) -> "Version":
         if self.pre_release:
             return Version(
-                version=self.version.update(config),
+                version=self.version,
                 pre_release=self.pre_release.update(config),
             )
 

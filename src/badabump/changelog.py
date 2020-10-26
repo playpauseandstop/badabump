@@ -10,6 +10,8 @@ from .enums import ChangeLogTypeEnum, FormatTypeEnum
 BREAKING_CHANGE_IN_BODY = "BREAKING CHANGE:"
 BREAKING_CHANGE_IN_COMMIT_TYPE = "!"
 
+CHANGELOG_EMPTY = "No changes since last pre-release"
+
 COMMIT_TYPE_FEATURE = "feat"
 COMMIT_TYPE_FIX = "fix"
 
@@ -131,6 +133,9 @@ class ChangeLog:
         *,
         is_pre_release: bool = False,
     ) -> str:
+        if not self.commits:
+            return CHANGELOG_EMPTY
+
         is_git_commit = changelog_type == ChangeLogTypeEnum.git_commit
         is_rst = format_type == FormatTypeEnum.rst
 

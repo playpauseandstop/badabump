@@ -32,7 +32,7 @@ def create_update_config(
         kwargs["is_breaking_change"] = True
     elif changelog.has_minor_change:
         kwargs["is_minor_change"] = True
-    elif changelog.has_micro_change:
+    else:
         kwargs["is_micro_change"] = True
 
     return UpdateConfig(**kwargs)
@@ -100,12 +100,10 @@ def main(argv: Argv = None) -> int:
     )
 
     # Read commits from last tag
-    # TODO: Allow to release final version without commits from last
-    # pre-release
     try:
         git_commits = git.list_commits(current_tag)
-        if not git_commits:
-            raise ValueError("No commits, nothing to release :(")
+        if not git_commits and current_version.pre_release is None:
+            raise ValueError("No commits found after latest tag")
     except ValueError:
         print(
             f"ERROR: No commits found after: {current_tag!r}. Exit...",

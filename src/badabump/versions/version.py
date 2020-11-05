@@ -1,7 +1,9 @@
+import json
 from contextlib import suppress
-from typing import Optional, Type, Union
+from typing import cast, Optional, Type, Union
 
 import attr
+import toml
 
 from . import calver, pre_release, semver
 from .calver import CalVer
@@ -11,7 +13,7 @@ from .pre_release import PreRelease
 from .semver import SemVer
 from ..annotations import DictStrStr
 from ..configs import ProjectConfig, UpdateConfig
-from ..enums import VersionTypeEnum
+from ..enums import ProjectTypeEnum, VersionTypeEnum
 from ..regexps import to_regexp
 
 
@@ -37,6 +39,15 @@ class Version:
                 f"{self.pre_release.format(project_type=config.project_type)}"
             )
         return self.version.format()
+
+    @classmethod
+    def guess_initial_version(
+        cls, *, config: ProjectConfig, is_pre_release: bool
+    ) -> "Version":
+        version = guess_initial_version(config)
+        if version.pre_release is None and is_pre_release:
+            return attr.evolve(version, pre_release=PreRelease())
+        return version
 
     @classmethod
     def parse(cls, value: str, *, config: ProjectConfig) -> "Version":
@@ -88,6 +99,42 @@ class Version:
             )
 
         return Version(version=self.version.update(config))
+
+
+def find_project_version(config: ProjectConfig) -> Optional[str]:
+    if config.project_type == ProjectTypeEnum.javascript:
+        package_json_path = config.path / "package.json"
+        if package_json_path.exists():
+            try:
+                return cast(
+                    str, json.loads(package_json_path.read_text())["version"]
+                )
+            except (KeyError, ValueError):
+                ...
+    else:
+        pyproject_toml_path = config.path / "pyproject.toml"
+        if pyproject_toml_path.exists():
+            try:
+                return cast(
+                    str,
+                    toml.loads(pyproject_toml_path.read_text())["tool"][
+                        "poetry"
+                    ]["version"],
+                )
+            except (KeyError, ValueError):
+                ...
+
+    return None
+
+
+def guess_initial_version(config: ProjectConfig) -> Version:
+    maybe_version_str = find_project_version(config)
+    if maybe_version_str:
+        return Version.parse(maybe_version_str, config=config)
+
+    if config.version_type == VersionTypeEnum.semver:
+        return Version(version=SemVer.initial())
+    return Version(version=CalVer.initial(schema=config.version_schema))
 
 
 def guess_version_from_tag(value: str, *, tag_format: str) -> str:

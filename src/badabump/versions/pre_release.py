@@ -1,3 +1,4 @@
+from contextlib import suppress
 from enum import Enum, unique
 from typing import DefaultDict, Optional
 
@@ -83,9 +84,10 @@ class PreRelease:
 
         maybe_parsed = parse_version(schema, SCHEMA_PARTS_PARSING, value)
         if maybe_parsed:
-            return cls.from_parsed_dict(
-                maybe_parsed, project_type=project_type
-            )
+            with suppress(KeyError):
+                return cls.from_parsed_dict(
+                    maybe_parsed, project_type=project_type
+                )
 
         raise ValueError(
             "Invalid pre-release value, which do not match any supported "

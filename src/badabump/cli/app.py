@@ -1,6 +1,7 @@
 import argparse
 import os
 import sys
+from typing import Optional
 
 from .arguments import add_path_argument
 from .commands import (
@@ -8,11 +9,12 @@ from .commands import (
     update_changelog_file,
     update_version_files,
 )
-from .output import echo_value, github_actions_output
+from .output import echo_value, EMPTY, github_actions_output
 from .. import __app__, __version__
 from ..annotations import Argv
 from ..changelog import ChangeLog
 from ..configs import ProjectConfig, UpdateConfig
+from ..constants import INITIAL_PRE_RELEASE_COMMIT, INITIAL_RELEASE_COMMIT
 from ..enums import ChangeLogTypeEnum
 from ..git import Git
 from ..versions import Version
@@ -86,33 +88,54 @@ def main(argv: Argv = None) -> int:
     # Read latest git tag and parse current version
     git = Git(path=project_config.path)
 
-    current_tag = git.retrieve_last_tag()
+    current_tag = git.retrieve_last_tag_or_none()
     echo_value(
-        "Current tag: ", current_tag, is_ci=args.is_ci, ci_name="current_tag"
+        "Current tag: ",
+        current_tag or EMPTY,
+        is_ci=args.is_ci,
+        ci_name="current_tag",
     )
 
-    current_version = Version.from_tag(current_tag, config=project_config)
+    current_version: Optional[Version] = None
+    if current_tag is not None:
+        current_version = Version.from_tag(current_tag, config=project_config)
+
     echo_value(
         "Current version: ",
-        current_version.format(config=project_config),
+        (
+            current_version.format(config=project_config)
+            if current_version
+            else EMPTY
+        ),
         is_ci=args.is_ci,
         ci_name="current_version",
     )
 
     # Read commits from last tag
-    try:
-        git_commits = git.list_commits(current_tag)
-        if not git_commits and current_version.pre_release is None:
-            raise ValueError("No commits found after latest tag")
-    except ValueError:
-        print(
-            f"ERROR: No commits found after: {current_tag!r}. Exit...",
-            file=sys.stderr,
-        )
-        return 1
+    if current_tag is not None and current_version is not None:
+        try:
+            git_commits = git.list_commits(current_tag)
+            if not git_commits and current_version.pre_release is None:
+                raise ValueError("No commits found after latest tag")
+        except ValueError:
+            print(
+                f"ERROR: No commits found after: {current_tag!r}. Exit...",
+                file=sys.stderr,
+            )
+            return 1
 
-    # Create changelog using commits from last tag
-    changelog = ChangeLog.from_git_commits(git_commits)
+        # Create changelog using commits from last tag
+        changelog = ChangeLog.from_git_commits(git_commits)
+    # Create initial changelog
+    else:
+        changelog = ChangeLog.from_git_commits(
+            (
+                INITIAL_PRE_RELEASE_COMMIT
+                if args.is_pre_release
+                else INITIAL_RELEASE_COMMIT,
+            ),
+        )
+
     git_changelog = changelog.format(
         ChangeLogTypeEnum.git_commit,
         project_config.changelog_format_type_git,
@@ -127,7 +150,13 @@ def main(argv: Argv = None) -> int:
     # Supply update config and guess next version
     update_config = create_update_config(changelog, args.is_pre_release)
 
-    next_version = current_version.update(update_config)
+    if current_version is not None:
+        next_version = current_version.update(update_config)
+    else:
+        next_version = Version.guess_initial_version(
+            config=project_config, is_pre_release=args.is_pre_release
+        )
+
     next_version_str = next_version.format(config=project_config)
     echo_value(
         "\nNext version: ",

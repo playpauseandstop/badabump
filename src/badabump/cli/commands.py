@@ -1,10 +1,10 @@
 import subprocess
 from pathlib import Path
-from typing import Set, Tuple
+from typing import Optional, Set, Tuple
 
 import toml
 
-from .output import diff, echo_message
+from .output import diff, echo_message, EMPTY
 from ..changelog import ChangeLog, in_development_header, version_header
 from ..configs import find_changelog_file, ProjectConfig
 from ..constants import (
@@ -202,7 +202,7 @@ def update_file(
 
 def update_version_files(
     config: ProjectConfig,
-    current_version: Version,
+    current_version: Optional[Version],
     next_version: Version,
     *,
     is_dry_run: bool = False,
@@ -216,7 +216,9 @@ def update_version_files(
         version_files = guess_version_files(config)
 
     path = config.path
-    current_version_str = current_version.format(config=config)
+    current_version_str = (
+        current_version.format(config=config) if current_version else EMPTY
+    )
     next_version_str = next_version.format(config=config)
 
     updated: Set[bool] = set()

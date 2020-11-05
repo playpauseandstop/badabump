@@ -1,16 +1,84 @@
 import datetime
+import json
+from pathlib import Path
 
+import attr
 import pytest
+import toml
 
 from badabump.configs import ProjectConfig, UpdateConfig
 from badabump.enums import ProjectTypeEnum, VersionTypeEnum
 from badabump.versions.calver import CalVer, SHORT_YEAR_START
+from badabump.versions.exceptions import VersionParseError
 from badabump.versions.pre_release import PreRelease, PreReleaseTypeEnum
 from badabump.versions.semver import SemVer
-from badabump.versions.version import guess_version_from_tag, Version
+from badabump.versions.version import (
+    find_project_version,
+    guess_version_from_tag,
+    Version,
+)
 
 
 SEMVER_PROJECT_CONFIG = ProjectConfig(version_type=VersionTypeEnum.semver)
+
+
+@pytest.mark.parametrize("version", ("1.0.0", "1.0.0-alpha.2", "1.0.0-rc.0"))
+def test_find_project_version_javascript(tmpdir, version):
+    tmp_path = Path(tmpdir)
+    (tmp_path / "package.json").write_text(json.dumps({"version": version}))
+
+    config = attr.evolve(
+        SEMVER_PROJECT_CONFIG,
+        path=tmp_path,
+        project_type=ProjectTypeEnum.javascript,
+    )
+    project_version = find_project_version(config=config)
+
+    assert project_version is not None
+    assert project_version == version
+
+
+@pytest.mark.parametrize("version", ("1.0.0", "1.0.0b2", "1.0.0rc0"))
+def test_find_project_version_python(tmpdir, version):
+    tmp_path = Path(tmpdir)
+    (tmp_path / "pyproject.toml").write_text(
+        toml.dumps({"tool": {"poetry": {"version": version}}})
+    )
+
+    config = attr.evolve(
+        SEMVER_PROJECT_CONFIG,
+        path=tmp_path,
+        project_type=ProjectTypeEnum.python,
+    )
+    project_version = find_project_version(config=config)
+
+    assert project_version is not None
+    assert project_version == version
+
+
+@pytest.mark.parametrize(
+    "project_type", (ProjectTypeEnum.javascript, ProjectTypeEnum.python)
+)
+def test_find_project_version_empty(tmpdir, project_type):
+    config = attr.evolve(SEMVER_PROJECT_CONFIG, path=Path(tmpdir))
+    assert find_project_version(config=config) is None
+
+
+@pytest.mark.parametrize(
+    "config, is_pre_release, expected",
+    (
+        (SEMVER_PROJECT_CONFIG, False, "1.0.0"),
+        (SEMVER_PROJECT_CONFIG, True, "1.0.0a0"),
+    ),
+)
+def test_guess_initial_version(tmpdir, config, is_pre_release, expected):
+    tmp_config = attr.evolve(config, path=Path(tmpdir))
+    assert (
+        Version.guess_initial_version(
+            config=tmp_config, is_pre_release=is_pre_release
+        ).format(config=config)
+        == expected
+    )
 
 
 @pytest.mark.parametrize(
@@ -36,6 +104,11 @@ def test_guess_version_from_tag(value, tag_format, expected):
 def test_guess_version_from_tag_invalid_value(invalid_value, tag_format):
     with pytest.raises(ValueError):
         guess_version_from_tag(invalid_value, tag_format=tag_format)
+
+
+def test_parse_version_parse_error():
+    with pytest.raises(VersionParseError):
+        Version.parse("invalid", config=SEMVER_PROJECT_CONFIG)
 
 
 @pytest.mark.parametrize(

@@ -17,6 +17,10 @@ def test_semver_format(semver: SemVer, expected: str):
     assert semver.format() == expected
 
 
+def test_semver_initial():
+    assert SemVer.initial().format() == "1.0.0"
+
+
 @pytest.mark.parametrize("expected, semver", VERSIONS)
 def test_semver_parse(expected: SemVer, semver: str):
     assert SemVer.parse(semver) == expected

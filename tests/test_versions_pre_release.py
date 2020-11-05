@@ -56,6 +56,17 @@ def test_pre_release_parse(
 
 
 @pytest.mark.parametrize(
+    "project_type, invalid_value",
+    ((ProjectTypeEnum.javascript, "a0"), (ProjectTypeEnum.python, "-beta.0")),
+)
+def test_pre_release_parse_value_error(
+    project_type: ProjectTypeEnum, invalid_value: str
+):
+    with pytest.raises(ValueError):
+        PreRelease.parse(invalid_value, project_type=project_type)
+
+
+@pytest.mark.parametrize(
     "current, update_config, expected",
     (
         # Alpha

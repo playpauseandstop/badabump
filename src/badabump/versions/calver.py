@@ -77,6 +77,19 @@ class CalVer:
         return {**attr.asdict(self), "short_year": self.short_year}
 
     @classmethod
+    def initial(cls, *, schema: str) -> "CalVer":
+        utcnow = datetime.datetime.utcnow()
+        return cls(
+            year=utcnow.year,
+            month=utcnow.month,
+            week=get_week(utcnow),
+            day=utcnow.day,
+            minor=1,
+            micro=0,
+            schema=schema,
+        )
+
+    @classmethod
     def parse(cls, value: str, *, schema: str) -> "CalVer":
         maybe_parsed = parse_version(schema, SCHEMA_PARTS_PARSING, value)
         if maybe_parsed:

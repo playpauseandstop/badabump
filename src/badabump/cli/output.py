@@ -1,6 +1,9 @@
 from difflib import ndiff
 
 
+EMPTY = "-"
+
+
 def diff(current_content: str, next_content: str) -> str:
     items = ndiff(
         current_content.splitlines(keepends=True),

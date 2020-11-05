@@ -1,6 +1,7 @@
 import subprocess
+from contextlib import suppress
 from pathlib import Path
-from typing import Iterator, List, Tuple
+from typing import Iterator, List, Optional, Tuple
 
 import attr
 
@@ -26,6 +27,11 @@ class Git:
 
     def retrieve_last_tag(self) -> str:
         return self._check_output(["git", "describe", "--abbrev=0", "--tags"])
+
+    def retrieve_last_tag_or_none(self) -> Optional[str]:
+        with suppress(subprocess.CalledProcessError, ValueError):
+            return self.retrieve_last_tag()
+        return None
 
     def retrieve_tag_body(self, tag: str) -> str:
         return self._check_output(

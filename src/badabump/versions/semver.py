@@ -45,6 +45,10 @@ class SemVer:
         )
 
     @classmethod
+    def initial(cls, *, schema: str = None) -> "SemVer":
+        return cls(major=1, minor=0, patch=0, schema=schema or SCHEMA)
+
+    @classmethod
     def parse(cls, value: str, *, schema: str = None) -> "SemVer":
         maybe_parsed = parse_version(SCHEMA, SCHEMA_PARTS_PARSING, value)
         if maybe_parsed:

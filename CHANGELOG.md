@@ -1,5 +1,11 @@
 # 20.1.0 (In Development)
 
+## 20.1.0rc1 (2020-11-06)
+
+### Fixes:
+
+- [#29, #28] Properly understand initial pre-release version (#30)
+
 ## 20.1.0rc0 (2020-11-06)
 
 ### Features:

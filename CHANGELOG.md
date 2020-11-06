@@ -1,5 +1,20 @@
 # 20.1.0 (In Development)
 
+## 20.1.0rc0 (2020-11-06)
+
+### Features:
+
+- [#15] **BREAKING CHANGE:** Allow create initial releases and pre-releases (#26)
+- [#16] Allow to create final release PR (#18)
+- [#17] Understand more issue refs in commit body (#19)
+- Conform PEP-561 by adding py.typed files (#20)
+
+### Other:
+
+- (**deps**) Bump toml from 0.10.1 to 0.10.2 (#22)
+- (**deps-dev**) Bump pytest from 6.1.1 to 6.1.2 (#21)
+- Bump pre-commit hooks and update mypy config (#25)
+
 ## 20.1.0b0 (2020-10-25)
 
 ### Fixes:

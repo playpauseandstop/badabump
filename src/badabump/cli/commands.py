@@ -4,7 +4,7 @@ from typing import Optional, Set, Tuple
 
 import toml
 
-from .output import diff, echo_message, EMPTY
+from .output import diff, echo_message
 from ..changelog import ChangeLog, in_development_header, version_header
 from ..configs import find_changelog_file, ProjectConfig
 from ..constants import (
@@ -211,14 +211,15 @@ def update_version_files(
 
     If they not specified in config, attempt to guess them automatically.
     """
+    if current_version is None:
+        return False
+
     version_files = config.version_files
     if not version_files:
         version_files = guess_version_files(config)
 
     path = config.path
-    current_version_str = (
-        current_version.format(config=config) if current_version else EMPTY
-    )
+    current_version_str = current_version.format(config=config)
     next_version_str = next_version.format(config=config)
 
     updated: Set[bool] = set()

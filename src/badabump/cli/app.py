@@ -126,12 +126,21 @@ def main(argv: Argv = None) -> int:
 
         # Create changelog using commits from last tag
         changelog = ChangeLog.from_git_commits(git_commits)
+
+        # Supply update config and guess next version
+        update_config = create_update_config(changelog, args.is_pre_release)
+
+        # Guess next version
+        next_version = current_version.update(update_config)
     # Create initial changelog
     else:
+        next_version = Version.guess_initial_version(
+            config=project_config, is_pre_release=args.is_pre_release
+        )
         changelog = ChangeLog.from_git_commits(
             (
                 INITIAL_PRE_RELEASE_COMMIT
-                if args.is_pre_release
+                if next_version.pre_release is not None
                 else INITIAL_RELEASE_COMMIT,
             ),
         )
@@ -147,16 +156,6 @@ def main(argv: Argv = None) -> int:
         ci_name="changelog",
     )
 
-    # Supply update config and guess next version
-    update_config = create_update_config(changelog, args.is_pre_release)
-
-    if current_version is not None:
-        next_version = current_version.update(update_config)
-    else:
-        next_version = Version.guess_initial_version(
-            config=project_config, is_pre_release=args.is_pre_release
-        )
-
     next_version_str = next_version.format(config=project_config)
     echo_value(
         "\nNext version: ",
@@ -167,10 +166,10 @@ def main(argv: Argv = None) -> int:
 
     # Applying changes to version files
     if not args.is_ci and not args.is_dry_run:
-        if (
-            input("Are you sure to update version files? [y/N] ").lower()
-            != "y"
-        ):
+        update_message = (
+            "Are you sure to update version files and changelog? [y/N] "
+        )
+        if input(update_message).lower() != "y":
             print("OK! OK! Exit...")
             return 0
 

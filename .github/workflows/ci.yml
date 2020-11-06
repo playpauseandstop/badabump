@@ -92,6 +92,11 @@ jobs:
         if: "matrix.python-version == env.DEV_PYTHON_VERSION"
         uses: "pre-commit/action@v2.0.0"
 
+      - name: "Setup git for test needs"
+        run: |
+          git config --global user.name badabump-release-bot[bot]
+          git config --global user.email badabump-release-bot[bot]@users.noreply.github.com
+
       - name: "Run tests"
         run: "python -m tox"
 

@@ -10,7 +10,7 @@ source = ["badabump"]
 source = ["src/"]
 
 [tool.coverage.report]
-fail_under = 50
+fail_under = 75
 omit = ["src/badabump/__main__.py", "src/badabump/ci/__main__.py"]
 skip_covered = true
 show_missing = true

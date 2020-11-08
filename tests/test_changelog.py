@@ -1,9 +1,12 @@
+import datetime
+
 import pytest
 
 from badabump.changelog import (
     ChangeLog,
     COMMIT_TYPE_FEATURE,
     ConventionalCommit,
+    version_header,
 )
 from badabump.enums import ChangeLogTypeEnum, FormatTypeEnum
 
@@ -88,6 +91,8 @@ Other:
 
 - **BREAKING CHANGE:** Use badabump release bot for pushing tags
 - [#123] (**openapi**) Update descriptions in OpenAPI schema"""
+
+UTCNOW = datetime.datetime.utcnow()
 
 
 @pytest.mark.parametrize(
@@ -239,3 +244,75 @@ def test_commit_refactor():
     commit = ConventionalCommit.from_git_commit(REFACTOR_COMMIT)
     assert commit.commit_type == "refactor"
     assert commit.issues == ("DEV-1010",)
+
+
+@pytest.mark.parametrize(
+    "version, format_type, include_date, is_pre_release, expected",
+    (
+        (
+            "1.0.0",
+            FormatTypeEnum.markdown,
+            True,
+            False,
+            f"# 1.0.0 ({UTCNOW.date().isoformat()})",
+        ),
+        (
+            "1.0.0rc0",
+            FormatTypeEnum.markdown,
+            True,
+            True,
+            f"## 1.0.0rc0 ({UTCNOW.date().isoformat()})",
+        ),
+        (
+            "1.0.0",
+            FormatTypeEnum.markdown,
+            False,
+            False,
+            "# 1.0.0",
+        ),
+        (
+            "1.0.0rc0",
+            FormatTypeEnum.markdown,
+            False,
+            True,
+            "## 1.0.0rc0",
+        ),
+        (
+            "1.0.0",
+            FormatTypeEnum.rst,
+            True,
+            False,
+            f"1.0.0 ({UTCNOW.date().isoformat()})\n==================",
+        ),
+        (
+            "1.0.0rc0",
+            FormatTypeEnum.rst,
+            True,
+            True,
+            f"1.0.0rc0 ({UTCNOW.date().isoformat()})\n-----------------",
+        ),
+        (
+            "1.0.0",
+            FormatTypeEnum.rst,
+            False,
+            False,
+            "1.0.0\n======",
+        ),
+        (
+            "1.0.0rc0",
+            FormatTypeEnum.rst,
+            False,
+            True,
+            "1.0.0rc0\n--------",
+        ),
+    ),
+)
+def test_version_header(
+    version, format_type, include_date, is_pre_release, expected
+):
+    assert version_header(
+        version,
+        format_type,
+        include_date=include_date,
+        is_pre_release=is_pre_release,
+    )

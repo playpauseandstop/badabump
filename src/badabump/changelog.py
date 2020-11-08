@@ -171,7 +171,7 @@ class ChangeLog:
 
         def format_commits(commits: Iterator[ConventionalCommit]) -> str:
             return "\n".join(
-                f"- {item.format(format_type)}" for item in commits
+                ul_li(item.format(format_type)) for item in commits
             )
 
         features = format_block("Features:", self.feature_commits)

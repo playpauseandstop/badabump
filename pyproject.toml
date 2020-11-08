@@ -10,7 +10,7 @@ source = ["badabump"]
 source = ["src/"]
 
 [tool.coverage.report]
-fail_under = 85
+fail_under = 95
 omit = ["src/badabump/__main__.py", "src/badabump/ci/__main__.py"]
 skip_covered = true
 show_missing = true
@@ -18,7 +18,7 @@ show_missing = true
 [tool.poetry]
 name = "badabump"
 version = "20.1.0rc1"
-description = "Manage changelog and bump project version number using conventional commits from latest git tag. Support Python, JavaScript projects. Understand CalVer, SemVer version schemas. Designed to run at GitHub Actions."
+description = "Manage changelog and bump project version number using conventional commits from latest git tag. Support Python & JavaScript projects and CalVer & SemVer schemas. Designed to run at GitHub Actions."
 authors = ["Igor Davydenko <iam@igordavydenko.com>"]
 license = "BSD-3-Clause"
 readme = "README.md"

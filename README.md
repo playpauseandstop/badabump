@@ -10,4 +10,4 @@
 [![BSD License](https://img.shields.io/pypi/l/badabump.svg)](https://github.com/playpauseandstop/badabump/blob/master/LICENSE)
 [![Coverage](https://coveralls.io/repos/playpauseandstop/badabump/badge.svg?branch=master&service=github)](https://coveralls.io/github/playpauseandstop/badabump)
 
-Manage changelog and bump project version number using conventional commits from latest git tag. Support Python, JavaScript projects. Understand CalVer, SemVer version schemas. Designed to run at GitHub Actions.
+Manage changelog and bump project version number using conventional commits from latest git tag. Support Python & JavaScript projects and CalVer & SemVer schemas. Designed to run at GitHub Actions.

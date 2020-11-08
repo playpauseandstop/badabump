@@ -22,6 +22,40 @@ version = "{version}"
 """
 
 
+def test_breaking_change_dry_run(
+    capsys, create_git_commit, create_git_repository
+):
+    git = create_git_repository(
+        (
+            "pyproject.toml",
+            BADABUMP_CONFIG_SEMVER_TOML
+            + PYPROJECT_TOML.format(version="1.0.0"),
+            "feat: Initial commit",
+        ),
+        tag=("v1.0.0", "1.0.0 Release"),
+    )
+    path = git.path
+
+    (path / "file.txt").write_text("")
+
+    create_git_commit(
+        path,
+        """feat(auth): Implement login flow
+
+BREAKING CHANGE: Now it is possible to log into backend using API endpoint.
+
+Issue: AUTH-1
+""",
+    )
+    assert main(["-C", str(path), "-d"]) == 0
+
+    assert (path / "CHANGELOG.md").exists() is False
+
+    captured = capsys.readouterr()
+    assert captured.err == ""
+    assert "Next version: 2.0.0" in captured.out
+
+
 def test_ci_output(capsys, create_git_commit, create_git_repository):
     git = create_git_repository(
         (
@@ -37,7 +71,7 @@ def test_ci_output(capsys, create_git_commit, create_git_repository):
     (path / "file.txt").write_text("")
 
     create_git_commit(path, "fix(auth): Important login flow fix")
-    main(["-C", str(path), "--ci"])
+    assert main(["-C", str(path), "--ci"]) == 0
 
     captured = capsys.readouterr()
     assert captured.err == ""
@@ -101,7 +135,7 @@ def test_initial_release(
     git = create_git_repository((file_name, content, "feat: Initial commit"))
     path = git.path
 
-    main(["-C", str(path)])
+    assert main(["-C", str(path)]) == 0
 
     assert git.retrieve_tag_subject(f"v{version}") == ""
     assert (path / "CHANGELOG.md").exists()
@@ -111,3 +145,113 @@ def test_initial_release(
     assert expected in changelog
 
     assert (path / file_name).read_text() == content
+
+
+@pytest.mark.parametrize(
+    "changelog_content", ("", "# 1.1.0 (In Development)\n\n")
+)
+def test_minor_change(
+    capsys,
+    monkeypatch,
+    create_git_commit,
+    create_git_repository,
+    changelog_content,
+):
+    monkeypatch.setattr("sys.stdin", io.StringIO("y"))
+
+    git = create_git_repository(
+        (
+            "pyproject.toml",
+            BADABUMP_CONFIG_SEMVER_TOML
+            + PYPROJECT_TOML.format(version="1.0.0"),
+            "feat: Initial commit",
+        ),
+        tag=("v1.0.0", "1.0.0 Release"),
+    )
+    path = git.path
+
+    (path / "file.ext").write_text("")
+    (path / "CHANGELOG.md").write_text(
+        f"""{changelog_content}# 1.0.0 (2020-11-08)
+
+- Initial release
+"""
+    )
+
+    create_git_commit(path, "feat: Update very important part of the system")
+    assert main(["-C", str(path)]) == 0
+
+    captured = capsys.readouterr()
+    assert captured.err == ""
+    assert "Current tag: v1.0.0\n" in captured.out
+    assert "Current version: 1.0.0\n" in captured.out
+    assert "Next version: 1.1.0\n" in captured.out
+
+
+def test_no_commits(capsys, create_git_commit, create_git_repository):
+    git = create_git_repository(
+        (
+            "pyproject.toml",
+            BADABUMP_CONFIG_SEMVER_TOML
+            + PYPROJECT_TOML.format(version="1.0.0"),
+            "feat: Initial commit",
+        ),
+        tag=("v1.0.0", "1.0.0 Release"),
+    )
+
+    assert main(["-C", str(git.path)]) == 1
+
+    captured = capsys.readouterr()
+    assert "ERROR: No commits found after: 'v1.0.0'. Exit..." in captured.err
+    assert "Next version: " not in captured.out
+
+
+def test_no_commits_pre_release(capsys, monkeypatch, create_git_repository):
+    monkeypatch.setattr("sys.stdin", io.StringIO("y"))
+
+    content = BADABUMP_CONFIG_SEMVER_TOML + PYPROJECT_TOML.format(
+        version="1.0.0rc0"
+    )
+
+    git = create_git_repository(
+        (
+            "pyproject.toml",
+            content,
+            "feat: Initial commit",
+        ),
+        tag=("v1.0.0rc0", "1.0.0rc0 Release"),
+    )
+    path = git.path
+
+    assert main(["-C", str(path)]) == 0
+
+    captured = capsys.readouterr()
+    assert captured.err == ""
+    assert "Next version: 1.0.0\n" in captured.out
+
+    assert content != (path / "pyproject.toml").read_text()
+
+
+def test_wrong_answer(capsys, monkeypatch, create_git_repository):
+    monkeypatch.setattr("sys.stdin", io.StringIO("n"))
+
+    content = BADABUMP_CONFIG_SEMVER_TOML + PYPROJECT_TOML.format(
+        version="1.0.0rc0"
+    )
+
+    git = create_git_repository(
+        (
+            "pyproject.toml",
+            content,
+            "feat: Initial commit",
+        ),
+        tag=("v1.0.0rc0", "1.0.0rc0 Release"),
+    )
+    path = git.path
+
+    assert main(["-C", str(path)]) == 0
+
+    captured = capsys.readouterr()
+    assert "OK! OK! Exit..." in captured.out
+
+    assert content == (path / "pyproject.toml").read_text()

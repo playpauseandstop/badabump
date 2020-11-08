@@ -4,11 +4,14 @@ from typing import List
 
 CO_AUTHORED_BY = "Co-authored-by: "
 COMMIT_SUBJECT_WITH_PR_RE = re.compile(r"^(?P<subject>.+) \(\#\d+\)$")
+SIGNED_OFF_BY = "Signed-off-by: "
 
 
 def clean_body(body: List[str]) -> str:
     cleaned = "\n".join(
-        item for item in body if not item.startswith(CO_AUTHORED_BY)
+        item
+        for item in body
+        if not item.startswith((CO_AUTHORED_BY, SIGNED_OFF_BY))
     )
     if cleaned[-1:] == "\n":
         return cleaned

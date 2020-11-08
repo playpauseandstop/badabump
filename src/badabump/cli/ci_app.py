@@ -38,6 +38,7 @@ def parse_args(argv: Argv) -> argparse.Namespace:
         default=os.getenv("GITHUB_REF"),
         help="Tag reference. By default: GITHUB_REF env var",
         metavar="REF",
+        nargs="?",
     )
     prepare_release_parser.set_defaults(func=prepare_release)
 

@@ -6,6 +6,10 @@ from badabump.cli.app import main
 from badabump.enums import ProjectTypeEnum
 
 
+BADABUMP_CONFIG_SEMVER_TOML = """[tool.badabump]
+version_type = "semver"
+"""
+
 PACKAGE_JSON = """{{
     "name": "my-project",
     "version": "{version}"
@@ -16,6 +20,37 @@ PYPROJECT_TOML = """[tool.poetry]
 name = "my-project"
 version = "{version}"
 """
+
+
+def test_ci_output(capsys, create_git_commit, create_git_repository):
+    git = create_git_repository(
+        (
+            "pyproject.toml",
+            BADABUMP_CONFIG_SEMVER_TOML
+            + PYPROJECT_TOML.format(version="1.0.0"),
+            "feat: Initial commit",
+        ),
+        tag=("v1.0.0", "1.0.0 Release"),
+    )
+    path = git.path
+
+    (path / "file.txt").write_text("")
+
+    create_git_commit(path, "fix(auth): Important login flow fix")
+    main(["-C", str(path), "--ci"])
+
+    captured = capsys.readouterr()
+    assert captured.err == ""
+
+    assert "::set-output name=current_tag::v1.0.0" in captured.out
+    assert "::set-output name=current_version::1.0.0" in captured.out
+    assert "::set-output name=next_version::1.0.1" in captured.out
+
+    changelog = (path / "CHANGELOG.md").read_text()
+    assert "# 1.0.1" in changelog
+
+    pyproject_toml = (path / "pyproject.toml").read_text()
+    assert 'version = "1.0.1"' in pyproject_toml
 
 
 @pytest.mark.parametrize(

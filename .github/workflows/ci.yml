@@ -38,9 +38,13 @@ jobs:
           python-version: "${{ env.DEV_PYTHON_VERSION }}"
 
       - name: "Install poetry"
-        uses: "dschep/install-poetry-action@v1.3"
+        run: "python3 -m pip install poetry==${{ env.POETRY_VERSION }}"
+
+      - name: "Cache venv"
+        uses: "actions/cache@v2.1.3"
         with:
-          version: "${{ env.POETRY_VERSION }}"
+          path: ".venv"
+          key: "venv-${{ hashFiles('poetry.lock') }}"
 
       - name: "Install package"
         run: "poetry install --no-dev"
@@ -77,16 +81,17 @@ jobs:
         with:
           python-version: "${{ matrix.python-version }}"
 
-      - name: "Install poetry"
-        uses: "dschep/install-poetry-action@v1.3"
+      - name: "Install poetry & other deps"
+        run: "python3 -m pip install poetry==${{ env.POETRY_VERSION }} tox==${{ env.TOX_VERSION }} tox-gh-actions==${{ env.TOX_GH_ACTIONS_VERSION }}"
+
+      - name: "Cache venv"
+        uses: "actions/cache@v2.1.3"
         with:
-          version: "${{ env.POETRY_VERSION }}"
+          path: ".venv"
+          key: "venv-${{ hashFiles('poetry.lock') }}"
 
       - name: "Install package"
-        run: |
-          set -e
-          poetry install --no-dev
-          python -m pip install tox==${{ env.TOX_VERSION }} tox-gh-actions==${{ env.TOX_GH_ACTIONS_VERSION }}
+        run: "poetry install --no-dev"
 
       - name: "Run pre-commit"
         if: "matrix.python-version == env.DEV_PYTHON_VERSION"
@@ -123,9 +128,6 @@ jobs:
           python-version: "${{ env.DEV_PYTHON_VERSION }}"
 
       - name: "Install poetry"
-        uses: "dschep/install-poetry-action@v1.3"
-        with:
-          version: "${{ env.POETRY_VERSION }}"
 
       - name: "Build package"
         run: "poetry build"
@@ -164,9 +166,7 @@ jobs:
           python-version: "${{ env.DEV_PYTHON_VERSION }}"
 
       - name: "Install poetry"
-        uses: "dschep/install-poetry-action@v1.3"
-        with:
-          version: "${{ env.POETRY_VERSION }}"
+        run: "python3 -m pip install poetry==${{ env.POETRY_VERSION }}"
 
       - name: "Install badabump"
         run: "poetry install --no-dev"

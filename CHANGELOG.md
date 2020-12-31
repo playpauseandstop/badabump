@@ -1,7 +1,7 @@
 # 20.1.0 (2020-12-31)
 
-First final release of ``badabump``: Python based tool to manage changelog and bump 
-project version number using conventional commits from latest git tag. Support Python & 
+First final release of ``badabump``: Python based tool to manage changelog and bump
+project version number using conventional commits from latest git tag. Support Python &
 JavaScript projects and CalVer & SemVer schemas. Designed to run at GitHub Actions.
 
 ## Other:

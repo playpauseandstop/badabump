@@ -1,4 +1,11 @@
-# 20.1.0 (In Development)
+# 20.1.0 (2020-12-31)
+
+## Other:
+
+- [#28] Cover CI output and cli with tests (#32)
+- [#28] Cover all main functionality with tests (#33)
+- Enable dependabot for GitHub Actions (#36)
+- (**deps**) Bump peter-evans/create-pull-request from v3.4.1 to v3.5.1 (#37)
 
 ## 20.1.0rc1 (2020-11-06)
 

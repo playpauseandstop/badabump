@@ -1,4 +1,15 @@
-# 20.1.0 (In Development)
+# 20.1.0 (2020-12-31)
+
+First final release of ``badabump``: Python based tool to manage changelog and bump
+project version number using conventional commits from latest git tag. Support Python &
+JavaScript projects and CalVer & SemVer schemas. Designed to run at GitHub Actions.
+
+## Other:
+
+- [#28] Cover CI output and cli with tests (#32)
+- [#28] Cover all main functionality with tests (#33)
+- Enable dependabot for GitHub Actions (#36)
+- (**deps**) Bump peter-evans/create-pull-request from v3.4.1 to v3.5.1 (#37)
 
 ## 20.1.0rc1 (2020-11-06)
 

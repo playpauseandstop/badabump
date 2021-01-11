@@ -1,3 +1,18 @@
+# 21.1.0 (2021-01-11)
+
+## Fixes:
+
+- [#44] (**calver**) Properly update CalVer scheme between years (#45)
+
+## Other:
+
+- (**deps**) Bump actions/setup-python from v2.1.4 to v2.2.1 (#43)
+- (**deps**) Bump tibdex/github-app-token from v1.1.1 to v1.3 (#41)
+- (**deps**) Bump peter-evans/create-pull-request from v3.5.1 to v3.6.0 (#42)
+- (**deps**) Bump attrs from 20.2.0 to 20.3.0 (#35)
+- (**deps-dev**) Bump pytest from 6.1.2 to 6.2.1 (#40)
+- (**deps-dev**) Bump coverage from 5.3 to 5.3.1 (#39)
+
 # 20.1.0 (2020-12-31)
 
 First final release of ``badabump``: Python based tool to manage changelog and bump

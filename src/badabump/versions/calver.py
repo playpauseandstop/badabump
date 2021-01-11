@@ -11,6 +11,9 @@ from ..configs import UpdateConfig
 from ..constants import DEFAULT_VERSION_SCHEMA
 
 
+DEFAULT_MINOR = 1
+DEFAULT_MICRO = 0
+
 SHORT_YEAR_START = 2000
 
 SCHEMA_PARTS_FORMATTING = {
@@ -84,8 +87,8 @@ class CalVer:
             month=utcnow.month,
             week=get_week(utcnow),
             day=utcnow.day,
-            minor=1,
-            micro=0,
+            minor=DEFAULT_MINOR,
+            micro=DEFAULT_MICRO,
             schema=schema,
         )
 
@@ -107,10 +110,46 @@ class CalVer:
     def update(self, config: UpdateConfig) -> "CalVer":
         utcnow = datetime.datetime.utcnow()
 
-        next_minor = self.minor
-        next_micro = self.micro
+        next_minor: Optional[int] = None
+        next_micro: Optional[int] = None
 
-        if not config.is_pre_release:
+        # If year present - attempt to update it with current year
+        next_year: Optional[int] = None
+        if self.year is not None:
+            next_year = utcnow.year
+            # New year - new minor release
+            if self.year != next_year:
+                next_minor, next_micro = DEFAULT_MINOR, DEFAULT_MICRO
+
+        # If month present - attempt to update it with current month
+        next_month: Optional[int] = None
+        if self.month is not None:
+            next_month = utcnow.month
+            # New month - new minor release
+            if self.month != next_month:
+                next_minor, next_micro = DEFAULT_MINOR, DEFAULT_MICRO
+
+        # If week present for version - update it with current week
+        next_week: Optional[int] = None
+        if self.week is not None:
+            next_week = get_week(utcnow)
+            # New week - new minor release
+            if self.week != next_week:
+                next_minor, next_micro = DEFAULT_MINOR, DEFAULT_MICRO
+
+        # If day present for version - update it with current day
+        next_day: Optional[int] = None
+        if self.day is not None:
+            next_day = utcnow.day
+            # New day - new minor release
+            if self.day != next_day:
+                next_minor, next_micro = DEFAULT_MINOR, DEFAULT_MICRO
+
+        if (
+            next_minor is None and next_micro is None
+        ) and not config.is_pre_release:
+            next_minor, next_micro = self.minor, self.micro
+
             if next_minor is not None and (
                 config.is_breaking_change or config.is_minor_change
             ):
@@ -122,12 +161,12 @@ class CalVer:
 
         return attr.evolve(
             self,
-            year=utcnow.year if self.year else None,
-            month=utcnow.month if self.month else None,
-            week=get_week(utcnow) if self.week else None,
-            day=utcnow.day if self.day else None,
-            minor=next_minor,
-            micro=next_micro,
+            year=next_year,
+            month=next_month,
+            week=next_week,
+            day=next_day,
+            minor=next_minor if next_minor is not None else self.minor,
+            micro=next_micro if next_micro is not None else self.micro,
         )
 
 

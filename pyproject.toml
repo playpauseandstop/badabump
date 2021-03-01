@@ -47,7 +47,7 @@ attrs = "^20.2.0"
 toml = "^0.10.1"
 
 [tool.poetry.dev-dependencies]
-coverage = {extras = ["toml"], version = "^5.4"}
+coverage = {extras = ["toml"], version = "^5.5"}
 pytest = "^6.2.2"
 pytest-cov = "^2.11.1"
 time-machine = "^2.0.1"

@@ -25,8 +25,8 @@ def test_empty_repository(create_git_repository):
     with pytest.raises(subprocess.CalledProcessError):
         git.retrieve_last_tag()
 
-    git.retrieve_tag_subject("v1.0.0") == ""
-    git.retrieve_tag_body("v1.0.0") == ""
+    assert git.retrieve_tag_subject("v1.0.0") == ""
+    assert git.retrieve_tag_body("v1.0.0") == ""
 
 
 def test_list_commits(create_git_repository):

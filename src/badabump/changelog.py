@@ -14,6 +14,7 @@ CHANGELOG_EMPTY = "No changes since last pre-release"
 
 COMMIT_TYPE_FEATURE = "feat"
 COMMIT_TYPE_FIX = "fix"
+COMMIT_TYPE_REFACTOR = "refactor"
 
 COMMIT_TYPE_SUBJECT_RE = re.compile(
     r"^(?P<commit_type>[^\:]+)\: (?P<description>.+)$"
@@ -109,11 +110,13 @@ class ChangeLog:
 
     feature_commits: Tuple[ConventionalCommit, ...] = attr.ib(init=False)
     fix_commits: Tuple[ConventionalCommit, ...] = attr.ib(init=False)
+    refactor_commits: Tuple[ConventionalCommit, ...] = attr.ib(init=False)
     other_commits: Tuple[ConventionalCommit, ...] = attr.ib(init=False)
 
     def __attrs_post_init__(self) -> None:
         feature_commits: List[ConventionalCommit] = []
         fix_commits: List[ConventionalCommit] = []
+        refactor_commits: List[ConventionalCommit] = []
         other_commits: List[ConventionalCommit] = []
 
         for commit in self.commits:
@@ -121,11 +124,14 @@ class ChangeLog:
                 feature_commits.append(commit)
             elif commit.commit_type == COMMIT_TYPE_FIX:
                 fix_commits.append(commit)
+            elif commit.commit_type == COMMIT_TYPE_REFACTOR:
+                refactor_commits.append(commit)
             else:
                 other_commits.append(commit)
 
         object.__setattr__(self, "feature_commits", tuple(feature_commits))
         object.__setattr__(self, "fix_commits", tuple(fix_commits))
+        object.__setattr__(self, "refactor_commits", tuple(refactor_commits))
         object.__setattr__(self, "other_commits", tuple(other_commits))
 
     def format(  # noqa: A003
@@ -176,9 +182,12 @@ class ChangeLog:
 
         features = format_block("Features:", self.feature_commits)
         fixes = format_block("Fixes:", self.fix_commits)
+        refactor = format_block("Refactoring:", self.refactor_commits)
         others = format_block("Other:", self.other_commits)
 
-        return "\n\n".join(item for item in (features, fixes, others) if item)
+        return "\n\n".join(
+            item for item in (features, fixes, refactor, others) if item
+        )
 
     @classmethod
     def from_git_commits(cls, git_commits: Tuple[str, ...]) -> "ChangeLog":

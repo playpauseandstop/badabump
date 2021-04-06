@@ -13,11 +13,12 @@ on:
 
 env:
   COVERALLS_VERSION: "3.0.1"
-  DEV_PYTHON_VERSION: "3.9.2"
+  DEV_PYTHON_VERSION: "3.9"
   POETRY_VERSION: "1.1.5"
+  PYTHON_VERSION: "3.9.4"
   TOX_GH_ACTIONS_VERSION: "2.4.0"
   TOX_VERSION: "3.23.0"
-  TWINE_VERSION: "3.3.0"
+  TWINE_VERSION: "3.4.1"
 
 jobs:
   dev:
@@ -35,7 +36,7 @@ jobs:
       - name: "Install Python"
         uses: "actions/setup-python@v2.2.1"
         with:
-          python-version: "${{ env.DEV_PYTHON_VERSION }}"
+          python-version: "${{ env.PYTHON_VERSION }}"
 
       - name: "Install poetry"
         run: "python3 -m pip install poetry==${{ env.POETRY_VERSION }}"
@@ -111,7 +112,7 @@ jobs:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         run: |
           python3 -m pip install coveralls==${{ env.COVERALLS_VERSION }}
-          python3 -m coveralls
+          python3 -m coveralls --service=github
 
   package:
     needs: ["test"]
@@ -125,7 +126,7 @@ jobs:
       - name: "Install Python"
         uses: "actions/setup-python@v2.2.1"
         with:
-          python-version: "${{ env.DEV_PYTHON_VERSION }}"
+          python-version: "${{ env.PYTHON_VERSION }}"
 
       - name: "Install poetry"
         run: "python3 -m pip install poetry==${{ env.POETRY_VERSION }}"
@@ -164,7 +165,7 @@ jobs:
       - name: "Install Python"
         uses: "actions/setup-python@v2.2.1"
         with:
-          python-version: "${{ env.DEV_PYTHON_VERSION }}"
+          python-version: "${{ env.PYTHON_VERSION }}"
 
       - name: "Install poetry"
         run: "python3 -m pip install poetry==${{ env.POETRY_VERSION }}"

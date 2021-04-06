@@ -45,6 +45,10 @@ CHANGELOG_FILE_MD = """## Features:
 
 - Update logic behind math operations
 
+## Refactoring:
+
+- [DEV-1010] Change algorigthm to use
+
 ## Other:
 
 - **BREAKING CHANGE:** Use badabump release bot for pushing tags
@@ -58,6 +62,10 @@ CHANGELOG_FILE_MD_PRE = """### Features:
 
 - Update logic behind math operations
 
+### Refactoring:
+
+- [DEV-1010] Change algorigthm to use
+
 ### Other:
 
 - **BREAKING CHANGE:** Use badabump release bot for pushing tags
@@ -70,6 +78,10 @@ CHANGELOG_FILE_RST = CHANGELOG_GIT_RST = """**Features:**
 **Fixes:**
 
 - Update logic behind math operations
+
+**Refactoring:**
+
+- [DEV-1010] Change algorigthm to use
 
 **Other:**
 
@@ -85,6 +97,11 @@ Fixes:
 ------
 
 - Update logic behind math operations
+
+Refactoring:
+------------
+
+- [DEV-1010] Change algorigthm to use
 
 Other:
 ------
@@ -133,7 +150,13 @@ def test_changelog_empty(changelog_type, format_type, expected):
 )
 def test_changelog_format_file(format_type, is_pre_release, expected):
     changelog = ChangeLog.from_git_commits(
-        [FEATURE_COMMIT, FIX_COMMIT, CI_BREAKING_COMMIT, DOCS_SCOPE_COMMIT]
+        [
+            FEATURE_COMMIT,
+            FIX_COMMIT,
+            CI_BREAKING_COMMIT,
+            DOCS_SCOPE_COMMIT,
+            REFACTOR_COMMIT,
+        ]
     )
     content = changelog.format(
         ChangeLogTypeEnum.changelog_file,
@@ -154,7 +177,13 @@ def test_changelog_format_file(format_type, is_pre_release, expected):
 )
 def test_changelog_format_git(format_type, is_pre_release, expected):
     changelog = ChangeLog.from_git_commits(
-        [FEATURE_COMMIT, FIX_COMMIT, CI_BREAKING_COMMIT, DOCS_SCOPE_COMMIT]
+        [
+            FEATURE_COMMIT,
+            FIX_COMMIT,
+            CI_BREAKING_COMMIT,
+            DOCS_SCOPE_COMMIT,
+            REFACTOR_COMMIT,
+        ]
     )
     content = changelog.format(
         ChangeLogTypeEnum.git_commit,

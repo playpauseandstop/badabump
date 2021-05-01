@@ -42,7 +42,7 @@ jobs:
         run: "python3 -m pip install poetry==${{ env.POETRY_VERSION }}"
 
       - name: "Cache venv"
-        uses: "actions/cache@v2.1.4"
+        uses: "actions/cache@v2.1.5"
         with:
           path: ".venv"
           key: "venv-${{ hashFiles('poetry.lock') }}"
@@ -86,7 +86,7 @@ jobs:
         run: "python3 -m pip install poetry==${{ env.POETRY_VERSION }} tox==${{ env.TOX_VERSION }} tox-gh-actions==${{ env.TOX_GH_ACTIONS_VERSION }}"
 
       - name: "Cache venv"
-        uses: "actions/cache@v2.1.4"
+        uses: "actions/cache@v2.1.5"
         with:
           path: ".venv"
           key: "venv-${{ hashFiles('poetry.lock') }}"
@@ -171,7 +171,7 @@ jobs:
         run: "python3 -m pip install poetry==${{ env.POETRY_VERSION }}"
 
       - name: "Cache venv"
-        uses: "actions/cache@v2.1.4"
+        uses: "actions/cache@v2.1.5"
         with:
           path: ".venv"
           key: "venv-${{ hashFiles('poetry.lock') }}"

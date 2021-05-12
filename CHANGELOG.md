@@ -1,6 +1,6 @@
 # 21.2.0 (2021-05-12)
 
-Now `badabump` escapes backticks in release notes, which allows to put code blocks in GitHub Releases description, using standard Markdown syntax,
+Now `badabump` supports backticks in release notes, which allows to put code blocks in GitHub Releases description, using standard Markdown syntax,
 
 ```python
 def new_release() -> str:

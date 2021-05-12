@@ -1,5 +1,12 @@
 # 21.2.0 (2021-05-12)
 
+Now `badabump` escapes backticks in release notes, which allows to put code blocks in GitHub Releases description, using standard Markdown syntax,
+
+```python
+def new_release() -> str:
+    return "It is working!"
+```
+
 ## Features:
 
 - [#34] Put refactor commits into separate section (#58)
@@ -26,8 +33,6 @@
 - (**deps**) Bump actions/cache from v2.1.4 to v2.1.5 (#61)
 - (**deps**) Bump pre-commit/action from v2.0.0 to v2.0.3 (#62)
 - Update Python dev version to 3.9.5 (#65)
-- 21.2.0 Release (#68)
-- 21.2.0 Release (#68) (#69)
 
 # 21.1.0 (2021-01-11)
 

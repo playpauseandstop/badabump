@@ -7,8 +7,8 @@ from badabump.cli.output import github_actions_output
     "value, expected",
     (
         ("Hello, world!", "Hello, world!"),
-        ("$var", "%24var"),
-        ("`pwd`", "%60pwd%60"),
+        ("$var", "$var"),
+        ("`pwd`", "`pwd`"),
         ("Multi\nLine\nString", "Multi%0ALine%0AString"),
         ("Multi\r\nLine\r\nString", "Multi%0D%0ALine%0D%0AString"),
     ),

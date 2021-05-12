@@ -13,11 +13,10 @@ on:
 
 env:
   COVERALLS_VERSION: "3.0.1"
-  DEV_PYTHON_VERSION: "3.9"
-  POETRY_VERSION: "1.1.5"
-  PYTHON_VERSION: "3.9.4"
-  TOX_GH_ACTIONS_VERSION: "2.4.0"
-  TOX_VERSION: "3.23.0"
+  DEV_PYTHON_VERSION: "3.9.5"
+  POETRY_VERSION: "1.1.6"
+  TOX_GH_ACTIONS_VERSION: "2.5.0"
+  TOX_VERSION: "3.23.1"
   TWINE_VERSION: "3.4.1"
 
 jobs:
@@ -36,7 +35,7 @@ jobs:
       - name: "Install Python"
         uses: "actions/setup-python@v2.2.2"
         with:
-          python-version: "${{ env.PYTHON_VERSION }}"
+          python-version: "${{ env.DEV_PYTHON_VERSION }}"
 
       - name: "Install poetry"
         run: "python3 -m pip install poetry==${{ env.POETRY_VERSION }}"
@@ -95,7 +94,7 @@ jobs:
         run: "poetry install --no-dev"
 
       - name: "Run pre-commit"
-        if: "matrix.python-version == env.DEV_PYTHON_VERSION"
+        if: "startsWith(env.DEV_PYTHON_VERSION, matrix.python-version)"
         uses: "pre-commit/action@v2.0.3"
 
       - name: "Setup git for test needs"
@@ -107,7 +106,7 @@ jobs:
         run: "python -m tox"
 
       - name: "Send report to coveralls"
-        if: "matrix.python-version == env.DEV_PYTHON_VERSION"
+        if: "startsWith(env.DEV_PYTHON_VERSION, matrix.python-version)"
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         run: |
@@ -126,7 +125,7 @@ jobs:
       - name: "Install Python"
         uses: "actions/setup-python@v2.2.2"
         with:
-          python-version: "${{ env.PYTHON_VERSION }}"
+          python-version: "${{ env.DEV_PYTHON_VERSION }}"
 
       - name: "Install poetry"
         run: "python3 -m pip install poetry==${{ env.POETRY_VERSION }}"
@@ -165,7 +164,7 @@ jobs:
       - name: "Install Python"
         uses: "actions/setup-python@v2.2.2"
         with:
-          python-version: "${{ env.PYTHON_VERSION }}"
+          python-version: "${{ env.DEV_PYTHON_VERSION }}"
 
       - name: "Install poetry"
         run: "python3 -m pip install poetry==${{ env.POETRY_VERSION }}"

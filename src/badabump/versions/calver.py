@@ -3,12 +3,12 @@ from typing import Optional
 
 import attr
 
-from .exceptions import VersionError, VersionParseError
-from .formatting import format_version
-from .parsing import parse_version
 from ..annotations import DictStrAny, DictStrStr
 from ..configs import UpdateConfig
 from ..constants import DEFAULT_VERSION_SCHEMA
+from .exceptions import VersionError, VersionParseError
+from .formatting import format_version
+from .parsing import parse_version
 
 
 DEFAULT_MINOR = 1

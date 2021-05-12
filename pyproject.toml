@@ -15,6 +15,13 @@ omit = ["src/badabump/__main__.py", "src/badabump/ci/__main__.py"]
 skip_covered = true
 show_missing = true
 
+[tool.isort]
+profile = "attrs"
+combine_as_imports = true
+force_alphabetical_sort_within_sections = true
+lines_between_types = 0
+virtual_env = "./.venv/"
+
 [tool.poetry]
 name = "badabump"
 version = "21.1.0"
@@ -43,12 +50,12 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.6"
-attrs = "^20.2.0"
+attrs = ">=20.2.0,<22"
 toml = "^0.10.1"
 
 [tool.poetry.dev-dependencies]
 coverage = "^5.5"
-pytest = "^6.2.3"
+pytest = "^6.2.4"
 pytest-cov = "^2.11.1"
 time-machine = "^2.1.0"
 

@@ -4,8 +4,6 @@ import os
 import sys
 from typing import cast
 
-from .arguments import add_path_argument
-from .output import github_actions_output
 from .. import __app__, __version__
 from ..annotations import Argv
 from ..cleaners import clean_body, clean_commit_subject, clean_tag_ref
@@ -13,6 +11,8 @@ from ..configs import ProjectConfig
 from ..git import Git
 from ..regexps import to_regexp
 from ..versions import Version
+from .arguments import add_path_argument
+from .output import github_actions_output
 
 
 def parse_args(argv: Argv) -> argparse.Namespace:

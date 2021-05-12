@@ -21,7 +21,7 @@ SCHEMA_PARTS_FORMATTING = {
     "NUMBER": "{number}",
 }
 SCHEMA_PARTS_PARSING = {
-    "TYPE": r"(?P<type>.+)",
+    "TYPE": r"(?P<type>\D+)",
     "NUMBER": r"(?P<number>\d+)",
 }
 

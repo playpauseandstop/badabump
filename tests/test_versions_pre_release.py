@@ -14,6 +14,11 @@ PRE_RELEASES: Tuple[Tuple[PreRelease, ProjectTypeEnum, str], ...] = (
         "a0",
     ),
     (
+        PreRelease(pre_release_type=PreReleaseTypeEnum.alpha, number=10),
+        ProjectTypeEnum.python,
+        "a10",
+    ),
+    (
         PreRelease(pre_release_type=PreReleaseTypeEnum.alpha, number=0),
         ProjectTypeEnum.javascript,
         "-alpha.0",
@@ -29,14 +34,29 @@ PRE_RELEASES: Tuple[Tuple[PreRelease, ProjectTypeEnum, str], ...] = (
         "-beta.1",
     ),
     (
+        PreRelease(pre_release_type=PreReleaseTypeEnum.beta, number=42),
+        ProjectTypeEnum.javascript,
+        "-beta.42",
+    ),
+    (
         PreRelease(pre_release_type=PreReleaseTypeEnum.rc, number=2),
         ProjectTypeEnum.python,
         "rc2",
     ),
     (
+        PreRelease(pre_release_type=PreReleaseTypeEnum.rc, number=15),
+        ProjectTypeEnum.python,
+        "rc15",
+    ),
+    (
         PreRelease(pre_release_type=PreReleaseTypeEnum.rc, number=2),
         ProjectTypeEnum.javascript,
         "-rc.2",
+    ),
+    (
+        PreRelease(pre_release_type=PreReleaseTypeEnum.rc, number=25),
+        ProjectTypeEnum.javascript,
+        "-rc.25",
     ),
 )
 

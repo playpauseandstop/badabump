@@ -1,38 +1,3 @@
-# 21.2.0 (2021-05-12)
-
-Now `badabump` escapes backticks in release notes, which allows to put code blocks in GitHub Releases description, using standard Markdown syntax,
-
-```python
-def new_release() -> str:
-    return "It is working!"
-```
-
-## Features:
-
-- [#34] Put refactor commits into separate section (#58)
-
-## Fixes:
-
-- [#64] Support pre-releases with multiple digits (#66)
-- [#63] Escape backticks when setting output at GitHub Actions (#67)
-
-## Other:
-
-- (**deps-dev**) Bump coverage from 5.3.1 to 5.4 (#47)
-- (**deps-dev**) Bump pytest from 6.2.1 to 6.2.2 (#50)
-- (**deps-dev**) Bump pytest-cov from 2.10.1 to 2.11.1 (#49)
-- (**deps-dev**) Bump time-machine from 1.3.0 to 2.0.1 (#48)
-- (**deps**) Bump peter-evans/create-pull-request from v3.6.0 to v3.8.0 (#51)
-- Bump Python dev version to 3.9.2 (#57)
-- (**deps**) Bump actions/cache from v2.1.3 to v2.1.4 (#55)
-- (**deps**) Bump pypa/gh-action-pypi-publish from v1.4.1 to v1.4.2 (#54)
-- (**deps**) Bump peter-evans/create-pull-request from v3.8.0 to v3.8.2 (#56)
-- Update to Python 3.9.4 (#59)
-- (**deps**) Bump actions/setup-python from v2.2.1 to v2.2.2 (#60)
-- (**deps**) Bump actions/cache from v2.1.4 to v2.1.5 (#61)
-- (**deps**) Bump pre-commit/action from v2.0.0 to v2.0.3 (#62)
-- Update Python dev version to 3.9.5 (#65)
-
 # 21.1.0 (2021-01-11)
 
 ## Fixes:

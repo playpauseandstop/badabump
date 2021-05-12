@@ -52,5 +52,5 @@ jobs:
           git config user.name badabump-release-bot[bot]
           git config user.email badabump-release-bot[bot]@users.noreply.github.com
 
-          git tag -a ${{ steps.badabump.outputs.tag_name }} -m "${{ steps.badabump.outputs.tag_message }}"
+          git tag -a ${{ steps.badabump.outputs.tag_name }} -m '${{ steps.badabump.outputs.tag_message }}'
           git push --tag

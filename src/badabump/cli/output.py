@@ -2,13 +2,7 @@ from difflib import ndiff
 
 
 EMPTY = "-"
-VALUE_ESCAPE_MAPPING = (
-    ("%", "%25"),
-    ("$", "%24"),
-    ("`", "%60"),
-    ("\n", "%0A"),
-    ("\r", "%0D"),
-)
+VALUE_ESCAPE_MAPPING = (("%", "%25"), ("\n", "%0A"), ("\r", "%0D"))
 
 
 def diff(current_content: str, next_content: str) -> str:

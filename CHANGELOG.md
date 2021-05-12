@@ -1,5 +1,14 @@
 # 21.2.0 (2021-05-12)
 
+Now `badabump` escapes backticks in release notes, which allows to put code
+blocks in GitHub Releases description, using standard Markdown syntax,
+
+```md
+# 21.2.0 Release
+
+**It is working :)**
+```
+
 ## Features:
 
 - [#34] Put refactor commits into separate section (#58)

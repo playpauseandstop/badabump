@@ -4,7 +4,6 @@ from typing import Optional, Set, Tuple
 
 import toml
 
-from .output import diff, echo_message
 from ..changelog import ChangeLog, in_development_header, version_header
 from ..configs import find_changelog_file, ProjectConfig
 from ..constants import (
@@ -17,6 +16,7 @@ from ..constants import (
 from ..enums import ChangeLogTypeEnum, FormatTypeEnum, ProjectTypeEnum
 from ..exceptions import ConfigError
 from ..versions import Version
+from .output import diff, echo_message
 
 
 def find_changelog_path(config: ProjectConfig) -> Path:

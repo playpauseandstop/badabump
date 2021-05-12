@@ -6,6 +6,7 @@ import time_machine
 from badabump.configs import UpdateConfig
 from badabump.versions.calver import CalVer, SHORT_YEAR_START
 
+
 UTCNOW = datetime.datetime.utcnow()
 
 YEAR = UTCNOW.year

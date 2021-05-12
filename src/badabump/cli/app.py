@@ -3,13 +3,6 @@ import os
 import sys
 from typing import Optional
 
-from .arguments import add_path_argument
-from .commands import (
-    run_post_bump_hook,
-    update_changelog_file,
-    update_version_files,
-)
-from .output import echo_value, EMPTY, github_actions_output
 from .. import __app__, __version__
 from ..annotations import Argv
 from ..changelog import ChangeLog
@@ -18,6 +11,13 @@ from ..constants import INITIAL_PRE_RELEASE_COMMIT, INITIAL_RELEASE_COMMIT
 from ..enums import ChangeLogTypeEnum
 from ..git import Git
 from ..versions import Version
+from .arguments import add_path_argument
+from .commands import (
+    run_post_bump_hook,
+    update_changelog_file,
+    update_version_files,
+)
+from .output import echo_value, EMPTY, github_actions_output
 
 
 def create_update_config(

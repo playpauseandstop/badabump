@@ -5,16 +5,16 @@ from typing import cast, Optional, Type, Union
 import attr
 import toml
 
+from ..annotations import DictStrStr
+from ..configs import ProjectConfig, UpdateConfig
+from ..enums import ProjectTypeEnum, VersionTypeEnum
+from ..regexps import to_regexp
 from . import calver, pre_release, semver
 from .calver import CalVer
 from .exceptions import VersionError, VersionParseError
 from .parsing import parse_version
 from .pre_release import PreRelease
 from .semver import SemVer
-from ..annotations import DictStrStr
-from ..configs import ProjectConfig, UpdateConfig
-from ..enums import ProjectTypeEnum, VersionTypeEnum
-from ..regexps import to_regexp
 
 
 CalOrSemVer = Union[CalVer, SemVer]

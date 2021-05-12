@@ -1,11 +1,11 @@
 import attr
 
-from .exceptions import VersionParseError
-from .formatting import format_version
-from .parsing import parse_version
 from ..annotations import DictStrStr
 from ..configs import UpdateConfig
 from ..constants import DEFAULT_SEMVER_SCHEMA as SCHEMA
+from .exceptions import VersionParseError
+from .formatting import format_version
+from .parsing import parse_version
 
 
 SCHEMA_PARTS_FORMATTING = {

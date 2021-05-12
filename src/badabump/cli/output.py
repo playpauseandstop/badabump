@@ -2,6 +2,13 @@ from difflib import ndiff
 
 
 EMPTY = "-"
+VALUE_ESCAPE_MAPPING = (
+    ("%", "%25"),
+    ("$", "%24"),
+    ("`", "%60"),
+    ("\n", "%0A"),
+    ("\r", "%0D"),
+)
 
 
 def diff(current_content: str, next_content: str) -> str:
@@ -27,7 +34,6 @@ def echo_value(
 
 
 def github_actions_output(name: str, value: str) -> None:
-    value = value.replace("%", "%25")
-    value = value.replace("\n", "%0A")
-    value = value.replace("\r", "%0D")
+    for symbol, code in VALUE_ESCAPE_MAPPING:
+        value = value.replace(symbol, code)
     print(f"::set-output name={name}::{value}")

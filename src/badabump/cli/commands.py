@@ -35,6 +35,16 @@ def find_changelog_path(config: ProjectConfig) -> Path:
     return path / default_file
 
 
+def format_version_str(item: Path, version_str: str) -> str:
+    if item.name == "pyproject.toml":
+        return f'version = "{version_str}"'
+
+    if item.name == "package.json":
+        return f'"version": "{version_str}"'
+
+    return version_str
+
+
 def guess_version_files(config: ProjectConfig) -> Tuple[str, ...]:
     if config.project_type == ProjectTypeEnum.javascript:
         return (FILE_PACKAGE_JSON,)
@@ -239,11 +249,12 @@ def update_version_files(
         if is_dry_run:
             continue
 
+        item_path = path.joinpath(item)
         updated.add(
             update_file(
-                path.joinpath(item),
-                current_version_str,
-                next_version_str,
+                item_path,
+                format_version_str(item_path, current_version_str),
+                format_version_str(item_path, next_version_str),
             )
         )
 

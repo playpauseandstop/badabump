@@ -12,13 +12,20 @@ version_type = "semver"
 
 PACKAGE_JSON = """{{
     "name": "my-project",
-    "version": "{version}"
+    "version": "{version}",
+    "dependencies": {{
+        "another-project": "{version}"
+    }}
 }}
 """
 
 PYPROJECT_TOML = """[tool.poetry]
 name = "my-project"
 version = "{version}"
+
+[tool.poetry.dependencies]
+python = "^3"
+another-project = "{version}"
 """
 
 
@@ -56,15 +63,36 @@ Issue: AUTH-1
     assert "Next version: 2.0.0" in captured.out
 
 
-def test_ci_output(capsys, create_git_commit, create_git_repository):
-    git = create_git_repository(
+@pytest.mark.parametrize(
+    "file_name, content, version, next_version",
+    (
         (
             "pyproject.toml",
             BADABUMP_CONFIG_SEMVER_TOML
             + PYPROJECT_TOML.format(version="1.0.0"),
-            "feat: Initial commit",
+            "1.0.0",
+            "1.0.1",
         ),
-        tag=("v1.0.0", "1.0.0 Release"),
+        (
+            "package.json",
+            PACKAGE_JSON.format(version="21.1.0"),
+            "21.1.0",
+            "21.1.1",
+        ),
+    ),
+)
+def test_ci_output(
+    capsys,
+    create_git_commit,
+    create_git_repository,
+    file_name,
+    content,
+    version,
+    next_version,
+):
+    git = create_git_repository(
+        (file_name, content, "feat: Initial commit"),
+        tag=(f"v{version}", f"{version} Release"),
     )
     path = git.path
 
@@ -76,15 +104,20 @@ def test_ci_output(capsys, create_git_commit, create_git_repository):
     captured = capsys.readouterr()
     assert captured.err == ""
 
-    assert "::set-output name=current_tag::v1.0.0" in captured.out
-    assert "::set-output name=current_version::1.0.0" in captured.out
-    assert "::set-output name=next_version::1.0.1" in captured.out
+    assert f"::set-output name=current_tag::v{version}" in captured.out
+    assert f"::set-output name=current_version::{version}" in captured.out
+    assert f"::set-output name=next_version::{next_version}" in captured.out
 
     changelog = (path / "CHANGELOG.md").read_text()
-    assert "# 1.0.1" in changelog
+    assert f"# {next_version}" in changelog
 
-    pyproject_toml = (path / "pyproject.toml").read_text()
-    assert 'version = "1.0.1"' in pyproject_toml
+    next_content = (path / file_name).read_text()
+    if file_name == "pyproject.toml":
+        assert f'version = "{next_version}"' in next_content
+        assert f'another-project = "{version}"' in next_content
+    else:
+        assert f'"version": "{next_version}"' in next_content
+        assert f'"another-project": "{version}"' in next_content
 
 
 @pytest.mark.parametrize(

@@ -2,7 +2,7 @@ import subprocess
 from pathlib import Path
 from typing import Optional, Set, Tuple
 
-import toml
+import tomli
 
 from ..changelog import ChangeLog, in_development_header, version_header
 from ..configs import find_changelog_file, ProjectConfig
@@ -57,7 +57,7 @@ def guess_version_files(config: ProjectConfig) -> Tuple[str, ...]:
         version_files.append(FILE_PYPROJECT_TOML)
 
         project_name = (
-            toml.loads(maybe_pyproject_toml_path.read_text())
+            tomli.loads(maybe_pyproject_toml_path.read_text())
             .get("tool", {})
             .get("poetry", {})
             .get("name")

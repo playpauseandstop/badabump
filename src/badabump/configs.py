@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Optional, Tuple
 
 import attr
-import toml
+import tomli
 
 from . import __app__
 from .annotations import DictStrAny
@@ -183,7 +183,7 @@ def load_project_config_data(path: Path) -> Optional[Tuple[Path, DictStrAny]]:
         if not maybe_config_path.exists():
             continue
 
-        data = toml.loads(maybe_config_path.read_text())
+        data = tomli.loads(maybe_config_path.read_text())
         return (maybe_config_path, data.get("tool", {}).get(__app__, {}) or {})
 
     return None

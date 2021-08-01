@@ -3,7 +3,7 @@ from contextlib import suppress
 from typing import cast, Optional, Type, Union
 
 import attr
-import toml
+import tomli
 
 from ..annotations import DictStrStr
 from ..configs import ProjectConfig, UpdateConfig
@@ -117,7 +117,7 @@ def find_project_version(config: ProjectConfig) -> Optional[str]:
             try:
                 return cast(
                     str,
-                    toml.loads(pyproject_toml_path.read_text())["tool"][
+                    tomli.loads(pyproject_toml_path.read_text())["tool"][
                         "poetry"
                     ]["version"],
                 )

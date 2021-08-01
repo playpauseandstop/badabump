@@ -83,6 +83,7 @@ def parse_args(argv: Argv) -> argparse.Namespace:
 
 
 def main(argv: Argv = None) -> int:
+    # Parse arguments
     args = parse_args(argv or sys.argv[1:])
 
     # Initialize project config
@@ -128,7 +129,9 @@ def main(argv: Argv = None) -> int:
             return 1
 
         # Create changelog using commits from last tag
-        changelog = ChangeLog.from_git_commits(git_commits)
+        changelog = ChangeLog.from_git_commits(
+            git_commits, strict=project_config.strict_mode
+        )
 
         # Supply update config and guess next version
         update_config = create_update_config(changelog, args.is_pre_release)

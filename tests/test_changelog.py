@@ -229,6 +229,13 @@ def test_changelog_invalid_commit():
         ChangeLog.from_git_commits([INVALID_COMMIT])
 
 
+def test_changelog_invalid_commit_non_strict_mode():
+    changelog = ChangeLog.from_git_commits([INVALID_COMMIT], strict=False)
+    assert changelog.has_breaking_change is False
+    assert changelog.has_minor_change is False
+    assert changelog.has_micro_change is True
+
+
 def test_changelog_with_feature_commit():
     changelog = ChangeLog.from_git_commits([FEATURE_COMMIT])
     assert changelog.has_breaking_change is False

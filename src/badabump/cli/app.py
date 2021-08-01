@@ -3,21 +3,24 @@ import os
 import sys
 from typing import Optional
 
-from .. import __app__, __version__
-from ..annotations import Argv
-from ..changelog import ChangeLog
-from ..configs import ProjectConfig, UpdateConfig
-from ..constants import INITIAL_PRE_RELEASE_COMMIT, INITIAL_RELEASE_COMMIT
-from ..enums import ChangeLogTypeEnum
-from ..git import Git
-from ..versions import Version
-from .arguments import add_path_argument
-from .commands import (
+from badabump import __app__, __version__
+from badabump.annotations import Argv
+from badabump.changelog import ChangeLog
+from badabump.cli.arguments import add_path_argument
+from badabump.cli.commands import (
     run_post_bump_hook,
     update_changelog_file,
     update_version_files,
 )
-from .output import echo_value, EMPTY, github_actions_output
+from badabump.cli.output import echo_value, EMPTY, github_actions_output
+from badabump.configs import ProjectConfig, UpdateConfig
+from badabump.constants import (
+    INITIAL_PRE_RELEASE_COMMIT,
+    INITIAL_RELEASE_COMMIT,
+)
+from badabump.enums import ChangeLogTypeEnum
+from badabump.git import Git
+from badabump.versions import Version
 
 
 def create_update_config(

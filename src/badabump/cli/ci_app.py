@@ -4,15 +4,15 @@ import os
 import sys
 from typing import cast
 
-from .. import __app__, __version__
-from ..annotations import Argv
-from ..cleaners import clean_body, clean_commit_subject, clean_tag_ref
-from ..configs import ProjectConfig
-from ..git import Git
-from ..regexps import to_regexp
-from ..versions import Version
-from .arguments import add_path_argument
-from .output import github_actions_output
+from badabump import __app__, __version__
+from badabump.annotations import Argv
+from badabump.cleaners import clean_body, clean_commit_subject, clean_tag_ref
+from badabump.cli.arguments import add_path_argument
+from badabump.cli.output import github_actions_output
+from badabump.configs import ProjectConfig
+from badabump.git import Git
+from badabump.regexps import to_regexp
+from badabump.versions import Version
 
 
 def parse_args(argv: Argv) -> argparse.Namespace:

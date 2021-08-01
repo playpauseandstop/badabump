@@ -5,16 +5,16 @@ from typing import cast, Optional, Type, Union
 import attr
 import tomli
 
-from ..annotations import DictStrStr
-from ..configs import ProjectConfig, UpdateConfig
-from ..enums import ProjectTypeEnum, VersionTypeEnum
-from ..regexps import to_regexp
-from . import calver, pre_release, semver
-from .calver import CalVer
-from .exceptions import VersionError, VersionParseError
-from .parsing import parse_version
-from .pre_release import PreRelease
-from .semver import SemVer
+from badabump.annotations import DictStrStr
+from badabump.configs import ProjectConfig, UpdateConfig
+from badabump.enums import ProjectTypeEnum, VersionTypeEnum
+from badabump.regexps import to_regexp
+from badabump.versions import calver, pre_release, semver
+from badabump.versions.calver import CalVer
+from badabump.versions.exceptions import VersionError, VersionParseError
+from badabump.versions.parsing import parse_version
+from badabump.versions.pre_release import PreRelease
+from badabump.versions.semver import SemVer
 
 
 CalOrSemVer = Union[CalVer, SemVer]

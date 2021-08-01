@@ -3,12 +3,12 @@ from typing import Optional
 
 import attr
 
-from ..annotations import DictStrAny, DictStrStr
-from ..configs import UpdateConfig
-from ..constants import DEFAULT_VERSION_SCHEMA
-from .exceptions import VersionError, VersionParseError
-from .formatting import format_version
-from .parsing import parse_version
+from badabump.annotations import DictStrAny, DictStrStr
+from badabump.configs import UpdateConfig
+from badabump.constants import DEFAULT_VERSION_SCHEMA
+from badabump.versions.exceptions import VersionError, VersionParseError
+from badabump.versions.formatting import format_version
+from badabump.versions.parsing import parse_version
 
 
 DEFAULT_MINOR = 1

@@ -4,7 +4,7 @@ from typing import Iterator, List, Optional, Tuple
 
 import attr
 
-from .enums import ChangeLogTypeEnum, FormatTypeEnum
+from badabump.enums import ChangeLogTypeEnum, FormatTypeEnum
 
 
 BREAKING_CHANGE_IN_BODY = "BREAKING CHANGE:"

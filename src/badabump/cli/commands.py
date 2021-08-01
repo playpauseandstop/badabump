@@ -4,19 +4,19 @@ from typing import Optional, Set, Tuple
 
 import tomli
 
-from ..changelog import ChangeLog, in_development_header, version_header
-from ..configs import find_changelog_file, ProjectConfig
-from ..constants import (
+from badabump.changelog import ChangeLog, in_development_header, version_header
+from badabump.cli.output import diff, echo_message
+from badabump.configs import find_changelog_file, ProjectConfig
+from badabump.constants import (
     CHANGELOG_UPPER,
     FILE_PACKAGE_JSON,
     FILE_PACKAGE_LOCK_JSON,
     FILE_PYPROJECT_TOML,
     FILE_YARN_LOCK,
 )
-from ..enums import ChangeLogTypeEnum, FormatTypeEnum, ProjectTypeEnum
-from ..exceptions import ConfigError
-from ..versions import Version
-from .output import diff, echo_message
+from badabump.enums import ChangeLogTypeEnum, FormatTypeEnum, ProjectTypeEnum
+from badabump.exceptions import ConfigError
+from badabump.versions import Version
 
 
 def find_changelog_path(config: ProjectConfig) -> Path:

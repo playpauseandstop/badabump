@@ -1,4 +1,4 @@
-from ..annotations import DictStrAny, DictStrStr
+from badabump.annotations import DictStrAny, DictStrStr
 
 
 def format_version(schema: str, parts: DictStrStr, context: DictStrAny) -> str:

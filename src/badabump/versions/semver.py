@@ -1,11 +1,11 @@
 import attr
 
-from ..annotations import DictStrStr
-from ..configs import UpdateConfig
-from ..constants import DEFAULT_SEMVER_SCHEMA as SCHEMA
-from .exceptions import VersionParseError
-from .formatting import format_version
-from .parsing import parse_version
+from badabump.annotations import DictStrStr
+from badabump.configs import UpdateConfig
+from badabump.constants import DEFAULT_SEMVER_SCHEMA as SCHEMA
+from badabump.versions.exceptions import VersionParseError
+from badabump.versions.formatting import format_version
+from badabump.versions.parsing import parse_version
 
 
 SCHEMA_PARTS_FORMATTING = {

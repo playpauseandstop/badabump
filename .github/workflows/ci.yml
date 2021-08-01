@@ -11,13 +11,18 @@ on:
   pull_request:
     branches: ["master"]
 
+# Get latest versions by running,
+#
+# ```bash
+# pip-latest-release coveralls poetry tox-gh-actions tox twine
+# ```
 env:
-  COVERALLS_VERSION: "3.0.1"
-  DEV_PYTHON_VERSION: "3.9.5"
-  POETRY_VERSION: "1.1.6"
-  TOX_GH_ACTIONS_VERSION: "2.5.0"
-  TOX_VERSION: "3.23.1"
-  TWINE_VERSION: "3.4.1"
+  COVERALLS_VERSION: "3.2.0"
+  DEV_PYTHON_VERSION: "3.9.6"
+  POETRY_VERSION: "1.1.7"
+  TOX_GH_ACTIONS_VERSION: "2.6.0"
+  TOX_VERSION: "3.24.1"
+  TWINE_VERSION: "3.4.2"
 
 jobs:
   dev:

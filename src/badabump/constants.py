@@ -1,5 +1,5 @@
-from . import __app__
-from .enums import FormatTypeEnum, ProjectTypeEnum, VersionTypeEnum
+from badabump import __app__
+from badabump.enums import FormatTypeEnum, ProjectTypeEnum, VersionTypeEnum
 
 
 CHANGELOG_UPPER = "CHANGELOG"

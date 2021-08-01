@@ -148,6 +148,7 @@ def main(argv: Argv = None) -> int:
     git_changelog = changelog.format(
         ChangeLogTypeEnum.git_commit,
         project_config.changelog_format_type_git,
+        ignore_footer_urls=project_config.changelog_ignore_footer_urls,
     )
     echo_value(
         "\nChangeLog\n\n",

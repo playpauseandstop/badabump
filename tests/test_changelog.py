@@ -28,6 +28,11 @@ Issue: IFXND-55
 
 FIX_COMMIT = "fix: Update logic behind math operations"
 
+FIX_COMMIT_WITH_URL = f"""{FIX_COMMIT}
+
+Fixes: https://sentry.io/organizations/organization/issues/123456
+"""
+
 INVALID_COMMIT = "something"
 
 REFACTOR_COMMIT = """refactor: Change algorigthm to use
@@ -191,6 +196,32 @@ def test_changelog_format_git(format_type, is_pre_release, expected):
         is_pre_release=is_pre_release,
     )
     assert content == expected
+
+
+@pytest.mark.parametrize(
+    "ignore_footer_urls, expected",
+    (
+        (True, ""),
+        (
+            False,
+            "[https://sentry.io/organizations/organization/issues/123456] ",
+        ),
+    ),
+)
+def test_changelog_ignore_footer_urls(ignore_footer_urls, expected):
+    changelog = ChangeLog.from_git_commits([FIX_COMMIT_WITH_URL])
+    content = changelog.format(
+        ChangeLogTypeEnum.changelog_file,
+        FormatTypeEnum.markdown,
+        is_pre_release=False,
+        ignore_footer_urls=ignore_footer_urls,
+    )
+    assert (
+        content
+        == f"""## Fixes:
+
+- {expected}Update logic behind math operations"""
+    )
 
 
 def test_changelog_invalid_commit():

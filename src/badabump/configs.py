@@ -11,6 +11,7 @@ from .constants import (
     DEFAULT_CHANGELOG_FILE_INCLUDE_DATE,
     DEFAULT_CHANGELOG_FORMAT_TYPE_FILE,
     DEFAULT_CHANGELOG_FORMAT_TYPE_GIT,
+    DEFAULT_CHANGELOG_IGNORE_FOOTER_URLS,
     DEFAULT_PR_BRANCH_FORMAT,
     DEFAULT_PR_TITLE_FORMAT,
     DEFAULT_PROJECT_TYPE,
@@ -45,6 +46,7 @@ class ProjectConfig:
         DEFAULT_CHANGELOG_FORMAT_TYPE_GIT
     )
     changelog_file_include_date: bool = DEFAULT_CHANGELOG_FILE_INCLUDE_DATE
+    changelog_ignore_footer_urls: bool = DEFAULT_CHANGELOG_IGNORE_FOOTER_URLS
 
     post_bump_hook: Optional[str] = None
 
@@ -64,6 +66,9 @@ class ProjectConfig:
             config_data = maybe_loaded[1]
 
         maybe_include_date = config_data.get("changelog_file_include_date")
+        maybe_ignore_footer_urls = config_data.get(
+            "changelog_ignore_footer_urls"
+        )
 
         return cls(
             path=path,
@@ -96,6 +101,11 @@ class ProjectConfig:
                 maybe_include_date
                 if maybe_include_date is not None
                 else DEFAULT_CHANGELOG_FILE_INCLUDE_DATE
+            ),
+            changelog_ignore_footer_urls=(
+                maybe_ignore_footer_urls
+                if maybe_ignore_footer_urls is not None
+                else DEFAULT_CHANGELOG_IGNORE_FOOTER_URLS
             ),
             post_bump_hook=config_data.get("post_bump_hook"),
         )

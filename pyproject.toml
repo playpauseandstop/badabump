@@ -51,7 +51,7 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.6"
 attrs = ">=20.2.0,<22"
-toml = "^0.10.1"
+tomli = "^1.2.0"
 
 [tool.poetry.dev-dependencies]
 coverage = "^5.5"

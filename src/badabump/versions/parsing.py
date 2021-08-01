@@ -1,8 +1,8 @@
 import re
 from typing import Optional, Pattern
 
-from ..annotations import DictStrStr
-from ..regexps import ensure_regexp_dots
+from badabump.annotations import DictStrStr
+from badabump.regexps import ensure_regexp_dots
 
 
 def build_schema_regexp(schema: str, parts: DictStrStr) -> Pattern[str]:

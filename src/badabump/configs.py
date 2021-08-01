@@ -4,9 +4,9 @@ from typing import Optional, Tuple
 import attr
 import tomli
 
-from . import __app__
-from .annotations import DictStrAny
-from .constants import (
+from badabump import __app__
+from badabump.annotations import DictStrAny
+from badabump.constants import (
     CHANGELOG_LOWER,
     DEFAULT_CHANGELOG_FILE_INCLUDE_DATE,
     DEFAULT_CHANGELOG_FORMAT_TYPE_FILE,
@@ -21,7 +21,7 @@ from .constants import (
     DEFAULT_VERSION_SCHEMA,
     DEFAULT_VERSION_TYPE,
 )
-from .enums import FormatTypeEnum, ProjectTypeEnum, VersionTypeEnum
+from badabump.enums import FormatTypeEnum, ProjectTypeEnum, VersionTypeEnum
 
 
 @attr.dataclass(frozen=True, slots=True)

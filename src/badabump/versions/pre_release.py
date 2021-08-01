@@ -4,11 +4,11 @@ from typing import DefaultDict, Optional
 
 import attr
 
-from ..annotations import DictStrAny, DictStrStr
-from ..configs import UpdateConfig
-from ..enums import ProjectTypeEnum
-from .formatting import format_version
-from .parsing import parse_version
+from badabump.annotations import DictStrAny, DictStrStr
+from badabump.configs import UpdateConfig
+from badabump.enums import ProjectTypeEnum
+from badabump.versions.formatting import format_version
+from badabump.versions.parsing import parse_version
 
 
 SCHEMA_MAPPING: DefaultDict[ProjectTypeEnum, str] = DefaultDict(

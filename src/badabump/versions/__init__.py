@@ -1,7 +1,7 @@
-from .calver import CalVer
-from .pre_release import PreRelease
-from .semver import SemVer
-from .version import Version
+from badabump.versions.calver import CalVer
+from badabump.versions.pre_release import PreRelease
+from badabump.versions.semver import SemVer
+from badabump.versions.version import Version
 
 
 __all__ = ("CalVer", "PreRelease", "SemVer", "Version")

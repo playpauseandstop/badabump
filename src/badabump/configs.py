@@ -5,7 +5,7 @@ import attr
 import tomli
 
 from badabump import __app__
-from badabump.annotations import DictStrAny
+from badabump.annotations import DictStrAny, T
 from badabump.constants import (
     CHANGELOG_LOWER,
     DEFAULT_CHANGELOG_FILE_INCLUDE_DATE,
@@ -16,6 +16,7 @@ from badabump.constants import (
     DEFAULT_PR_TITLE_FORMAT,
     DEFAULT_PROJECT_TYPE,
     DEFAULT_SEMVER_SCHEMA,
+    DEFAULT_STRICT_MODE,
     DEFAULT_TAG_FORMAT,
     DEFAULT_TAG_SUBJECT_FORMAT,
     DEFAULT_VERSION_SCHEMA,
@@ -49,6 +50,7 @@ class ProjectConfig:
     changelog_ignore_footer_urls: bool = DEFAULT_CHANGELOG_IGNORE_FOOTER_URLS
 
     post_bump_hook: Optional[str] = None
+    strict_mode: bool = DEFAULT_STRICT_MODE
 
     def __attrs_post_init__(self) -> None:
         if self.version_type == VersionTypeEnum.semver:
@@ -69,6 +71,7 @@ class ProjectConfig:
         maybe_ignore_footer_urls = config_data.get(
             "changelog_ignore_footer_urls"
         )
+        maybe_strict_mode = config_data.get("strict")
 
         return cls(
             path=path,
@@ -97,17 +100,14 @@ class ProjectConfig:
             changelog_format_type_git=guess_changelog_format_type_git(
                 config_data.get("changelog_format_type_git")
             ),
-            changelog_file_include_date=(
-                maybe_include_date
-                if maybe_include_date is not None
-                else DEFAULT_CHANGELOG_FILE_INCLUDE_DATE
+            changelog_file_include_date=if_defined(
+                maybe_include_date, DEFAULT_CHANGELOG_FILE_INCLUDE_DATE
             ),
-            changelog_ignore_footer_urls=(
-                maybe_ignore_footer_urls
-                if maybe_ignore_footer_urls is not None
-                else DEFAULT_CHANGELOG_IGNORE_FOOTER_URLS
+            changelog_ignore_footer_urls=if_defined(
+                maybe_ignore_footer_urls, DEFAULT_CHANGELOG_IGNORE_FOOTER_URLS
             ),
             post_bump_hook=config_data.get("post_bump_hook"),
+            strict_mode=if_defined(maybe_strict_mode, DEFAULT_STRICT_MODE),
         )
 
 
@@ -133,6 +133,13 @@ class UpdateConfig:
             )
 
 
+def find_changelog_file(path: Path, pattern: str) -> Optional[Path]:
+    for item in path.glob(pattern):
+        if item.stem.lower() == CHANGELOG_LOWER:
+            return item
+    return None
+
+
 def guess_changelog_format_type_file(
     value: Optional[str], path: Path
 ) -> FormatTypeEnum:
@@ -146,13 +153,6 @@ def guess_changelog_format_type_file(
         return FormatTypeEnum.rst
 
     return DEFAULT_CHANGELOG_FORMAT_TYPE_FILE
-
-
-def find_changelog_file(path: Path, pattern: str) -> Optional[Path]:
-    for item in path.glob(pattern):
-        if item.stem.lower() == CHANGELOG_LOWER:
-            return item
-    return None
 
 
 def guess_changelog_format_type_git(value: Optional[str]) -> FormatTypeEnum:
@@ -175,6 +175,10 @@ def guess_version_type(value: Optional[str]) -> VersionTypeEnum:
     if value:
         return VersionTypeEnum[value]
     return DEFAULT_VERSION_TYPE
+
+
+def if_defined(value: Optional[T], default: T) -> T:
+    return value if value is not None else default
 
 
 def load_project_config_data(path: Path) -> Optional[Tuple[Path, DictStrAny]]:

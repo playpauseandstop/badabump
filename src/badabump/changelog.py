@@ -1,4 +1,5 @@
 import datetime
+import logging
 import re
 from typing import Iterator, List, Optional, Tuple
 
@@ -15,6 +16,7 @@ CHANGELOG_EMPTY = "No changes since last pre-release"
 COMMIT_TYPE_FEATURE = "feat"
 COMMIT_TYPE_FIX = "fix"
 COMMIT_TYPE_REFACTOR = "refactor"
+COMMIT_TYPE_UNKNOWN = "unknown"
 
 COMMIT_TYPE_SUBJECT_RE = re.compile(
     r"^(?P<commit_type>[^\:]+)\: (?P<description>.+)$"
@@ -26,6 +28,8 @@ COMMIT_TYPE_SCOPE_RE = re.compile(
 ISSUE_RE = re.compile(
     r"^(Closes|Fixes|Issue|Ref|Relates): (?P<issue>.+)$", re.M
 )
+
+logger = logging.getLogger(__name__)
 
 
 @attr.dataclass(frozen=True, slots=True)
@@ -71,8 +75,11 @@ class ConventionalCommit:
         return f"{prefix}{self.description}"
 
     @classmethod
-    def from_git_commit(cls, git_commit: str) -> "ConventionalCommit":
+    def from_git_commit(
+        cls, git_commit: str, *, strict: bool = True
+    ) -> "ConventionalCommit":
         subject, *body = git_commit.splitlines()
+        body_str = "\n".join(body[1:]) if body else None
 
         maybe_matched = COMMIT_TYPE_SUBJECT_RE.match(subject)
         if maybe_matched is not None:
@@ -80,10 +87,24 @@ class ConventionalCommit:
             return cls(
                 raw_commit_type=matched_dict["commit_type"],
                 description=matched_dict["description"],
-                body="\n".join(body[1:]) if body else None,
+                body=body_str,
             )
 
-        raise ValueError("Unable to parse git commit as conventional commit")
+        if strict:
+            raise ValueError(
+                "Unable to parse git commit as conventional commit"
+            )
+
+        logger.warning(
+            "WARNING: Unable to parse git commit as conventional commit: %r",
+            subject,
+            extra={"subject": subject},
+        )
+        return cls(
+            raw_commit_type=COMMIT_TYPE_UNKNOWN,
+            description=subject,
+            body=body_str,
+        )
 
     @property
     def is_breaking_change(self) -> bool:
@@ -200,10 +221,12 @@ class ChangeLog:
         )
 
     @classmethod
-    def from_git_commits(cls, git_commits: Tuple[str, ...]) -> "ChangeLog":
+    def from_git_commits(
+        cls, git_commits: Tuple[str, ...], *, strict: bool = True
+    ) -> "ChangeLog":
         return cls(
             commits=tuple(
-                ConventionalCommit.from_git_commit(item)
+                ConventionalCommit.from_git_commit(item, strict=strict)
                 for item in reversed(git_commits)
             )
         )

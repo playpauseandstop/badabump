@@ -57,7 +57,7 @@ toml = "^0.10.1"
 coverage = "^5.5"
 pytest = "^6.2.4"
 pytest-cov = "^2.12.1"
-time-machine = "^2.1.0"
+time-machine = "^2.3.1"
 
 [tool.poetry.scripts]
 badabump = "badabump.cli.app:main"

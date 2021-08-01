@@ -1,3 +1,19 @@
+# 21.2.1 (2021-08-01)
+
+## Fixes:
+
+- [#78] Precisely replace version in pyproject.toml or package.json files (#79)
+- [#76] By default ignore footer URLs in ChangeLog (#81)
+
+## Other:
+
+- (**deps**) Bump actions/cache from 2.1.5 to 2.1.6 (#74)
+- (**deps**) Bump peter-evans/create-pull-request from 3.8.2 to 3.10.0 (#73)
+- (**deps-dev**) Bump pytest-cov from 2.11.1 to 2.12.1 (#75)
+- (**deps-dev**) Bump time-machine from 2.1.0 to 2.3.1 (#77)
+- [#80] Use tomli instead of toml library (#82)
+- Bump pre-commit hooks (#83)
+
 # 21.2.0 (2021-05-12)
 
 Now `badabump` supports backticks in release notes, which allows to put code blocks in GitHub Releases description, using standard Markdown syntax,

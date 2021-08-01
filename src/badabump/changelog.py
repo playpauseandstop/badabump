@@ -52,7 +52,9 @@ class ConventionalCommit:
 
         return commit_type
 
-    def format(self, format_type: FormatTypeEnum) -> str:  # noqa: A003
+    def format(  # noqa: A003
+        self, format_type: FormatTypeEnum, *, ignore_footer_urls: bool = True
+    ) -> str:
         prefix = ""
         if self.scope:
             prefix = f"({bold(self.scope)}) "
@@ -61,6 +63,8 @@ class ConventionalCommit:
             prefix = f"{bold(BREAKING_CHANGE_IN_BODY)} {prefix}"
 
         issues = self.issues
+        if issues and ignore_footer_urls:
+            issues = tuple(item for item in issues if not is_url(item))
         if issues:
             prefix = f'[{", ".join(issues)}] {prefix}'
 
@@ -140,6 +144,7 @@ class ChangeLog:
         format_type: FormatTypeEnum,
         *,
         is_pre_release: bool = False,
+        ignore_footer_urls: bool = True,
     ) -> str:
         if not self.commits:
             return CHANGELOG_EMPTY
@@ -177,7 +182,12 @@ class ChangeLog:
 
         def format_commits(commits: Iterator[ConventionalCommit]) -> str:
             return "\n".join(
-                ul_li(item.format(format_type)) for item in commits
+                ul_li(
+                    item.format(
+                        format_type, ignore_footer_urls=ignore_footer_urls
+                    )
+                )
+                for item in commits
             )
 
         features = format_block("Features:", self.feature_commits)
@@ -222,6 +232,10 @@ def in_development_header(version: str, format_type: FormatTypeEnum) -> str:
         if format_type == FormatTypeEnum.rst
         else markdown_h1(content)
     )
+
+
+def is_url(value: str) -> bool:
+    return value.startswith("http://") or value.startswith("https://")
 
 
 def markdown_h1(value: str, *, git_safe: bool = False) -> str:

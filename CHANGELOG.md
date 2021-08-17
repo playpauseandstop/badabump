@@ -1,3 +1,9 @@
+# 21.2.2 (2021-08-01)
+
+## Fixes:
+
+- [#86] By default parse commits in non-strict mode (#87)
+
 # 21.2.1 (2021-08-01)
 
 ## Fixes:

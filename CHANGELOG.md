@@ -1,3 +1,9 @@
+# 21.2.3 (2021-08-17)
+
+## Fixes:
+
+- [#89] Strip spaces from commit description (#90)
+
 # 21.2.2 (2021-08-01)
 
 ## Fixes:

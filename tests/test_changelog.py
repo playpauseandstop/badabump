@@ -33,6 +33,10 @@ FIX_COMMIT_WITH_URL = f"""{FIX_COMMIT}
 Fixes: https://sentry.io/organizations/organization/issues/123456
 """
 
+FIX_COMMIT_WITH_LEADING_SPACE = "fix:  Update logic behind math operations"
+FIX_COMMIT_WITH_TRAILING_SPACE = "fix: Update logic behind math operations "
+FIX_COMMIT_WITH_BOTH_SPACES = "fix:  Update logic behind math operations "
+
 INVALID_COMMIT = "something"
 
 REFACTOR_COMMIT = """refactor: Change algorigthm to use
@@ -234,6 +238,33 @@ def test_changelog_invalid_commit_non_strict_mode():
     assert changelog.has_breaking_change is False
     assert changelog.has_minor_change is False
     assert changelog.has_micro_change is True
+
+
+@pytest.mark.parametrize(
+    "fix_commit",
+    (
+        FIX_COMMIT,
+        FIX_COMMIT_WITH_LEADING_SPACE,
+        FIX_COMMIT_WITH_TRAILING_SPACE,
+        FIX_COMMIT_WITH_BOTH_SPACES,
+    ),
+)
+def test_changelog_strip_spaces(fix_commit):
+    changelog = ChangeLog.from_git_commits(
+        [
+            FEATURE_COMMIT,
+            fix_commit,
+            CI_BREAKING_COMMIT,
+            DOCS_SCOPE_COMMIT,
+            REFACTOR_COMMIT,
+        ]
+    )
+    content = changelog.format(
+        ChangeLogTypeEnum.git_commit,
+        FormatTypeEnum.markdown,
+        is_pre_release=False,
+    )
+    assert content == CHANGELOG_GIT_MD
 
 
 def test_changelog_with_feature_commit():

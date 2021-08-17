@@ -86,7 +86,7 @@ class ConventionalCommit:
             matched_dict = maybe_matched.groupdict()
             return cls(
                 raw_commit_type=matched_dict["commit_type"],
-                description=matched_dict["description"],
+                description=matched_dict["description"].strip(),
                 body=body_str,
             )
 

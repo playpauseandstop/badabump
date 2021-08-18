@@ -1,14 +1,14 @@
 default_language_version:
-  python: "python3.9"
+  python: "python3.10"
 minimum_pre_commit_version: "1.17.0"
 repos:
   - repo: "https://github.com/commitizen-tools/commitizen"
-    rev: "v2.17.13"
+    rev: "v2.18.0"
     hooks:
       - id: "commitizen"
         # By default commitizen using `python3` instead `python` language, so
         # needed to provide concrete version here as well
-        language_version: "python3.9"
+        language_version: "python3.10"
         stages: ["commit-msg"]
 
   - repo: "https://github.com/PyCQA/isort"
@@ -24,7 +24,7 @@ repos:
       - id: "black"
         # By default black using `python3` instead `python` language, so
         # needed to provide concrete version here as well
-        language_version: "python3.9"
+        language_version: "python3.10"
         name: "Format code (black)"
         exclude: ^docs/.*$
 
@@ -35,7 +35,7 @@ repos:
         name: "Format docs (blacken-docs)"
         args: ["-l", "64"]
         additional_dependencies:
-          - "black==21.5b1"
+          - "black==21.7b0"
 
   - repo: "https://github.com/pre-commit/pre-commit-hooks"
     rev: "v4.0.1"
@@ -56,16 +56,16 @@ repos:
           - "flake8-broken-line==0.3.0"
           - "flake8-bugbear==21.4.3"
           - "flake8-builtins==1.5.3"
-          - "flake8-comprehensions==3.5.0"
-          - "flake8-eradicate==1.0.0"
+          - "flake8-comprehensions==3.6.1"
+          - "flake8-eradicate==1.1.0"
           - "flake8-isort==4.0.0"
           - "flake8-mutable==1.2.0"
-          - "flake8-pie==0.12.0"
+          - "flake8-pie==0.14.0"
           - "flake8-quotes==3.2.0"
           - "flake8-string-format==0.3.0"
-          - "flake8-tidy-imports==4.3.0"
+          - "flake8-tidy-imports==4.4.1"
           - "flake8-variables-names==0.0.4"
-          - "pep8-naming==0.11.1"
+          - "pep8-naming==0.12.1"
         exclude: ^docs/.*$
 
   - repo: "https://github.com/asottile/yesqa"

@@ -11,3 +11,7 @@
 [![Coverage](https://coveralls.io/repos/playpauseandstop/badabump/badge.svg?branch=master&service=github)](https://coveralls.io/github/playpauseandstop/badabump)
 
 Manage changelog and bump project version number using conventional commits from latest git tag. Support Python & JavaScript projects and CalVer & SemVer schemas. Designed to run at GitHub Actions.
+
+- Works on [Python](https://www.python.org/) 3.6+
+- BSD licensed
+- Source, issues, and pull requests [on GitHub](https://github.com/playpauseandstop/badabumps)

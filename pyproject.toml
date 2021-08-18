@@ -7,11 +7,11 @@ branch = true
 source = ["badabump"]
 
 [tool.coverage.paths]
-source = ["src/"]
+source = ["./src/"]
 
 [tool.coverage.report]
 fail_under = 95
-omit = ["src/badabump/__main__.py", "src/badabump/ci/__main__.py"]
+omit = ["./src/badabump/__main__.py", "./src/badabump/ci/__main__.py"]
 skip_covered = true
 show_missing = true
 
@@ -20,7 +20,38 @@ profile = "attrs"
 combine_as_imports = true
 force_alphabetical_sort_within_sections = true
 lines_between_types = 0
+src_paths = ["./", "./src/"]
 virtual_env = "./.venv/"
+
+[tool.mypy]
+allow_untyped_globals = true
+check_untyped_defs = true
+disallow_any_decorated = true
+disallow_any_generics = true
+disallow_incomplete_defs = true
+disallow_untyped_calls = true
+disallow_untyped_decorators = true
+disallow_untyped_defs = true
+follow_imports = "normal"
+follow_imports_for_stubs = true
+ignore_missing_imports = false
+mypy_path = "./src/"
+namespace_packages = true
+python_executable = "./.venv/bin/python3"
+show_column_numbers = true
+show_error_codes = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+module = [
+  "conftest",
+  "migrations.*",
+  "tests.*",
+  "*.tests"
+]
+ignore_errors = true
 
 [tool.poetry]
 name = "badabump"
@@ -54,7 +85,7 @@ attrs = ">=20.2.0,<22"
 tomli = "^1.2.0"
 
 [tool.poetry.dev-dependencies]
-coverage = "^5.5"
+coverage = {extras = ["toml"], version = "^5.5"}
 pytest = "^6.2.4"
 pytest-cov = "^2.12.1"
 time-machine = "^2.3.1"
@@ -75,7 +106,7 @@ log_level = "info"
 [tool.tox]
 legacy_tox_ini = """
 [tox]
-envlist = py36,py37,py38,py39
+envlist = py36,py37,py38,py39,py310
 skipsdist = True
 
 [gh-actions]
@@ -84,6 +115,7 @@ python =
   3.7: py37
   3.8: py38
   3.9: py39
+  3.10: py310
 
 [testenv]
 passenv =

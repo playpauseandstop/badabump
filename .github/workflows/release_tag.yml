@@ -2,13 +2,15 @@ defaults:
   run:
     shell: "bash"
 
+name: "Auto Create Release Tag"
+
 on:
   pull_request:
     types: ["closed"]
 
 env:
   POETRY_VERSION: "1.1.7"
-  PYTHON_VERSION: "3.9.6"
+  PYTHON_VERSION: "3.10.0-rc.1"
   PYTHONUNBUFFERED: "1"
 
 jobs:
@@ -38,6 +40,12 @@ jobs:
       - name: "Install poetry"
         run: "python3 -m pip install poetry==${{ env.POETRY_VERSION }}"
 
+      - name: "Cache venv"
+        uses: "actions/cache@v2.1.6"
+        with:
+          path: ".venv"
+          key: "venv-${{ env.PYTHON_VERSION }}-${{ hashFiles('poetry.lock') }}"
+
       - name: "Install badabump"
         run: "poetry install --no-dev"
 
@@ -47,7 +55,7 @@ jobs:
 
       - name: "Create release tag from latest commit"
         run: |
-          set -e
+          set -euo pipefail
 
           git config user.name badabump-release-bot[bot]
           git config user.email badabump-release-bot[bot]@users.noreply.github.com

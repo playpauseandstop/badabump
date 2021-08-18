@@ -2,6 +2,8 @@ defaults:
   run:
     shell: "bash"
 
+name: "Create Release PR"
+
 on:
   workflow_dispatch:
     inputs:
@@ -12,7 +14,7 @@ on:
 
 env:
   POETRY_VERSION: "1.1.7"
-  PYTHON_VERSION: "3.9.6"
+  PYTHON_VERSION: "3.10.0-rc.1"
   PYTHONUNBUFFERED: "1"
 
 jobs:
@@ -29,8 +31,9 @@ jobs:
 
       - name: "Fetch git tags"
         run: |
-          set -e
-          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+          set -euo pipefail
+
+          git fetch --depth=1 origin +refs/tags/*:refs/tags/* || :
           git fetch --prune --unshallow
 
       - name: "Install Python"
@@ -40,6 +43,12 @@ jobs:
 
       - name: "Install poetry"
         run: "python3 -m pip install poetry==${{ env.POETRY_VERSION }}"
+
+      - name: "Cache venv"
+        uses: "actions/cache@v2.1.6"
+        with:
+          path: ".venv"
+          key: "venv-${{ env.PYTHON_VERSION }}-${{ hashFiles('poetry.lock') }}"
 
       - name: "Install badabump"
         run: "poetry install --no-dev"

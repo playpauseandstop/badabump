@@ -2,7 +2,7 @@ defaults:
   run:
     shell: "bash"
 
-name: "ci"
+name: "CI"
 
 on:
   push:
@@ -11,17 +11,17 @@ on:
   pull_request:
     branches: ["master"]
 
-# Get latest versions by running,
-#
-# ```bash
-# pip-latest-release coveralls poetry tox-gh-actions tox twine
-# ```
 env:
+  DEV_PYTHON_VERSION: "3.10.0-rc.1"
+  # Get latest versions by running,
+  #
+  # ```bash
+  # pip-latest-release coveralls poetry tox tox-gh-actions twine
+  # ```
   COVERALLS_VERSION: "3.2.0"
-  DEV_PYTHON_VERSION: "3.9.6"
   POETRY_VERSION: "1.1.7"
+  TOX_VERSION: "3.24.2"
   TOX_GH_ACTIONS_VERSION: "2.6.0"
-  TOX_VERSION: "3.24.1"
   TWINE_VERSION: "3.4.2"
 
 jobs:
@@ -49,7 +49,7 @@ jobs:
         uses: "actions/cache@v2.1.6"
         with:
           path: ".venv"
-          key: "venv-${{ hashFiles('poetry.lock') }}"
+          key: "venv-${{ env.DEV_PYTHON_VERSION }}-${{ hashFiles('poetry.lock') }}"
 
       - name: "Install package"
         run: "poetry install --no-dev"
@@ -74,7 +74,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9"]
+        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10.0-rc.1"]
 
     runs-on: "ubuntu-latest"
 
@@ -93,7 +93,7 @@ jobs:
         uses: "actions/cache@v2.1.6"
         with:
           path: ".venv"
-          key: "venv-${{ hashFiles('poetry.lock') }}"
+          key: "venv-${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}"
 
       - name: "Install package"
         run: "poetry install --no-dev"
@@ -104,6 +104,8 @@ jobs:
 
       - name: "Setup git for test needs"
         run: |
+          set -euo pipefail
+
           git config --global user.name badabump-release-bot[bot]
           git config --global user.email badabump-release-bot[bot]@users.noreply.github.com
 
@@ -112,11 +114,13 @@ jobs:
 
       - name: "Send report to coveralls"
         if: "startsWith(env.DEV_PYTHON_VERSION, matrix.python-version)"
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         run: |
+          set -euo pipefail
+
           python3 -m pip install coveralls==${{ env.COVERALLS_VERSION }}
           python3 -m coveralls --service=github
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
   package:
     needs: ["test"]
@@ -140,6 +144,8 @@ jobs:
 
       - name: "Check package"
         run: |
+          set -euo pipefail
+
           python3 -m pip install twine==${{ env.TWINE_VERSION }}
           python3 -m twine check dist/*
 
@@ -162,7 +168,8 @@ jobs:
 
       - name: "Fetch git data"
         run: |
-          set -e
+          set -euo pipefail
+
           git fetch --depth=1 origin +refs/tags/*:refs/tags/*
           git fetch --prune --unshallow
 
@@ -178,14 +185,14 @@ jobs:
         uses: "actions/cache@v2.1.6"
         with:
           path: ".venv"
-          key: "venv-${{ hashFiles('poetry.lock') }}"
+          key: "venv-${{ env.DEV_PYTHON_VERSION }}-${{ hashFiles('poetry.lock') }}"
 
       - name: "Install badabump"
         run: "poetry install --no-dev"
 
       - id: "badabump"
         name: "Prepare release info"
-        run: "poetry run python3 -m badabump.ci prepare_release \"${{ github.ref }}\""
+        run: 'poetry run python3 -m badabump.ci prepare_release "${{ github.ref }}"'
 
       - name: "Create new release"
         uses: "actions/create-release@v1.1.4"

@@ -36,6 +36,9 @@ category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4"
 
+[package.dependencies]
+toml = {version = "*", optional = true, markers = "extra == \"toml\""}
+
 [package.extras]
 toml = ["toml"]
 
@@ -211,7 +214,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6"
-content-hash = "f28a4147ff5b22a3c1e043a0a566d5b067f7284e971f486c1d6920f88dd7c509"
+content-hash = "b494609562d90a834911be9092a27e1fd1f466692d61d17c3f81f8b3663c313c"
 
 [metadata.files]
 atomicwrites = [

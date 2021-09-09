@@ -9,8 +9,8 @@ on:
     types: ["closed"]
 
 env:
-  POETRY_VERSION: "1.1.7"
-  PYTHON_VERSION: "3.10.0-rc.1"
+  POETRY_VERSION: "1.1.8"
+  PYTHON_VERSION: "3.10.0-rc.2"
   PYTHONUNBUFFERED: "1"
 
 jobs:

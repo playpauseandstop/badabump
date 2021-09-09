@@ -12,15 +12,15 @@ on:
     branches: ["master"]
 
 env:
-  DEV_PYTHON_VERSION: "3.10.0-rc.1"
+  DEV_PYTHON_VERSION: "3.10.0-rc.2"
   # Get latest versions by running,
   #
   # ```bash
   # pip-latest-release coveralls poetry tox tox-gh-actions twine
   # ```
   COVERALLS_VERSION: "3.2.0"
-  POETRY_VERSION: "1.1.7"
-  TOX_VERSION: "3.24.2"
+  POETRY_VERSION: "1.1.8"
+  TOX_VERSION: "3.24.3"
   TOX_GH_ACTIONS_VERSION: "2.6.0"
   TWINE_VERSION: "3.4.2"
 
@@ -74,7 +74,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10.0-rc.1"]
+        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10.0-rc.2"]
 
     runs-on: "ubuntu-latest"
 

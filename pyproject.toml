@@ -86,6 +86,7 @@ tomli = "^1.2.0"
 
 [tool.poetry.dev-dependencies]
 coverage = {extras = ["toml"], version = "^5.5"}
+mypy = "^0.910"
 pytest = "^6.2.5"
 pytest-cov = "^2.12.1"
 time-machine = "^2.4.0"
@@ -98,7 +99,7 @@ badabump-ci = "badabump.cli.ci_app:main"
 "Bug Tracker" = "https://github.com/playpauseandstop/badabump/issues"
 
 [tool.pytest.ini_options]
-minversion = "6.2.3"
+minversion = "6.2.5"
 testpaths = ["tests/"]
 addopts = "--cov --no-cov-on-fail"
 log_level = "info"

@@ -3,6 +3,7 @@
 	distclean \
 	install \
 	lint \
+	lint-and-test \
 	list-outdated \
 	test \
 	test-only
@@ -20,6 +21,8 @@ distclean: distclean-python
 install: install-python
 
 lint: lint-python
+
+lint-and-test: lint test
 
 list-outdated: list-outdated-python
 

@@ -19,9 +19,9 @@ env:
   # pip-latest-release coveralls poetry tox tox-gh-actions twine
   # ```
   COVERALLS_VERSION: "3.2.0"
-  POETRY_VERSION: "1.1.8"
-  TOX_VERSION: "3.24.3"
-  TOX_GH_ACTIONS_VERSION: "2.6.0"
+  POETRY_VERSION: "1.1.10"
+  TOX_VERSION: "3.24.4"
+  TOX_GH_ACTIONS_VERSION: "2.8.1"
   TWINE_VERSION: "3.4.2"
 
 jobs:

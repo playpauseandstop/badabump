@@ -92,10 +92,15 @@ jobs:
       - name: "Cache venv"
         uses: "actions/cache@v2.1.6"
         with:
-          path: ".venv"
+          path: "./.venv/"
           key: "venv-${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}"
 
-      - name: "Install package"
+      - name: "Install package with dev dependencies"
+        if: "startsWith(env.DEV_PYTHON_VERSION, matrix.python-version)"
+        run: "poetry install"
+
+      - name: "Install package without dev dependencies"
+        if: "not startsWith(env.DEV_PYTHON_VERSION, matrix.python-version)"
         run: "poetry install --no-dev"
 
       - name: "Run pre-commit"
@@ -147,7 +152,7 @@ jobs:
           set -euo pipefail
 
           python3 -m pip install twine==${{ env.TWINE_VERSION }}
-          python3 -m twine check dist/*
+          python3 -m twine check ./dist/*
 
       - name: "Publish package"
         if: "github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')"
@@ -187,7 +192,7 @@ jobs:
           path: ".venv"
           key: "venv-${{ env.DEV_PYTHON_VERSION }}-${{ hashFiles('poetry.lock') }}"
 
-      - name: "Install badabump"
+      - name: "Install package without dev dependencies"
         run: "poetry install --no-dev"
 
       - id: "badabump"

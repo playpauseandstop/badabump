@@ -1,4 +1,6 @@
-# 21.2.4 (2021-10-01)
+# 21.3.0 (2021-10-01)
+
+Next major `badabump` release, which ensures Python 3.10 support.
 
 ## Other:
 

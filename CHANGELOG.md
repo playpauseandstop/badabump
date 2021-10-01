@@ -1,3 +1,14 @@
+# 21.2.4 (2021-10-01)
+
+## Other:
+
+- Use Python 3.10 as dev version (#92)
+- Bump Python dev version to 3.10.0rc2 (#97)
+- (**deps**) Bump tibdex/github-app-token from 1.3 to 1.4 (#96)
+- (**deps**) Bump peter-evans/create-pull-request from 3.10.0 to 3.10.1 (#95)
+- (**dev-deps**) Expect on local mypy to be installed (#98)
+- [#85] Take care of single quotes in tag message (#99)
+
 # 21.2.3 (2021-08-17)
 
 ## Fixes:

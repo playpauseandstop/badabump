@@ -74,6 +74,10 @@ classifiers = [
   "License :: OSI Approved :: BSD License",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3 :: Only",
+  # Classifier below need to added manually to classifiers list due to
+  # https://github.com/python-poetry/poetry/issues/4581 issue, when using
+  # stable poetry
+  "Programming Language :: Python :: 3.10",
   "Topic :: Software Development",
   "Topic :: Utilities",
   "Typing :: Typed"

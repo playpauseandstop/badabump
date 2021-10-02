@@ -1,3 +1,9 @@
+# 21.3.1 (2021-10-02)
+
+## Other:
+
+- Explicitly add Python 3.10 classifier to pyproject.toml (#102)
+
 # 21.3.0 (2021-10-01)
 
 Next major `badabump` release, which ensures Python 3.10 support.

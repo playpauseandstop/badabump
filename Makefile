@@ -12,6 +12,8 @@ PROJECT = badabump
 
 include python.mk
 
+TOX ?= tox
+
 all: install
 
 clean: clean-python
@@ -26,6 +28,7 @@ lint-and-test: lint test
 
 list-outdated: list-outdated-python
 
-test: test-python
+test: install clean test-only
 
-test-only: test-python-only
+test-only:
+	TOXENV=$(TOXENV) $(TOX)

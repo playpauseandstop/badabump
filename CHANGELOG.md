@@ -1,3 +1,13 @@
+# 21.3.2 (2021-11-01)
+
+## Other:
+
+- (**deps-dev**) Bump coverage from 5.5 to 6.1.1 (#106)
+- (**deps-dev**) Bump pytest-cov from 2.12.1 to 3.0.0 (#104)
+- (**deps**) Bump tomli from 1.2.1 to 1.2.2 (#105)
+- (**deps**) Bump actions/checkout from 2.3.4 to 2.3.5 (#107)
+- Use Python 3.10 as dev version (#108)
+
 # 21.3.1 (2021-10-02)
 
 ## Other:

@@ -92,7 +92,7 @@ tomli = "^1.2.0"
 coverage = {extras = ["toml"], version = "^6.1"}
 mypy = "^0.910"
 pytest = "^6.2.5"
-pytest-cov = "^2.12.1"
+pytest-cov = "^3.0.0"
 time-machine = "^2.4.0"
 
 [tool.poetry.scripts]

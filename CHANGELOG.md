@@ -1,6 +1,10 @@
 # 21.3.3 (2021-11-02)
 
-No changes since last pre-release
+There are no changes in `badabump` itself, but repository now contains proper `release_tag` workflow file, which handles well backticks and code snippets.
+
+```py
+print("Hello, world again!")
+```
 
 ## 21.3.3a0 (2021-11-02)
 

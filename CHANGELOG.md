@@ -1,4 +1,6 @@
-# 21.3.3 (In Development)
+# 21.3.3 (2021-11-02)
+
+No changes since last pre-release
 
 ## 21.3.3a0 (2021-11-02)
 

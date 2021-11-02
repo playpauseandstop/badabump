@@ -1,3 +1,17 @@
+# 21.3.3 (In Development)
+
+## 21.3.3a0 (2021-11-02)
+
+Check that `backticks` and code snippets works well in git tags borrowed from release messages.
+
+```py
+print("Hello, world!")
+```
+
+### Other:
+
+- Fix saving tag message to file in release tag workflow (#110)
+
 # 21.3.2 (2021-11-01)
 
 ## Other:

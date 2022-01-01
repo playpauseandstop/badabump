@@ -13,8 +13,8 @@ on:
         default: ""
 
 env:
-  POETRY_VERSION: "1.1.11"
-  PYTHON_VERSION: "3.10.0-rc.2"
+  POETRY_VERSION: "1.1.12"
+  PYTHON_VERSION: "3.10.1"
   PYTHONUNBUFFERED: "1"
 
 jobs:

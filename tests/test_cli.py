@@ -75,9 +75,9 @@ Issue: AUTH-1
         ),
         (
             "package.json",
-            PACKAGE_JSON.format(version="21.1.0"),
-            "21.1.0",
-            "21.1.1",
+            PACKAGE_JSON.format(version="22.1.0"),
+            "22.1.0",
+            "22.1.1",
         ),
     ),
 )

@@ -81,15 +81,15 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.6"
-attrs = ">=20.2.0,<22"
-tomli = "^1.2.0"
+attrs = ">=20.2.0,<23"
+tomli = ">=1.2.0,<3"
 
 [tool.poetry.dev-dependencies]
 coverage = "^6.2"
-mypy = "^0.910"
+mypy = "^0.930"
 pytest = "^6.2.5"
 pytest-cov = "^3.0.0"
-time-machine = "^2.4.1"
+time-machine = "^2.5.0"
 
 [tool.poetry.scripts]
 badabump = "badabump.cli.app:main"

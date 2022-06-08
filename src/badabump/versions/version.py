@@ -3,11 +3,11 @@ from contextlib import suppress
 from typing import cast, Optional, Type, Union
 
 import attr
-import tomli
 
 from badabump.annotations import DictStrStr
 from badabump.configs import ProjectConfig, UpdateConfig
 from badabump.enums import ProjectTypeEnum, VersionTypeEnum
+from badabump.loaders import loads_toml
 from badabump.regexps import to_regexp
 from badabump.versions import calver, pre_release, semver
 from badabump.versions.calver import CalVer
@@ -117,7 +117,7 @@ def find_project_version(config: ProjectConfig) -> Optional[str]:
             try:
                 return cast(
                     str,
-                    tomli.loads(pyproject_toml_path.read_text())["tool"][
+                    loads_toml(pyproject_toml_path.read_text())["tool"][
                         "poetry"
                     ]["version"],
                 )

@@ -12,18 +12,18 @@ on:
     branches: ["master"]
 
 env:
-  DEV_PYTHON_VERSION: "3.10.1"
+  DEV_PYTHON_VERSION: "3.10.5"
   # Get latest versions by running,
   #
   # ```bash
   # pip-latest-release coverage coveralls poetry tox tox-gh-actions twine
   # ```
-  COVERAGE_VERSION: "6.2"
+  COVERAGE_VERSION: "6.4.1"
   COVERALLS_VERSION: "3.3.1"
-  POETRY_VERSION: "1.1.12"
-  TOX_VERSION: "3.24.5"
-  TOX_GH_ACTIONS_VERSION: "2.8.1"
-  TWINE_VERSION: "3.7.1"
+  POETRY_VERSION: "1.1.13"
+  TOX_VERSION: "3.25.0"
+  TOX_GH_ACTIONS_VERSION: "2.9.1"
+  TWINE_VERSION: "4.0.1"
 
 jobs:
   dev:
@@ -80,7 +80,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11.0-beta.3"]
 
     runs-on: "ubuntu-latest"
 

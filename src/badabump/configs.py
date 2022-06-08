@@ -2,7 +2,6 @@ from pathlib import Path
 from typing import Optional, Tuple
 
 import attr
-import tomli
 
 from badabump import __app__
 from badabump.annotations import DictStrAny, T
@@ -23,6 +22,7 @@ from badabump.constants import (
     DEFAULT_VERSION_TYPE,
 )
 from badabump.enums import FormatTypeEnum, ProjectTypeEnum, VersionTypeEnum
+from badabump.loaders import loads_toml
 
 
 @attr.dataclass(frozen=True, slots=True)
@@ -187,7 +187,7 @@ def load_project_config_data(path: Path) -> Optional[Tuple[Path, DictStrAny]]:
         if not maybe_config_path.exists():
             continue
 
-        data = tomli.loads(maybe_config_path.read_text())
+        data = loads_toml(maybe_config_path.read_text())
         return (maybe_config_path, data.get("tool", {}).get(__app__, {}) or {})
 
     return None

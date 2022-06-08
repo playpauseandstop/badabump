@@ -4,7 +4,7 @@ from pathlib import Path
 
 import attr
 import pytest
-import toml
+import tomli_w
 
 from badabump.configs import ProjectConfig, UpdateConfig
 from badabump.enums import ProjectTypeEnum, VersionTypeEnum
@@ -42,7 +42,7 @@ def test_find_project_version_javascript(tmpdir, version):
 def test_find_project_version_python(tmpdir, version):
     tmp_path = Path(tmpdir)
     (tmp_path / "pyproject.toml").write_text(
-        toml.dumps({"tool": {"poetry": {"version": version}}})
+        tomli_w.dumps({"tool": {"poetry": {"version": version}}})
     )
 
     config = attr.evolve(

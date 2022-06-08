@@ -2,8 +2,6 @@ import subprocess
 from pathlib import Path
 from typing import Optional, Set, Tuple
 
-import tomli
-
 from badabump.changelog import ChangeLog, in_development_header, version_header
 from badabump.cli.output import diff, echo_message
 from badabump.configs import find_changelog_file, ProjectConfig
@@ -16,6 +14,7 @@ from badabump.constants import (
 )
 from badabump.enums import ChangeLogTypeEnum, FormatTypeEnum, ProjectTypeEnum
 from badabump.exceptions import ConfigError
+from badabump.loaders import loads_toml
 from badabump.versions import Version
 
 
@@ -57,7 +56,7 @@ def guess_version_files(config: ProjectConfig) -> Tuple[str, ...]:
         version_files.append(FILE_PYPROJECT_TOML)
 
         project_name = (
-            tomli.loads(maybe_pyproject_toml_path.read_text())
+            loads_toml(maybe_pyproject_toml_path.read_text())
             .get("tool", {})
             .get("poetry", {})
             .get("name")

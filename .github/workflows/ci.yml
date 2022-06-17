@@ -111,7 +111,7 @@ jobs:
 
       - name: "Run pre-commit"
         if: "${{ startsWith(env.DEV_PYTHON_VERSION, matrix.python-version) }}"
-        uses: "pre-commit/action@v2.0.3"
+        uses: "pre-commit/action@v3.0.0"
 
       - name: "Setup git for test needs"
         run: |

@@ -10,7 +10,6 @@ on:
 
 env:
   POETRY_VERSION: "1.1.13"
-  PYTHON_VERSION: "3.10.5"
   PYTHONUNBUFFERED: "1"
 
 jobs:
@@ -33,18 +32,20 @@ jobs:
           ref: "master"
 
       - name: "Install Python"
-        uses: "actions/setup-python@v3.1.2"
+        uses: "actions/setup-python@v4.0.0"
         with:
-          python-version: "${{ env.PYTHON_VERSION }}"
+          python-version-file: ".python-version"
 
       - name: "Install poetry"
-        run: "python3 -m pip install poetry==${{ env.POETRY_VERSION }}"
+        uses: "snok/install-poetry@v1.3.1"
+        with:
+          version: "${{ env.POETRY_VERSION }}"
 
       - name: "Cache venv"
         uses: "actions/cache@v3.0.4"
         with:
           path: ".venv"
-          key: "venv-${{ env.PYTHON_VERSION }}-${{ hashFiles('poetry.lock') }}"
+          key: "venv-dev-${{ hashFiles('poetry.lock') }}"
 
       - name: "Install badabump"
         run: "poetry install --no-dev"

@@ -1,6 +1,6 @@
 [tool.black]
 line_length = 79
-target_version = ["py36"]
+target_version = ["py37"]
 
 [tool.coverage.run]
 branch = true
@@ -85,7 +85,8 @@ attrs = ">=20.2.0,<23"
 tomli = {python = "<=3.11.0a6", version = ">=1.2.0,<3"}
 
 [tool.poetry.dev-dependencies]
-coverage = "^6.4.1"
+coverage = {extras = ["toml"], version = "^6.4.1"}
+coveralls = "^3.3.1"
 mypy = "^0.961"
 pytest = "^7.1.2"
 pytest-cov = "^3.0.0"
@@ -101,7 +102,7 @@ badabump-ci = "badabump.cli.ci_app:main"
 
 [tool.pytest.ini_options]
 minversion = "7.1.2"
-testpaths = ["tests/"]
+testpaths = ["./tests/"]
 addopts = "--cov --no-cov-on-fail"
 log_level = "info"
 

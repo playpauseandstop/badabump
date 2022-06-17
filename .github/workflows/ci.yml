@@ -12,6 +12,7 @@ on:
     branches: ["main"]
 
 env:
+  PYTHONUNBUFFERED: "1"
   # Get latest versions by running,
   #
   # ```bash

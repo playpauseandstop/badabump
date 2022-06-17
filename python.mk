@@ -17,11 +17,10 @@
 	test-python-setup \
 	test-python-teardown
 
-GIT_DIR = ./.git
+GIT_DIR = .git
 
-PYTHON_DIST_DIR = ./dist
 PYTHON_VERISON = $(shell cat .python-version)
-VENV_DIR = ./.venv
+VENV_DIR = .venv
 PYTHON_BIN = $(VENV_DIR)/bin/python3
 
 STAGE ?= dev
@@ -31,6 +30,7 @@ POETRY_INSTALL_ARGS ?=
 PRE_COMMIT ?= pre-commit
 PYENV ?= $(shell if [ -z "${CI}" ]; then echo "pyenv"; fi)
 PYTHON ?= $(DOTENV) $(PYTHON_BIN)
+PYTHON_DIST_DIR ?= dist
 
 build-python: install-python build-python-only
 build-python-only:

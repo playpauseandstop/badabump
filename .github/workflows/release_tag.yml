@@ -9,8 +9,8 @@ on:
     types: ["closed"]
 
 env:
-  POETRY_VERSION: "1.1.13"
   PYTHONUNBUFFERED: "1"
+  POETRY_VERSION: "1.1.13"
 
 jobs:
   create_release_tag:

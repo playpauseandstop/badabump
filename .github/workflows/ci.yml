@@ -60,6 +60,7 @@ jobs:
             dev: "true"
 
     runs-on: "ubuntu-latest"
+    continue-on-error: "${{ startsWith(matrix.python-version, '3.11') }}"
 
     steps:
       - uses: "actions/checkout@v3.0.2"
@@ -74,16 +75,18 @@ jobs:
         with:
           python-version: "${{ steps.python_and_poetry.outputs.python-version }}"
 
+      - name: "Setup git for test needs"
+        run: |
+          set -euo pipefail
+
+          git config --global init.defaultBranch main
+          git config --global user.name badabump-release-bot[bot]
+          git config --global user.email badabump-release-bot[bot]@users.noreply.github.com
+
       - uses: "./.github/actions/run_tests"
         with:
           python-path: "${{ steps.python_and_poetry.outputs.python-path }}"
           python-version: "${{ steps.python_and_poetry.outputs.python-version }}"
-          setup-tests: |
-            set -euo pipefail
-
-            git config --global init.defaultBranch main
-            git config --global user.name badabump-release-bot[bot]
-            git config --global user.email badabump-release-bot[bot]@users.noreply.github.com
           use-coveralls: "${{ matrix.dev }}"
           coveralls-token: "${{ secrets.GITHUB_TOKEN }}"
 

@@ -16,12 +16,6 @@ inputs:
     description: "Tox GitHub Actions plugin version to use"
     required: false
     default: "2.9.1"
-  setup-tests:
-    description: "Script to run before the tests"
-    required: false
-  teardown-tests:
-    description: "Script to run after the tests"
-    required: false
   use-coveralls:
     description: "Send coverage to Coveralls"
     required: false
@@ -47,18 +41,8 @@ runs:
         path: "./.tox/"
         key: "tox-${{ inputs.python-version }}"
 
-    - name: "Setup tests"
-      if: "${{ inputs.setup-tests }}"
-      run: "${{ inputs.setup-tests }}"
-      shell: "bash"
-
     - name: "Run tests"
       run: "tox"
-      shell: "bash"
-
-    - name: "Teardown tests"
-      if: "${{ inputs.teardown-tests }}"
-      run: "${{ inputs.teardown-tests }}"
       shell: "bash"
 
     - name: "Send coverage to Coveralls"

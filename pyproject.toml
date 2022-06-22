@@ -118,7 +118,7 @@ python =
   3.8: py38
   3.9: py39
   3.10: py310
-  3.11.0-beta.3: py311
+  3.11: py311
 
 [testenv]
 passenv =
@@ -131,7 +131,7 @@ whitelist_externals = poetry
 commands_pre =
   poetry install
 commands =
-  poetry run python -m pytest
+  poetry run python3 -m pytest
 
 [testenv:py310-minimum-requirements]
 commands_pre =

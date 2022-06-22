@@ -1,4 +1,4 @@
-name: "Run pre-commit hooks"
+name: "Run tox"
 description: "Composite action to install tox & tox-gh-actions and run tests via tox."
 
 inputs:
@@ -41,7 +41,7 @@ runs:
         path: "./.tox/"
         key: "tox-${{ inputs.python-version }}"
 
-    - name: "Run tests"
+    - name: "Run tox"
       run: "tox"
       shell: "bash"
 

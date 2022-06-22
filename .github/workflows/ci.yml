@@ -83,7 +83,7 @@ jobs:
           git config --global user.name badabump-release-bot[bot]
           git config --global user.email badabump-release-bot[bot]@users.noreply.github.com
 
-      - uses: "./.github/actions/run_tests"
+      - uses: "./.github/actions/run_tox"
         with:
           python-path: "${{ steps.python_and_poetry.outputs.python-path }}"
           python-version: "${{ steps.python_and_poetry.outputs.python-version }}"

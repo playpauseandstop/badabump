@@ -78,17 +78,22 @@ jobs:
         run: |
           set -euo pipefail
 
+          git config --global init.defaultBranch main
           git config --global user.name badabump-release-bot[bot]
           git config --global user.email badabump-release-bot[bot]@users.noreply.github.com
 
       - uses: "./.github/actions/run_tests"
         with:
           python-path: "${{ steps.python_and_poetry.outputs.python-path }}"
+          python-version: "${{ steps.python_and_poetry.outputs.python-version }}"
           use-coveralls: "${{ matrix.dev }}"
           coveralls-token: "${{ secrets.GITHUB_TOKEN }}"
 
   package:
     needs: ["test"]
+
+    name: "Build & deploy package"
+
     uses: "./.github/workflows/ci_package.yml"
     secrets:
       PYPI_USERNAME: "${{ secrets.PYPI_USERNAME }}"

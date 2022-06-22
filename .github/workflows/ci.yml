@@ -93,8 +93,6 @@ jobs:
   package:
     needs: ["test"]
 
-    name: "Build & deploy package"
-
     uses: "./.github/workflows/ci_package.yml"
     secrets:
       PYPI_USERNAME: "${{ secrets.PYPI_USERNAME }}"

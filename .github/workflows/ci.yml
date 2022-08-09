@@ -54,7 +54,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11.0-beta.3"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11.0-beta - 3.11.0"]
         include:
           - python-version: "3.10"
             dev: "true"
@@ -95,8 +95,8 @@ jobs:
 
     uses: "./.github/workflows/ci_package.yml"
     secrets:
-      PYPI_USERNAME: "${{ secrets.PYPI_USERNAME }}"
-      PYPI_PASSWORD: "${{ secrets.PYPI_PASSWORD }}"
+      pypi-user: "${{ secrets.PYPI_USERNAME }}"
+      pypi-password: "${{ secrets.PYPI_PASSWORD }}"
 
   release:
     needs: ["package"]

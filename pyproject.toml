@@ -85,7 +85,7 @@ attrs = ">=20.2.0,<23"
 tomli = {python = "<=3.11.0a6", version = ">=1.2.0,<3"}
 
 [tool.poetry.dev-dependencies]
-coverage = {extras = ["toml"], version = "^6.4.1"}
+coverage = {extras = ["toml"], version = "^6.4.3"}
 coveralls = "^3.3.1"
 mypy = "^0.961"
 pytest = "^7.1.2"

@@ -89,7 +89,7 @@ coverage = {extras = ["toml"], version = "^6.4.3"}
 coveralls = "^3.3.1"
 mypy = "^0.971"
 pytest = "^7.1.2"
-pytest-cov = "^3.0.0"
+pytest-cov = "^4.0.0"
 time-machine = "^2.7.1"
 tomli-w = "^1.0.0"
 

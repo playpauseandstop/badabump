@@ -140,6 +140,12 @@ commands =
 commands_pre =
   poetry install
   poetry run python3 -m pip install attrs==20.2.0 tomli==1.2.0
+
+[testenv:coveralls]
+passenv =
+  GITHUB_TOKEN
+commands =
+  poetry run python3 -m coveralls {posargs}
 """
 
 [build-system]

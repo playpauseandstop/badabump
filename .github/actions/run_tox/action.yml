@@ -49,5 +49,5 @@ runs:
       if: "${{ inputs.use-coveralls == 'true' }}"
       env:
         GITHUB_TOKEN: "${{ inputs.coveralls-token }}"
-      run: "poetry run python3 -m coveralls --service=github"
+      run: "tox -e coveralls -- --service github"
       shell: "bash"

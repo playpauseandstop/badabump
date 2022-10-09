@@ -86,7 +86,7 @@ attrs = "^22.1.0"
 tomli = {python = "<=3.11.0a6", version = ">=1.2.0,<3"}
 
 [tool.poetry.group.dev.dependencies]
-mypy = "^0.971"
+mypy = "^0.982"
 
 [tool.poetry.group.test.dependencies]
 coverage = {extras = ["toml"], version = "^6.5.0"}
@@ -139,7 +139,7 @@ commands =
 [testenv:py310-minimum-requirements]
 commands_pre =
   poetry install
-  poetry run python3 -m pip install attrs==20.2.0 tomli==1.2.0
+  poetry run python3 -m pip install attrs==22.1.0 tomli==1.2.0
 """
 
 [build-system]

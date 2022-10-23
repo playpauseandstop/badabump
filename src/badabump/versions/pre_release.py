@@ -1,6 +1,6 @@
 from contextlib import suppress
 from enum import Enum, unique
-from typing import DefaultDict, Optional
+from typing import DefaultDict, Union
 
 import attr
 
@@ -94,7 +94,7 @@ class PreRelease:
             "project type"
         )
 
-    def update(self, config: UpdateConfig) -> Optional["PreRelease"]:
+    def update(self, config: UpdateConfig) -> Union["PreRelease", None]:
         if config.is_pre_release is False:
             return None
 

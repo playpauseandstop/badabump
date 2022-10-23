@@ -1,5 +1,5 @@
 import re
-from typing import Optional, Pattern
+from typing import Pattern, Union
 
 from badabump.annotations import DictStrStr
 from badabump.regexps import ensure_regexp_dots
@@ -14,7 +14,7 @@ def build_schema_regexp(schema: str, parts: DictStrStr) -> Pattern[str]:
 
 def parse_version(
     schema: str, parts: DictStrStr, value: str
-) -> Optional[DictStrStr]:
+) -> Union[DictStrStr, None]:
     maybe_matched = build_schema_regexp(schema, parts).match(value)
     if maybe_matched:
         return maybe_matched.groupdict()

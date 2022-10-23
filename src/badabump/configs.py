@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Tuple, Union
 
 import attr
 
@@ -49,7 +49,7 @@ class ProjectConfig:
     changelog_file_include_date: bool = DEFAULT_CHANGELOG_FILE_INCLUDE_DATE
     changelog_ignore_footer_urls: bool = DEFAULT_CHANGELOG_IGNORE_FOOTER_URLS
 
-    post_bump_hook: Optional[str] = None
+    post_bump_hook: Union[str, None] = None
     strict_mode: bool = DEFAULT_STRICT_MODE
 
     def __attrs_post_init__(self) -> None:
@@ -133,7 +133,7 @@ class UpdateConfig:
             )
 
 
-def find_changelog_file(path: Path, pattern: str) -> Optional[Path]:
+def find_changelog_file(path: Path, pattern: str) -> Union[Path, None]:
     for item in path.glob(pattern):
         if item.stem.lower() == CHANGELOG_LOWER:
             return item
@@ -141,7 +141,7 @@ def find_changelog_file(path: Path, pattern: str) -> Optional[Path]:
 
 
 def guess_changelog_format_type_file(
-    value: Optional[str], path: Path
+    value: Union[str, None], path: Path
 ) -> FormatTypeEnum:
     if value:
         return FormatTypeEnum[value]
@@ -155,13 +155,13 @@ def guess_changelog_format_type_file(
     return DEFAULT_CHANGELOG_FORMAT_TYPE_FILE
 
 
-def guess_changelog_format_type_git(value: Optional[str]) -> FormatTypeEnum:
+def guess_changelog_format_type_git(value: Union[str, None]) -> FormatTypeEnum:
     if value:
         return FormatTypeEnum[value]
     return DEFAULT_CHANGELOG_FORMAT_TYPE_GIT
 
 
-def guess_project_type(value: Optional[str], path: Path) -> ProjectTypeEnum:
+def guess_project_type(value: Union[str, None], path: Path) -> ProjectTypeEnum:
     if value:
         return ProjectTypeEnum[value]
 
@@ -171,17 +171,19 @@ def guess_project_type(value: Optional[str], path: Path) -> ProjectTypeEnum:
     return DEFAULT_PROJECT_TYPE
 
 
-def guess_version_type(value: Optional[str]) -> VersionTypeEnum:
+def guess_version_type(value: Union[str, None]) -> VersionTypeEnum:
     if value:
         return VersionTypeEnum[value]
     return DEFAULT_VERSION_TYPE
 
 
-def if_defined(value: Optional[T], default: T) -> T:
+def if_defined(value: Union[T, None], default: T) -> T:
     return value if value is not None else default
 
 
-def load_project_config_data(path: Path) -> Optional[Tuple[Path, DictStrAny]]:
+def load_project_config_data(
+    path: Path,
+) -> Union[Tuple[Path, DictStrAny], None]:
     for item in (f".{__app__}.toml", "pyproject.toml"):
         maybe_config_path = path / item
         if not maybe_config_path.exists():

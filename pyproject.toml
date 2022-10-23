@@ -1,3 +1,7 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
 [tool.black]
 line_length = 79
 target_version = ["py37"]
@@ -10,8 +14,9 @@ source = ["badabump"]
 source = ["./src/"]
 
 [tool.coverage.report]
+exclude_lines = ["if TYPE_CHECKING:", "@overload"]
+omit = ["./src/*/__main__.py", "./src/*/annotations.py"]
 fail_under = 95
-omit = ["./src/badabump/__main__.py", "./src/badabump/ci/__main__.py"]
 skip_covered = true
 show_missing = true
 
@@ -32,12 +37,13 @@ disallow_incomplete_defs = true
 disallow_untyped_calls = true
 disallow_untyped_decorators = true
 disallow_untyped_defs = true
-exclude = ["docs/", "tests/"]
+exclude = ["./docs/", "./migrations/", "./tests/"]
 follow_imports = "normal"
 follow_imports_for_stubs = true
 ignore_missing_imports = false
 mypy_path = "./src/"
 namespace_packages = true
+no_implicit_optional = true
 python_executable = "./.venv/bin/python3"
 show_column_numbers = true
 show_error_codes = true
@@ -68,7 +74,7 @@ packages = [
 ]
 keywords = ["changelog", "conventional commit", "bump", "version", "calver", "semver", "pre release"]
 classifiers = [
-  "Development Status :: 4 - Beta",
+  "Development Status :: 5 - Stable",
   "Intended Audience :: Developers",
   "Intended Audience :: System Administrators",
   "Environment :: Console",
@@ -104,7 +110,7 @@ badabump-ci = "badabump.cli.ci_app:main"
 "Bug Tracker" = "https://github.com/playpauseandstop/badabump/issues"
 
 [tool.pytest.ini_options]
-minversion = "7.1.2"
+minversion = "7.1.3"
 testpaths = ["./tests/"]
 addopts = "--cov --no-cov-on-fail"
 log_level = "info"
@@ -141,7 +147,3 @@ commands_pre =
   poetry install
   poetry run python3 -m pip install attrs==22.1.0 tomli==1.2.0
 """
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"

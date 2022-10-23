@@ -1,4 +1,5 @@
 from difflib import ndiff
+from typing import Union
 
 
 EMPTY = "-"
@@ -19,7 +20,11 @@ def echo_message(message: str, *, is_dry_run: bool) -> None:
 
 
 def echo_value(
-    label: str, value: str, *, is_ci: bool = False, ci_name: str = None
+    label: str,
+    value: str,
+    *,
+    is_ci: bool = False,
+    ci_name: Union[str, None] = None,
 ) -> None:
     if is_ci and ci_name:
         github_actions_output(ci_name, value)

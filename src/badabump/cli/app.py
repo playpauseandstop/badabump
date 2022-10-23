@@ -1,7 +1,7 @@
 import argparse
 import os
 import sys
-from typing import Optional
+from typing import Optional, Union
 
 from badabump import __app__, __version__
 from badabump.annotations import Argv
@@ -82,7 +82,7 @@ def parse_args(argv: Argv) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-def main(argv: Argv = None) -> int:
+def main(argv: Union[Argv, None] = None) -> int:
     # Parse arguments
     args = parse_args(argv or sys.argv[1:])
 

@@ -1,7 +1,7 @@
 import argparse
 import os
 import sys
-from typing import Optional, Union
+from typing import Union
 
 from badabump import __app__, __version__
 from badabump.annotations import Argv
@@ -100,7 +100,7 @@ def main(argv: Union[Argv, None] = None) -> int:
         ci_name="current_tag",
     )
 
-    current_version: Optional[Version] = None
+    current_version: Union[Version, None] = None
     if current_tag is not None:
         current_version = Version.from_tag(current_tag, config=project_config)
 

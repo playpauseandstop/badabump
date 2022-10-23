@@ -1,13 +1,13 @@
 import subprocess
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Tuple, Union
 
 import pytest
 
 from badabump.git import Git
 
 
-CommitTuple = Tuple[str, Optional[str], str]
+CommitTuple = Tuple[str, Union[str, None], str]
 TagTuple = Tuple[str, str]
 
 

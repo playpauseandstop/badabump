@@ -1,6 +1,6 @@
 import subprocess
 from pathlib import Path
-from typing import Optional, Set, Tuple
+from typing import Set, Tuple, Union
 
 from badabump.changelog import ChangeLog, in_development_header, version_header
 from badabump.cli.output import diff, echo_message
@@ -211,7 +211,7 @@ def update_file(
 
 def update_version_files(
     config: ProjectConfig,
-    current_version: Optional[Version],
+    current_version: Union[Version, None],
     next_version: Version,
     *,
     is_dry_run: bool = False,

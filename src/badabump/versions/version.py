@@ -1,6 +1,6 @@
 import json
 from contextlib import suppress
-from typing import cast, Optional, Type, Union
+from typing import cast, Type, Union
 
 import attr
 
@@ -23,7 +23,7 @@ CalOrSemVer = Union[CalVer, SemVer]
 @attr.dataclass(frozen=True, slots=True)
 class Version:
     version: CalOrSemVer
-    pre_release: Optional[PreRelease] = None
+    pre_release: Union[PreRelease, None] = None
 
     @classmethod
     def from_tag(cls, value: str, *, config: ProjectConfig) -> "Version":
@@ -101,7 +101,7 @@ class Version:
         return Version(version=self.version.update(config))
 
 
-def find_project_version(config: ProjectConfig) -> Optional[str]:
+def find_project_version(config: ProjectConfig) -> Union[str, None]:
     if config.project_type == ProjectTypeEnum.javascript:
         package_json_path = config.path / "package.json"
         if package_json_path.exists():

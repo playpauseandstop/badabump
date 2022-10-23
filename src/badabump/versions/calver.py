@@ -1,5 +1,5 @@
 import datetime
-from typing import Optional
+from typing import Union
 
 import attr
 
@@ -47,11 +47,11 @@ SCHEMA_PARTS_PARSING = {
 @attr.dataclass(frozen=True, slots=True)
 class CalVer:
     year: int
-    month: Optional[int] = None
-    week: Optional[int] = None
-    day: Optional[int] = None
-    minor: Optional[int] = None
-    micro: Optional[int] = None
+    month: Union[int, None] = None
+    week: Union[int, None] = None
+    day: Union[int, None] = None
+    minor: Union[int, None] = None
+    micro: Union[int, None] = None
 
     schema: str = DEFAULT_VERSION_SCHEMA
 
@@ -100,7 +100,7 @@ class CalVer:
         raise VersionParseError(schema, value)
 
     @property
-    def short_year(self) -> Optional[int]:
+    def short_year(self) -> Union[int, None]:
         if self.year is None:
             return None
         if self.year < SHORT_YEAR_START:
@@ -110,11 +110,11 @@ class CalVer:
     def update(self, config: UpdateConfig) -> "CalVer":
         utcnow = datetime.datetime.utcnow()
 
-        next_minor: Optional[int] = None
-        next_micro: Optional[int] = None
+        next_minor: Union[int, None] = None
+        next_micro: Union[int, None] = None
 
         # If year present - attempt to update it with current year
-        next_year: Optional[int] = None
+        next_year: Union[int, None] = None
         if self.year is not None:
             next_year = utcnow.year
             # New year - new minor release
@@ -122,7 +122,7 @@ class CalVer:
                 next_minor, next_micro = DEFAULT_MINOR, DEFAULT_MICRO
 
         # If month present - attempt to update it with current month
-        next_month: Optional[int] = None
+        next_month: Union[int, None] = None
         if self.month is not None:
             next_month = utcnow.month
             # New month - new minor release
@@ -130,7 +130,7 @@ class CalVer:
                 next_minor, next_micro = DEFAULT_MINOR, DEFAULT_MICRO
 
         # If week present for version - update it with current week
-        next_week: Optional[int] = None
+        next_week: Union[int, None] = None
         if self.week is not None:
             next_week = get_week(utcnow)
             # New week - new minor release
@@ -138,7 +138,7 @@ class CalVer:
                 next_minor, next_micro = DEFAULT_MINOR, DEFAULT_MICRO
 
         # If day present for version - update it with current day
-        next_day: Optional[int] = None
+        next_day: Union[int, None] = None
         if self.day is not None:
             next_day = utcnow.day
             # New day - new minor release
@@ -175,8 +175,8 @@ def get_week(value: datetime.datetime) -> int:
 
 
 def guess_year(
-    year: Optional[str], short_year: Optional[str]
-) -> Optional[int]:
+    year: Union[str, None], short_year: Union[str, None]
+) -> Union[int, None]:
     if year is not None:
         return int(year)
     if short_year is not None:
@@ -184,7 +184,7 @@ def guess_year(
     return None
 
 
-def int_or_none(value: Optional[str]) -> Optional[int]:
+def int_or_none(value: Union[str, None]) -> Union[int, None]:
     if value is not None:
         return int(value)
     return None

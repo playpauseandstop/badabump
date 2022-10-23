@@ -1,7 +1,7 @@
 import datetime
 import logging
 import re
-from typing import Iterator, List, Optional, Tuple
+from typing import Iterator, List, Tuple, Union
 
 import attr
 
@@ -37,7 +37,7 @@ class ConventionalCommit:
     raw_commit_type: str
     description: str
 
-    body: Optional[str] = None
+    body: Union[str, None] = None
 
     @property
     def clean_commit_type(self) -> str:
@@ -119,7 +119,7 @@ class ConventionalCommit:
         return tuple(item.strip() for _, item in ISSUE_RE.findall(self.body))
 
     @property
-    def scope(self) -> Optional[str]:
+    def scope(self) -> Union[str, None]:
         commit_type = self.clean_commit_type
 
         maybe_matched = COMMIT_TYPE_SCOPE_RE.match(commit_type)
@@ -175,7 +175,7 @@ class ChangeLog:
 
         def format_block(
             label: str, commits: Tuple[ConventionalCommit, ...]
-        ) -> Optional[str]:
+        ) -> Union[str, None]:
             if not commits:
                 return None
 

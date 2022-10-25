@@ -1,9 +1,9 @@
 try:
-    import tomllib  # type: ignore[import]
+    import tomllib
 except ImportError:
     import tomli
 
-    tomllib = tomli
+    tomllib = tomli  # type: ignore[misc]
 
 from typing import cast
 

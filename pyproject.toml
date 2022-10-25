@@ -67,7 +67,7 @@ readme = "README.md"
 homepage = "https://igordavydenko.com/projects/#badabump"
 repository = "https://github.com/playpauseandstop/badabump"
 packages = [
-  {include = "badabump", from = "src"},
+  {include = "badabump", from = "src/"},
 ]
 keywords = ["changelog", "conventional commit", "bump", "version", "calver", "semver", "pre release"]
 classifiers = [

@@ -128,19 +128,23 @@ python =
 
 [testenv]
 passenv =
-  PYTHONPATH
+  HOME
   PYTEST_ADDOPTS
-setenv =
-  PYTHONPATH=.
+  PYTHONUNBUFFERED
 skip_install = True
-whitelist_externals = poetry
+allowlist_externals =
+  git
+  poetry
 commands_pre =
   poetry install --only main,test
 commands =
-  poetry run python3 -m pytest
+  git config init.defaultBranch
+  git config user.name
+  git config user.email
+  python3 -m pytest
 
 [testenv:py310-minimum-requirements]
 commands_pre =
-  poetry install
-  poetry run python3 -m pip install attrs==22.1.0 tomli==1.2.0
+  poetry install --only main,test
+  python3 -m pip install attrs==22.1.0 tomli==1.2.0
 """

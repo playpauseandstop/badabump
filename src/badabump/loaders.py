@@ -1,14 +1,13 @@
-try:
-    import tomllib  # type: ignore[import]
-except ImportError:
-    import tomli
-
-    tomllib = tomli
-
-from typing import cast
+import sys
 
 from badabump.annotations import DictStrAny
 
 
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    import tomli as tomllib
+
+
 def loads_toml(content: str) -> DictStrAny:
-    return cast("DictStrAny", tomllib.loads(content))
+    return tomllib.loads(content)

@@ -24,6 +24,8 @@ install: install-python
 
 lint: lint-python
 
+lint-python: SKIP = no_optional
+
 lint-and-test: lint test
 
 list-outdated: list-outdated-python

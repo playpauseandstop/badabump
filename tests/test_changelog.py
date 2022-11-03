@@ -44,6 +44,18 @@ REFACTOR_COMMIT = """refactor: Change algorigthm to use
 Fixes: DEV-1010
 """
 
+DEFAULT_GIT_COMMITS = [
+    FEATURE_COMMIT,
+    FIX_COMMIT,
+    CI_BREAKING_COMMIT,
+    REFACTOR_COMMIT,
+    DOCS_SCOPE_COMMIT,
+    REFACTOR_COMMIT,
+    CI_BREAKING_COMMIT,
+    REFACTOR_COMMIT,
+]
+
+
 CHANGELOG_EMPTY = "No changes since last pre-release"
 
 CHANGELOG_FILE_MD = """## Features:
@@ -121,10 +133,6 @@ Other:
 UTCNOW = datetime.datetime.utcnow()
 
 
-def test_changelog_duplicate_commits_with_prs():
-    ...
-
-
 @pytest.mark.parametrize(
     "changelog_type, format_type, expected",
     (
@@ -162,18 +170,7 @@ def test_changelog_empty(changelog_type, format_type, expected):
     ),
 )
 def test_changelog_format_file(format_type, is_pre_release, expected):
-    changelog = ChangeLog.from_git_commits(
-        [
-            FEATURE_COMMIT,
-            FIX_COMMIT,
-            CI_BREAKING_COMMIT,
-            REFACTOR_COMMIT,
-            DOCS_SCOPE_COMMIT,
-            REFACTOR_COMMIT,
-            CI_BREAKING_COMMIT,
-            REFACTOR_COMMIT,
-        ]
-    )
+    changelog = ChangeLog.from_git_commits(DEFAULT_GIT_COMMITS)
     content = changelog.format(
         ChangeLogTypeEnum.changelog_file,
         format_type,
@@ -192,15 +189,7 @@ def test_changelog_format_file(format_type, is_pre_release, expected):
     ),
 )
 def test_changelog_format_git(format_type, is_pre_release, expected):
-    changelog = ChangeLog.from_git_commits(
-        [
-            FEATURE_COMMIT,
-            FIX_COMMIT,
-            CI_BREAKING_COMMIT,
-            DOCS_SCOPE_COMMIT,
-            REFACTOR_COMMIT,
-        ]
-    )
+    changelog = ChangeLog.from_git_commits(DEFAULT_GIT_COMMITS)
     content = changelog.format(
         ChangeLogTypeEnum.git_commit,
         format_type,
@@ -245,6 +234,29 @@ def test_changelog_invalid_commit_non_strict_mode():
     assert changelog.has_breaking_change is False
     assert changelog.has_minor_change is False
     assert changelog.has_micro_change is True
+
+
+def test_changelog_merge_similar_commits():
+    changelog = ChangeLog.from_git_commits(
+        [
+            "fix: Does not matter (#9999)",
+            f"{FIX_COMMIT} (#9000)",
+            f"{FIX_COMMIT} (#69)",
+            f"{FIX_COMMIT} (#42)",
+        ]
+    )
+    content = changelog.format(
+        ChangeLogTypeEnum.changelog_file,
+        FormatTypeEnum.markdown,
+        is_pre_release=False,
+    )
+    assert (
+        content
+        == f"""## Fixes:
+
+- {FIX_COMMIT[5:]} (#42, #69, #9000)
+- Does not matter (#9999)"""
+    )
 
 
 @pytest.mark.parametrize(

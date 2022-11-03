@@ -23,7 +23,7 @@ FEATURE_COMMIT = """feat: Export necessary types from the package (#31)
 - Export types, enums, utils, themes
 - Update components to use styled-components ThemeProvider
 
-Issue: IFXND-55
+Issue: DEV-55
 """
 
 FIX_COMMIT = "fix: Update logic behind math operations"
@@ -48,7 +48,7 @@ CHANGELOG_EMPTY = "No changes since last pre-release"
 
 CHANGELOG_FILE_MD = """## Features:
 
-- [IFXND-55] Export necessary types from the package (#31)
+- [DEV-55] Export necessary types from the package (#31)
 
 ## Fixes:
 
@@ -65,7 +65,7 @@ CHANGELOG_FILE_MD = """## Features:
 
 CHANGELOG_FILE_MD_PRE = """### Features:
 
-- [IFXND-55] Export necessary types from the package (#31)
+- [DEV-55] Export necessary types from the package (#31)
 
 ### Fixes:
 
@@ -82,7 +82,7 @@ CHANGELOG_FILE_MD_PRE = """### Features:
 
 CHANGELOG_FILE_RST = CHANGELOG_GIT_RST = """**Features:**
 
-- [IFXND-55] Export necessary types from the package (#31)
+- [DEV-55] Export necessary types from the package (#31)
 
 **Fixes:**
 
@@ -100,7 +100,7 @@ CHANGELOG_FILE_RST = CHANGELOG_GIT_RST = """**Features:**
 CHANGELOG_GIT_MD = """Features:
 ---------
 
-- [IFXND-55] Export necessary types from the package (#31)
+- [DEV-55] Export necessary types from the package (#31)
 
 Fixes:
 ------
@@ -119,6 +119,10 @@ Other:
 - [#123] (**openapi**) Update descriptions in OpenAPI schema"""
 
 UTCNOW = datetime.datetime.utcnow()
+
+
+def test_changelog_duplicate_commits_with_prs():
+    ...
 
 
 @pytest.mark.parametrize(
@@ -163,7 +167,10 @@ def test_changelog_format_file(format_type, is_pre_release, expected):
             FEATURE_COMMIT,
             FIX_COMMIT,
             CI_BREAKING_COMMIT,
+            REFACTOR_COMMIT,
             DOCS_SCOPE_COMMIT,
+            REFACTOR_COMMIT,
+            CI_BREAKING_COMMIT,
             REFACTOR_COMMIT,
         ]
     )
@@ -320,18 +327,18 @@ def test_commit_feature():
         commit.description == "Export necessary types from the package (#31)"
     )
     assert commit.is_breaking_change is False
-    assert commit.issues == ("IFXND-55",)
+    assert commit.issues == ("DEV-55",)
     assert (
         commit.body
         == """- Export types, enums, utils, themes
 - Update components to use styled-components ThemeProvider
 
-Issue: IFXND-55"""
+Issue: DEV-55"""
     )
     assert commit.scope is None
     assert (
         commit.format(FormatTypeEnum.markdown)
-        == "[IFXND-55] Export necessary types from the package (#31)"
+        == "[DEV-55] Export necessary types from the package (#31)"
     )
     assert commit.format(FormatTypeEnum.markdown) == commit.format(
         FormatTypeEnum.rst

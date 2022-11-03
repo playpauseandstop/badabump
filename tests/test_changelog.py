@@ -254,7 +254,7 @@ def test_changelog_merge_similar_commits():
         content
         == f"""## Fixes:
 
-- {FIX_COMMIT.removeprefix('fix: ')} (#42, #69, #9000)
+- {FIX_COMMIT[5:]} (#42, #69, #9000)
 - Does not matter (#9999)"""
     )
 

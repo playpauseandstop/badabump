@@ -29,6 +29,10 @@ ISSUE_RE = re.compile(
     r"^(Closes|Fixes|Issue|Ref|Relates): (?P<issue>.+)$", re.M
 )
 
+FORMATTED_COMMIT_WITH_PR_RE = re.compile(
+    r"^(?P<formatted_commit>.*) \(\#(?P<pr_number>\d+)\)$"
+)
+
 logger = logging.getLogger(__name__)
 
 
@@ -202,16 +206,12 @@ class ChangeLog:
             return "\n\n".join((header, items))
 
         def format_commits(commits: Iterator[ConventionalCommit]) -> str:
-            formatted_commits = []
-            for commit in commits:
-                formatted_commit = commit.format(
-                    format_type, ignore_footer_urls=ignore_footer_urls
+            return "\n".join(
+                ul_li(item)
+                for item in prepare_formatted_commits(
+                    commits, format_type, ignore_footer_urls=ignore_footer_urls
                 )
-                if formatted_commit in formatted_commits:
-                    continue
-                formatted_commits.append(formatted_commit)
-
-            return "\n".join(ul_li(item) for item in formatted_commits)
+            )
 
         features = format_block("Features:", self.feature_commits)
         fixes = format_block("Fixes:", self.fix_commits)
@@ -277,6 +277,55 @@ def markdown_h3(value: str) -> str:
 
 def markdown_header(value: str, *, level: int) -> str:
     return f'{"#" * level} {value}'
+
+
+def prepare_formatted_commits(
+    commits: Iterator[ConventionalCommit],
+    format_type: FormatTypeEnum,
+    *,
+    ignore_footer_urls: bool,
+) -> List[str]:
+    storage = []
+
+    for commit in commits:
+        # First, format commit as asked
+        formatted_commit = commit.format(
+            format_type, ignore_footer_urls=ignore_footer_urls
+        )
+
+        # Next, check whether it is already added to the storage. If previously
+        # added - do nothing
+        if formatted_commit in storage:
+            continue
+
+        # If not yet added, check if commit match regex "with PR"
+        with_pr_matched = FORMATTED_COMMIT_WITH_PR_RE.match(formatted_commit)
+        # If not matched - just append formatted commit to the storage
+        if not with_pr_matched:
+            storage.append(formatted_commit)
+            continue
+
+        # Now, attempt to match other commit in storage
+        with_pr_data = with_pr_matched.groupdict()
+        with_pr_prefix = with_pr_data["formatted_commit"]
+        other_idx = -1
+
+        for idx, other_commit in enumerate(storage):
+            if other_commit.startswith(with_pr_prefix):
+                other_idx = idx
+                break
+
+        # If such commit does not exist - just append formatted commit to the
+        # storage
+        if other_idx == -1:
+            storage.append(formatted_commit)
+            continue
+
+        # Otherwise, merge commit message of other commit and current commit
+        pr_number = with_pr_data["pr_number"]
+        storage[other_idx] = f"{storage[other_idx][:-1]}, #{pr_number})"
+
+    return storage
 
 
 def rst_h1(value: str) -> str:

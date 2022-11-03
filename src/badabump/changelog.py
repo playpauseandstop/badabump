@@ -202,14 +202,16 @@ class ChangeLog:
             return "\n\n".join((header, items))
 
         def format_commits(commits: Iterator[ConventionalCommit]) -> str:
-            return "\n".join(
-                ul_li(
-                    item.format(
-                        format_type, ignore_footer_urls=ignore_footer_urls
-                    )
+            formatted_commits = []
+            for commit in commits:
+                formatted_commit = commit.format(
+                    format_type, ignore_footer_urls=ignore_footer_urls
                 )
-                for item in commits
-            )
+                if formatted_commit in formatted_commits:
+                    continue
+                formatted_commits.append(formatted_commit)
+
+            return "\n".join(ul_li(item) for item in formatted_commits)
 
         features = format_block("Features:", self.feature_commits)
         fixes = format_block("Fixes:", self.fix_commits)

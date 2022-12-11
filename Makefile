@@ -30,3 +30,7 @@ test: install clean test-only
 .PHONY: test-only
 test-only:
 	TOXENV=$(TOXENV) $(TOX)
+
+.PHONY: test-%
+test-%: install clean
+	TOXENV=$(subst test-,,$@) $(TOX)

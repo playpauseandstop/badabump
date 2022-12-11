@@ -69,23 +69,23 @@ def test_guess_javascript_version_files(tmpdir):
     (
         ((), ("pyproject.toml",)),
         (
-            ("project.py",),
-            ("pyproject.toml", "./project.py"),
+            ("my_project.py",),
+            ("pyproject.toml", "my_project.py"),
         ),
         (
-            ("project/__init__.py", "project/__version__.py"),
+            ("my_project/__init__.py", "my_project/__version__.py"),
             (
                 "pyproject.toml",
-                "./project/__init__.py",
-                "./project/__version__.py",
+                "my_project/__init__.py",
+                "my_project/__version__.py",
             ),
         ),
         (
-            ("src/project/__init__.py", "src/project/__version__.py"),
+            ("src/my-project/__init__.py", "src/my-project/__version__.py"),
             (
                 "pyproject.toml",
-                "./src/project/__init__.py",
-                "./src/project/__version__.py",
+                "src/my-project/__init__.py",
+                "src/my-project/__version__.py",
             ),
         ),
     ),
@@ -95,7 +95,7 @@ def test_guess_python_version_files(tmpdir, files, expected):
 
     (path / "pyproject.toml").write_text(
         """[tool.poetry]
-name = "project"
+name = "my-project"
 version = "1.0.0"
 """
     )
@@ -107,9 +107,7 @@ version = "1.0.0"
 
     assert (
         guess_version_files(
-            ProjectConfig(
-                path=Path(tmpdir), project_type=ProjectTypeEnum.python
-            )
+            ProjectConfig(path=path, project_type=ProjectTypeEnum.python)
         )
         == expected
     )

@@ -100,7 +100,7 @@ def prepare_tag(args: argparse.Namespace, *, config: ProjectConfig) -> int:
 
 
 def main(argv: Union[Argv, None] = None) -> int:
-    args = parse_args(argv or sys.argv[1:])
+    args = parse_args(argv if argv is not None else sys.argv[1:])
     # TODO: Fix this by providing required flag on adding subparsers
     if getattr(args, "func", None) is None:
         print(

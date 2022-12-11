@@ -1,6 +1,7 @@
+import itertools
 import subprocess
 from pathlib import Path
-from typing import Set, Tuple, Union
+from typing import Iterator, Set, Tuple, Union
 
 from badabump.changelog import ChangeLog, in_development_header, version_header
 from badabump.cli.output import diff, echo_message
@@ -55,31 +56,38 @@ def guess_version_files(config: ProjectConfig) -> Tuple[str, ...]:
     if maybe_pyproject_toml_path.exists():
         version_files.append(FILE_PYPROJECT_TOML)
 
-        project_name = (
+        real_project_name = (
             loads_toml(maybe_pyproject_toml_path.read_text())
             .get("tool", {})
             .get("poetry", {})
             .get("name")
         )
 
-        if project_name:
-            for package in (".", "./src"):
-                package_path = path / package
+        if real_project_name:
+            for project_name, package in itertools.product(
+                iter_python_project_names(real_project_name), ("", "src")
+            ):
+                package_path = path / package if package else path
+                prefix = f"{package}/" if package else ""
 
                 if (package_path / project_name / "__init__.py").exists():
-                    version_files.append(
-                        f"{package}/{project_name}/__init__.py"
-                    )
+                    version_files.append(f"{prefix}{project_name}/__init__.py")
 
                 if (package_path / project_name / "__version__.py").exists():
                     version_files.append(
-                        f"{package}/{project_name}/__version__.py"
+                        f"{prefix}{project_name}/__version__.py"
                     )
 
                 if (package_path / f"{project_name}.py").exists():
-                    version_files.append(f"{package}/{project_name}.py")
+                    version_files.append(f"{prefix}{project_name}.py")
 
     return tuple(version_files)
+
+
+def iter_python_project_names(project_name: str) -> Iterator[str]:
+    yield project_name
+    if "-" in project_name:
+        yield project_name.replace("-", "_")
 
 
 def run_post_bump_hook(

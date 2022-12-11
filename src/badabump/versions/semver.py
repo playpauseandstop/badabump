@@ -1,6 +1,6 @@
 from typing import Type, TypeVar, Union
 
-import attr
+import attrs
 
 from badabump.annotations import DictStrStr
 from badabump.configs import UpdateConfig
@@ -25,7 +25,7 @@ SCHEMA_PARTS_PARSING = {
 TSemVer = TypeVar("TSemVer", bound="SemVer")
 
 
-@attr.dataclass(frozen=True, slots=True)
+@attrs.frozen(slots=True, kw_only=True)
 class SemVer:
     major: int
     minor: int
@@ -64,7 +64,7 @@ class SemVer:
 
     def format(self) -> str:  # noqa: A003
         return format_version(
-            self.schema, SCHEMA_PARTS_FORMATTING, attr.asdict(self)
+            self.schema, SCHEMA_PARTS_FORMATTING, attrs.asdict(self)
         )
 
     def update(self, config: UpdateConfig) -> "SemVer":
@@ -72,11 +72,11 @@ class SemVer:
             return self
 
         if config.is_breaking_change:
-            return attr.evolve(self, major=self.major + 1, minor=0, patch=0)
+            return attrs.evolve(self, major=self.major + 1, minor=0, patch=0)
 
         if config.is_minor_change:
-            return attr.evolve(
+            return attrs.evolve(
                 self, major=self.major, minor=self.minor + 1, patch=0
             )
 
-        return attr.evolve(self, patch=self.patch + 1)
+        return attrs.evolve(self, patch=self.patch + 1)

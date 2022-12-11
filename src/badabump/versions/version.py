@@ -2,7 +2,7 @@ import json
 from contextlib import suppress
 from typing import cast, Type, Union
 
-import attr
+import attrs
 
 from badabump.annotations import DictStrStr
 from badabump.configs import ProjectConfig, UpdateConfig
@@ -20,7 +20,7 @@ from badabump.versions.semver import SemVer
 CalOrSemVer = Union[CalVer, SemVer]
 
 
-@attr.dataclass(frozen=True, slots=True)
+@attrs.frozen(slots=True, kw_only=True)
 class Version:
     version: CalOrSemVer
     pre_release: Union[PreRelease, None] = None
@@ -46,7 +46,7 @@ class Version:
     ) -> "Version":
         version = guess_initial_version(config)
         if version.pre_release is None and is_pre_release:
-            return attr.evolve(version, pre_release=PreRelease())
+            return attrs.evolve(version, pre_release=PreRelease())
         return version
 
     @classmethod
@@ -93,7 +93,7 @@ class Version:
         if config.is_pre_release:
             return Version(
                 version=self.version.update(
-                    attr.evolve(config, is_pre_release=False)
+                    attrs.evolve(config, is_pre_release=False)
                 ),
                 pre_release=PreRelease(),
             )

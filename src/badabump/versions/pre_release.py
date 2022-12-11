@@ -2,7 +2,7 @@ from contextlib import suppress
 from enum import Enum, unique
 from typing import DefaultDict, Union
 
-import attr
+import attrs
 
 from badabump.annotations import DictStrAny, DictStrStr
 from badabump.configs import UpdateConfig
@@ -48,7 +48,7 @@ PRE_RELEASE_TYPE_MAPPING = {
 }
 
 
-@attr.dataclass(frozen=True, slots=True)
+@attrs.frozen(slots=True, kw_only=True)
 class PreRelease:
     pre_release_type: PreReleaseTypeEnum = PreReleaseTypeEnum.alpha
     number: int = 0

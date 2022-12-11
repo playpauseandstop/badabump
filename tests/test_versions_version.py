@@ -2,7 +2,7 @@ import datetime
 import json
 from pathlib import Path
 
-import attr
+import attrs
 import pytest
 import tomli_w
 
@@ -27,7 +27,7 @@ def test_find_project_version_javascript(tmpdir, version):
     tmp_path = Path(tmpdir)
     (tmp_path / "package.json").write_text(json.dumps({"version": version}))
 
-    config = attr.evolve(
+    config = attrs.evolve(
         SEMVER_PROJECT_CONFIG,
         path=tmp_path,
         project_type=ProjectTypeEnum.javascript,
@@ -45,7 +45,7 @@ def test_find_project_version_python(tmpdir, version):
         tomli_w.dumps({"tool": {"poetry": {"version": version}}})
     )
 
-    config = attr.evolve(
+    config = attrs.evolve(
         SEMVER_PROJECT_CONFIG,
         path=tmp_path,
         project_type=ProjectTypeEnum.python,
@@ -60,7 +60,7 @@ def test_find_project_version_python(tmpdir, version):
     "project_type", (ProjectTypeEnum.javascript, ProjectTypeEnum.python)
 )
 def test_find_project_version_empty(tmpdir, project_type):
-    config = attr.evolve(SEMVER_PROJECT_CONFIG, path=Path(tmpdir))
+    config = attrs.evolve(SEMVER_PROJECT_CONFIG, path=Path(tmpdir))
     assert find_project_version(config=config) is None
 
 
@@ -72,7 +72,7 @@ def test_find_project_version_empty(tmpdir, project_type):
     ),
 )
 def test_guess_initial_version(tmpdir, config, is_pre_release, expected):
-    tmp_config = attr.evolve(config, path=Path(tmpdir))
+    tmp_config = attrs.evolve(config, path=Path(tmpdir))
     assert (
         Version.guess_initial_version(
             config=tmp_config, is_pre_release=is_pre_release

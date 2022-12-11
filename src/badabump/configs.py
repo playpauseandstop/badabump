@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Tuple, Union
 
-import attr
+import attrs
 
 from badabump import __app__
 from badabump.annotations import DictStrAny, T
@@ -25,15 +25,15 @@ from badabump.enums import FormatTypeEnum, ProjectTypeEnum, VersionTypeEnum
 from badabump.loaders import loads_toml
 
 
-@attr.dataclass(frozen=True, slots=True)
+@attrs.frozen(slots=True, kw_only=True)
 class ProjectConfig:
-    path: Path = attr.Factory(Path.cwd)
+    path: Path = attrs.Factory(Path.cwd)
 
     project_type: ProjectTypeEnum = DEFAULT_PROJECT_TYPE
 
     version_type: VersionTypeEnum = DEFAULT_VERSION_TYPE
     version_schema: str = DEFAULT_VERSION_SCHEMA
-    version_files: Tuple[str, ...] = attr.Factory(tuple)
+    version_files: Tuple[str, ...] = attrs.Factory(tuple)
 
     tag_format: str = DEFAULT_TAG_FORMAT
     tag_subject_format: str = DEFAULT_TAG_SUBJECT_FORMAT
@@ -111,7 +111,7 @@ class ProjectConfig:
         )
 
 
-@attr.dataclass(frozen=True, slots=True)
+@attrs.frozen(slots=True, kw_only=True)
 class UpdateConfig:
     is_breaking_change: bool = False
     is_minor_change: bool = False

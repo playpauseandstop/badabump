@@ -1,7 +1,7 @@
 import datetime
 from typing import Union
 
-import attr
+import attrs
 
 from badabump.annotations import DictStrAny, DictStrStr
 from badabump.configs import UpdateConfig
@@ -44,7 +44,7 @@ SCHEMA_PARTS_PARSING = {
 }
 
 
-@attr.dataclass(frozen=True, slots=True)
+@attrs.frozen(slots=True, kw_only=True)
 class CalVer:
     year: int
     month: Union[int, None] = None
@@ -77,7 +77,7 @@ class CalVer:
         )
 
     def get_format_context(self) -> DictStrAny:
-        return {**attr.asdict(self), "short_year": self.short_year}
+        return {**attrs.asdict(self), "short_year": self.short_year}
 
     @classmethod
     def initial(cls, *, schema: str) -> "CalVer":
@@ -159,7 +159,7 @@ class CalVer:
             if next_micro is not None and config.is_micro_change:
                 next_micro += 1
 
-        return attr.evolve(
+        return attrs.evolve(
             self,
             year=next_year,
             month=next_month,

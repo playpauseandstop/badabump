@@ -3,7 +3,7 @@ import logging
 import re
 from typing import Iterator, List, Tuple, Union
 
-import attr
+import attrs
 
 from badabump.enums import ChangeLogTypeEnum, FormatTypeEnum
 
@@ -36,7 +36,7 @@ FORMATTED_COMMIT_WITH_PR_RE = re.compile(
 logger = logging.getLogger(__name__)
 
 
-@attr.dataclass(frozen=True, slots=True)
+@attrs.frozen(slots=True, kw_only=True)
 class ConventionalCommit:
     raw_commit_type: str
     description: str
@@ -133,14 +133,14 @@ class ConventionalCommit:
         return None
 
 
-@attr.dataclass(frozen=True, slots=True)
+@attrs.frozen(slots=True, kw_only=True)
 class ChangeLog:
     commits: Tuple[ConventionalCommit, ...]
 
-    feature_commits: Tuple[ConventionalCommit, ...] = attr.ib(init=False)
-    fix_commits: Tuple[ConventionalCommit, ...] = attr.ib(init=False)
-    refactor_commits: Tuple[ConventionalCommit, ...] = attr.ib(init=False)
-    other_commits: Tuple[ConventionalCommit, ...] = attr.ib(init=False)
+    feature_commits: Tuple[ConventionalCommit, ...] = attrs.field(init=False)
+    fix_commits: Tuple[ConventionalCommit, ...] = attrs.field(init=False)
+    refactor_commits: Tuple[ConventionalCommit, ...] = attrs.field(init=False)
+    other_commits: Tuple[ConventionalCommit, ...] = attrs.field(init=False)
 
     def __attrs_post_init__(self) -> None:
         feature_commits: List[ConventionalCommit] = []

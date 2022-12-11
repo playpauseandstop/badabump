@@ -3,10 +3,10 @@ from contextlib import suppress
 from pathlib import Path
 from typing import Iterator, List, Tuple, Union
 
-import attr
+import attrs
 
 
-@attr.dataclass(frozen=True, slots=True)
+@attrs.frozen(slots=True, kw_only=True)
 class Git:
     path: Path
 

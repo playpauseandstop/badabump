@@ -141,7 +141,7 @@ commands =
   git config init.defaultBranch
   git config user.name
   git config user.email
-  python3 -m pytest
+  python3 -m pytest {tty:--color=yes}
 
 [testenv:py310-minimum-requirements]
 commands_pre =

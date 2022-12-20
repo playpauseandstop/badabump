@@ -89,7 +89,7 @@ attrs = "^22.1.0"
 tomli = {python = "<=3.11.0a6", version = ">=1.2.0,<3"}
 
 [tool.poetry.group.dev.dependencies]
-mypy = "^0.982"
+mypy = "^0.991"
 
 [tool.poetry.group.test.dependencies]
 coverage = "^6.5.0"

@@ -1,5 +1,13 @@
 # 22.1.0 (2022-12-20)
 
+First stable `badabump` release in **2022**, which provides more stability to the project and, most importantly, update outputs at GitHub Actions to silence `::set-output ...` deprecation warnings.
+
+On top of that this version of `badabump` will merge similar commits within one group and fix guessing project files for Python projects with dashes in names, like `aiohttp-middlewares`.
+
+Thanks for using `badabump` and please await on more features and fixes in 2023 🎄 
+
+---
+
 ## Features:
 
 - [#189] **BREAKING CHANGE:** (**changelog**) Merge similar commits within group (#197)

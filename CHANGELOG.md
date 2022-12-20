@@ -4,7 +4,7 @@ First stable `badabump` release in **2022**, which provides more stability to th
 
 On top of that this version of `badabump` will merge similar commits within one group and fix guessing project files for Python projects with dashes in names, like `aiohttp-middlewares`.
 
-Thanks for using `badabump` and please await on more features and fixes in 2023 🎄 
+Thanks for using `badabump` and please await on more features and fixes in 2023 🎄
 
 ---
 

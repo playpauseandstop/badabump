@@ -11,7 +11,13 @@ CommitTuple = Tuple[str, Union[str, None], str]
 TagTuple = Tuple[str, str]
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function", autouse=True)
+def setup_github_output_env_var(monkeypatch, github_output_path):
+    monkeypatch.setenv("GITHUB_OUTPUT", str(github_output_path))
+    yield
+
+
+@pytest.fixture(scope="function")
 def create_git_commit():
     def factory(path: Path, commit: str) -> None:
         subprocess.check_call(["git", "add", "."], cwd=path)
@@ -20,7 +26,7 @@ def create_git_commit():
     return factory
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def create_git_repository(tmpdir, create_git_commit, create_git_tag):
     def factory(*commits: CommitTuple, tag: TagTuple = None) -> Git:
         path = Path(tmpdir)
@@ -39,7 +45,7 @@ def create_git_repository(tmpdir, create_git_commit, create_git_tag):
     return factory
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def create_git_tag():
     def factory(path: Path, tag: str, message: str) -> None:
         subprocess.check_call(
@@ -47,3 +53,11 @@ def create_git_tag():
         )
 
     return factory
+
+
+@pytest.fixture(scope="function")
+def github_output_path(tmp_path) -> Path:
+    path = Path(tmp_path) / "github-output.txt"
+    if not path.exists():
+        path.write_text("")
+    return path

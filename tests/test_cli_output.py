@@ -9,11 +9,17 @@ from badabump.cli.output import github_actions_output
         ("Hello, world!", "Hello, world!"),
         ("$var", "$var"),
         ("`pwd`", "`pwd`"),
-        ("Multi\nLine\nString", "Multi%0ALine%0AString"),
-        ("Multi\r\nLine\r\nString", "Multi%0D%0ALine%0D%0AString"),
+        ("Multi\nLine\nString", "Multi\nLine\nString"),
+        ("Multi\r\nLine\r\nString", "Multi\nLine\nString"),
     ),
 )
-def test_github_actions_output(capsys, value, expected):
+def test_github_actions_output(capsys, github_output_path, value, expected):
     github_actions_output("name", value)
-    out, _ = capsys.readouterr()
-    assert out == f"::set-output name=name::{expected}\n"
+
+    # Check that nothing written into stdout / stderr
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert captured.err == ""
+
+    # But GITHUB_OUTPUT file contains proper context
+    assert github_output_path.read_text() == f"name<<EOF\n{expected}\nEOF\n"

@@ -1,9 +1,9 @@
+import os
 from difflib import ndiff
 from typing import Union
 
 
 EMPTY = "-"
-VALUE_ESCAPE_MAPPING = (("%", "%25"), ("\n", "%0A"), ("\r", "%0D"))
 
 
 def diff(current_content: str, next_content: str) -> str:
@@ -33,6 +33,7 @@ def echo_value(
 
 
 def github_actions_output(name: str, value: str) -> None:
-    for symbol, code in VALUE_ESCAPE_MAPPING:
-        value = value.replace(symbol, code)
-    print(f"::set-output name={name}::{value}")
+    with open(os.environ["GITHUB_OUTPUT"], "a+") as github_output_handler:
+        github_output_handler.write(f"{name}<<EOF\n")
+        github_output_handler.write(value)
+        github_output_handler.write("\nEOF\n")

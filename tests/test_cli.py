@@ -85,6 +85,7 @@ def test_ci_output(
     capsys,
     create_git_commit,
     create_git_repository,
+    github_output_path,
     file_name,
     content,
     version,
@@ -102,11 +103,13 @@ def test_ci_output(
     assert main(["-C", str(path), "--ci"]) == 0
 
     captured = capsys.readouterr()
+    assert captured.out != ""
     assert captured.err == ""
 
-    assert f"::set-output name=current_tag::v{version}" in captured.out
-    assert f"::set-output name=current_version::{version}" in captured.out
-    assert f"::set-output name=next_version::{next_version}" in captured.out
+    github_output = github_output_path.read_text()
+    assert f"current_tag<<EOF\nv{version}\nEOF\n" in github_output
+    assert f"current_version<<EOF\n{version}\nEOF\n" in github_output
+    assert f"next_version<<EOF\n{next_version}\n" in github_output
 
     changelog = (path / "CHANGELOG.md").read_text()
     assert f"# {next_version}" in changelog

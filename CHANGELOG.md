@@ -1,5 +1,13 @@
 # 22.1.0 (2022-12-20)
 
+First stable `badabump` release in **2022**, which provides more stability to the project and, most importantly, update outputs at GitHub Actions to silence `::set-output ...` deprecation warnings.
+
+On top of that this version of `badabump` will merge similar commits within one group and fix guessing project files for Python projects with dashes in names, like `aiohttp-middlewares`.
+
+Thanks for using `badabump` and please await on more features and fixes in 2023 🎄
+
+---
+
 ## Features:
 
 - [#189] **BREAKING CHANGE:** (**changelog**) Merge similar commits within group (#197)
@@ -17,7 +25,6 @@
 ## Other:
 
 - **BREAKING CHANGE:** Monthly maintenance (Jun 2022) (#148)
-- **BREAKING CHANGE:** 22.1.0 Release (#207)
 - (**deps**) Bump actions/checkout from 2.3.5 to 2.4.0 (#119)
 - (**deps**) Bump actions/cache from 2.1.6 to 2.1.7 (#117)
 - (**deps**) Bump actions/setup-python from 2.2.2 to 2.3.1 (#120)
@@ -55,7 +62,6 @@
 - (**deps**) Bump tibdex/github-app-token from 1.6 to 1.7 (#194)
 - Update Python dev version to 3.11.1 (#200)
 - (**deps**) Bump peter-evans/create-pull-request from 4.2.0 to 4.2.3 (#198)
-- "chore: 22.1.0 Release (#207)" (#208)
 - Fix stable trove classifier (#210)
 
 # 21.3.3 (2021-11-02)

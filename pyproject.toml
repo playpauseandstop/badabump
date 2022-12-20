@@ -59,7 +59,7 @@ warn_unused_ignores = true
 
 [tool.poetry]
 name = "badabump"
-version = "21.3.3"
+version = "22.1.0a0"
 description = "Manage changelog and bump project version number using conventional commits from latest git tag. Support Python & JavaScript projects and CalVer & SemVer schemas. Designed to run at GitHub Actions."
 authors = ["Igor Davydenko <iam@igordavydenko.com>"]
 license = "BSD-3-Clause"

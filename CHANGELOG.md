@@ -1,3 +1,68 @@
+# 22.1.0 (2022-12-20)
+
+First stable `badabump` release in **2022**, which provides more stability to the project and, most importantly, update outputs at GitHub Actions to silence `::set-output ...` deprecation warnings.
+
+On top of that this version of `badabump` will merge similar commits within one group and fix guessing project files for Python projects with dashes in names, like `aiohttp-middlewares`.
+
+Thanks for using `badabump` and please await on more features and fixes in 2023 🎄
+
+---
+
+## Features:
+
+- [#189] **BREAKING CHANGE:** (**changelog**) Merge similar commits within group (#197)
+- [#189] (**changelog**) Do not duplicate same commit messages (#196)
+
+## Fixes:
+
+- [#114] Fix guessing project files for python projest with dashes in names (#202)
+
+## Refactoring:
+
+- [#185] **BREAKING CHANGE:** (**ci**) Change output at GitHub Actions (#203)
+- Use attrs NG import (#201)
+
+## Other:
+
+- **BREAKING CHANGE:** Monthly maintenance (Jun 2022) (#148)
+- (**deps**) Bump actions/checkout from 2.3.5 to 2.4.0 (#119)
+- (**deps**) Bump actions/cache from 2.1.6 to 2.1.7 (#117)
+- (**deps**) Bump actions/setup-python from 2.2.2 to 2.3.1 (#120)
+- (**deps**) Bump tibdex/github-app-token from 1.4 to 1.5 (#121)
+- (**deps**) Bump peter-evans/create-pull-request from 3.10.1 to 3.11.0 (#118)
+- (**deps-dev**) Bump coverage from 6.1.1 to 6.2 (#115)
+- (**deps-dev**) Bump time-machine from 2.4.0 to 2.4.1 (#116)
+- Update Python dev version to 3.10.1 (#127)
+- Monthly maintenance (Jan 2022) (#128)
+- (**deps**) Bump peter-evans/create-pull-request from 3.11.0 to 3.12.0 (#126)
+- (**deps**) Bump pypa/gh-action-pypi-publish from 1.4.2 to 1.5.0 (#132)
+- (**deps**) Bump peter-evans/create-pull-request from 3.12.0 to 3.12.1 (#131)
+- (**deps-dev**) Bump mypy from 0.930 to 0.931 (#130)
+- (**deps**) Bump actions/checkout from 2.4.0 to 3.0.2 (#142)
+- (**deps**) Bump actions/cache from 2.1.7 to 3.0.4 (#149)
+- (**deps**) Bump actions/setup-python from 2.3.1 to 3.1.2 (#143)
+- (**deps**) Bump peter-evans/create-pull-request from 3.12.1 to 4.0.4 (#150)
+- Sync common project files (#154, #161, #170, #173, #183, #206)
+- (**deps**) Bump pre-commit/action from 2.0.3 to 3.0.0 (#156)
+- (**deps**) Bump actions/setup-python from 3.1.2 to 4.0.0 (#155)
+- Update default branch name (#157)
+- Move coveralls to dev deps (#158)
+- Minor rework of env vars (#159)
+- Refactor CI workflows and actions (#160)
+- (**deps-dev**) Bump time-machine from 2.7.0 to 2.7.1 (#162)
+- (**deps**) Bump tibdex/github-app-token from 1.5 to 1.6 (#169)
+- Use latest py311 beta as well as bump attrs version to use (#164)
+- Update minimum requirements (#184)
+- (**deps**) Bump peter-evans/create-pull-request from 4.0.4 to 4.1.3 (#182)
+- Update Python dev version to 3.10.8 (#187)
+- Enforce mypy no-implicit-optional setting (#188)
+- Introduce no-optional hook to the project (#190)
+- Update Python dev version to 3.11.0 (#191)
+- (**deps**) Bump peter-evans/create-pull-request from 4.1.3 to 4.2.0 (#195)
+- (**deps**) Bump tibdex/github-app-token from 1.6 to 1.7 (#194)
+- Update Python dev version to 3.11.1 (#200)
+- (**deps**) Bump peter-evans/create-pull-request from 4.2.0 to 4.2.3 (#198)
+
 # 21.3.3 (2021-11-02)
 
 There are no changes in `badabump` itself, but repository now contains proper `release_tag` workflow file, which handles well backticks and code snippets.

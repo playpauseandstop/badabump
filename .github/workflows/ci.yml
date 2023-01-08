@@ -29,7 +29,7 @@ jobs:
     runs-on: "${{ matrix.os }}"
 
     steps:
-      - uses: "actions/checkout@v3.2.0"
+      - uses: "actions/checkout@v3.3.0"
 
       - uses: "./.github/actions/install_python_and_poetry"
         with:
@@ -38,6 +38,10 @@ jobs:
 
       - name: "Install package"
         run: "poetry install --only main"
+
+      - name: "Check that the poetry.lock file corresponds to the current version of pyproject.toml"
+        if: "${{ matrix.os == 'ubuntu-latest' }}"
+        run: "poetry lock --check"
 
       - name: "Import package"
         run: "poetry run python3 -c 'import badabump'"
@@ -70,7 +74,7 @@ jobs:
     runs-on: "ubuntu-latest"
 
     steps:
-      - uses: "actions/checkout@v3.2.0"
+      - uses: "actions/checkout@v3.3.0"
 
       - id: "python_and_poetry"
         uses: "./.github/actions/install_python_and_poetry"
@@ -115,7 +119,7 @@ jobs:
     runs-on: "ubuntu-latest"
 
     steps:
-      - uses: "actions/checkout@v3.2.0"
+      - uses: "actions/checkout@v3.3.0"
 
       - name: "Fetch git data"
         run: |
@@ -126,10 +130,11 @@ jobs:
 
       - uses: "./.github/actions/install_python_and_poetry"
         with:
+          cache-key-suffix: "-main"
           python-version-file: ".python-version"
 
-      - name: "Install package without dev dependencies"
-        run: "poetry install --no-dev"
+      - name: "Install package with only main dependencies"
+        run: "poetry install --only=main"
 
       - id: "badabump"
         name: "Prepare release info"

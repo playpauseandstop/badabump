@@ -83,6 +83,7 @@ Issue: AUTH-1
 )
 def test_ci_output(
     capsys,
+    time_machine,
     create_git_commit,
     create_git_repository,
     github_output_path,
@@ -91,6 +92,8 @@ def test_ci_output(
     version,
     next_version,
 ):
+    time_machine.move_to("2022-12-31T00:00:00+00:00")
+
     git = create_git_repository(
         (file_name, content, "feat: Initial commit"),
         tag=(f"v{version}", f"{version} Release"),

@@ -80,7 +80,7 @@ classifiers = [
   "Programming Language :: Python :: 3 :: Only",
   "Topic :: Software Development",
   "Topic :: Utilities",
-  "Typing :: Typed"
+  "Typing :: Typed",
 ]
 
 [tool.poetry.dependencies]
@@ -96,7 +96,7 @@ coverage = "^6.5.0"
 coveralls = "^3.3.1"
 pytest = "^7.2.0"
 pytest-cov = "^4.0.0"
-time-machine = "^2.8.2"
+time-machine = "^2.9.0"
 tomli-w = "^1.0.0"
 
 [tool.poetry.scripts]
@@ -141,7 +141,7 @@ commands =
   git config init.defaultBranch
   git config user.name
   git config user.email
-  python3 -m pytest {tty:--color=yes}
+  python3 -m pytest
 
 [testenv:py310-minimum-requirements]
 commands_pre =

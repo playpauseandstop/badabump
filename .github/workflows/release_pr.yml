@@ -34,11 +34,17 @@ jobs:
           git fetch --depth=1 origin +refs/tags/*:refs/tags/* || :
           git fetch --prune --unshallow
 
-      - uses: "./.github/actions/install_badabump"
+      - uses: "./.github/actions/install_python_and_poetry"
+        with:
+          cache-key-suffix: "-main"
+          python-version-file: ".python-version"
+
+      - name: "Install badabump"
+        run: "poetry install --only=main"
 
       - id: "badabump"
         name: "Run badabump"
-        run: "badabump --ci ${{ github.event.inputs.args }}"
+        run: "poetry run python3 -m badabump --ci ${{ github.event.inputs.args }}"
 
       - id: "token"
         uses: "tibdex/github-app-token@v1.7.0"

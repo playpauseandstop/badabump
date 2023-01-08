@@ -80,7 +80,7 @@ classifiers = [
   "Programming Language :: Python :: 3 :: Only",
   "Topic :: Software Development",
   "Topic :: Utilities",
-  "Typing :: Typed"
+  "Typing :: Typed",
 ]
 
 [tool.poetry.dependencies]
@@ -141,7 +141,7 @@ commands =
   git config init.defaultBranch
   git config user.name
   git config user.email
-  python3 -m pytest {tty:--color=yes}
+  python3 -m pytest
 
 [testenv:py310-minimum-requirements]
 commands_pre =

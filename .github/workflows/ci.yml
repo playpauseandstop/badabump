@@ -29,7 +29,7 @@ jobs:
     runs-on: "${{ matrix.os }}"
 
     steps:
-      - uses: "actions/checkout@v3.3.0"
+      - uses: "actions/checkout@v6.0.2"
 
       - uses: "./.github/actions/install_python_and_poetry"
         with:
@@ -74,7 +74,7 @@ jobs:
     runs-on: "ubuntu-latest"
 
     steps:
-      - uses: "actions/checkout@v3.3.0"
+      - uses: "actions/checkout@v6.0.2"
 
       - id: "python_and_poetry"
         uses: "./.github/actions/install_python_and_poetry"
@@ -119,7 +119,7 @@ jobs:
     runs-on: "ubuntu-latest"
 
     steps:
-      - uses: "actions/checkout@v3.3.0"
+      - uses: "actions/checkout@v6.0.2"
 
       - name: "Fetch git data"
         run: |

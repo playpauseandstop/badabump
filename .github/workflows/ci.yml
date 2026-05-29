@@ -40,7 +40,7 @@ jobs:
         run: "poetry install --only main"
 
       - name: "Check that the poetry.lock file corresponds to the current version of pyproject.toml"
-        if: "${{ matrix.os == 'ubuntu-latest' }}"
+        if: "${{ matrix.os == 'ubuntu-24.04' }}"
         run: "poetry lock --check"
 
       - name: "Import package"
@@ -71,7 +71,7 @@ jobs:
             cache-key-suffix: "-main-dev-test"
             dev: "true"
 
-    runs-on: "ubuntu-latest"
+    runs-on: "ubuntu-24.04"
 
     steps:
       - uses: "actions/checkout@v6.0.2"
@@ -116,7 +116,7 @@ jobs:
 
     name: "Create GitHub release"
 
-    runs-on: "ubuntu-latest"
+    runs-on: "ubuntu-24.04"
 
     steps:
       - uses: "actions/checkout@v6.0.2"

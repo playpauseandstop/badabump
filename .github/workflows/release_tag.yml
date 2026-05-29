@@ -16,7 +16,7 @@ jobs:
     if: "${{ startsWith(github.head_ref, 'chore/release-') && github.event.pull_request.merged == true }}"
     name: "Auto Create Release Tag"
 
-    runs-on: "ubuntu-latest"
+    runs-on: "ubuntu-24.04"
 
     steps:
       - id: "token"
@@ -28,7 +28,7 @@ jobs:
       - uses: "actions/checkout@v6.0.2"
         with:
           token: "${{ steps.token.outputs.token }}"
-          ref: "main"
+          ref: "${{ github.repository.default_branch }}"
 
       - uses: "./.github/actions/install_python_and_poetry"
         with:

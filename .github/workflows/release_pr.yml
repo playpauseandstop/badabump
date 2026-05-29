@@ -20,19 +20,14 @@ jobs:
     if: "${{ github.actor == 'playpauseandstop' }}"
     name: "Create Release PR"
 
-    runs-on: "ubuntu-latest"
+    runs-on: "ubuntu-24.04"
 
     steps:
       - uses: "actions/checkout@v6.0.2"
         with:
-          ref: "main"
-
-      - name: "Fetch git tags"
-        run: |
-          set -euo pipefail
-
-          git fetch --depth=1 origin +refs/tags/*:refs/tags/* || :
-          git fetch --prune --unshallow
+          ref: "${{ github.repository.default_branch }}"
+          fetch-depth: 0
+          fetch-tags: true
 
       - uses: "./.github/actions/install_python_and_poetry"
         with:

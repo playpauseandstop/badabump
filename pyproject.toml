@@ -127,6 +127,8 @@ testpaths = ["tests/"]
 addopts = "--cov --no-cov-on-fail"
 log_level = "info"
 
+# tox configuration
+# https://tox.wiki/en/stable/reference/config.html#pyproject-toml-ini
 [tool.tox]
 legacy_tox_ini = """
 [tox]

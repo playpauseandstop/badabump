@@ -7,7 +7,7 @@ import attrs
 from badabump.annotations import DictStrStr
 from badabump.configs import ProjectConfig, UpdateConfig
 from badabump.enums import ProjectTypeEnum, VersionTypeEnum
-from badabump.loaders import loads_toml
+from badabump.loaders import get_pyproject_toml_metadata, loads_toml
 from badabump.regexps import to_regexp
 from badabump.versions import calver, pre_release, semver
 from badabump.versions.calver import CalVer
@@ -104,24 +104,15 @@ def find_project_version(config: ProjectConfig) -> Union[str, None]:
     if config.project_type == ProjectTypeEnum.javascript:
         package_json_path = config.path / "package.json"
         if package_json_path.exists():
-            try:
+            with suppress(KeyError, ValueError):
                 return cast(
                     str, json.loads(package_json_path.read_text())["version"]
                 )
-            except (KeyError, ValueError):
-                ...
     else:
         pyproject_toml_path = config.path / "pyproject.toml"
         if pyproject_toml_path.exists():
-            try:
-                return cast(
-                    str,
-                    loads_toml(pyproject_toml_path.read_text())["tool"][
-                        "poetry"
-                    ]["version"],
-                )
-            except (KeyError, ValueError):
-                ...
+            pyproject_toml = loads_toml(pyproject_toml_path.read_text())
+            return get_pyproject_toml_metadata(pyproject_toml, "version")
 
     return None
 

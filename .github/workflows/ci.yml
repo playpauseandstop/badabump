@@ -108,8 +108,8 @@ jobs:
           set -euo pipefail
 
           git config --global init.defaultBranch main
-          git config --global user.name badabump[bot]
-          git config --global user.email 86060+badabump[bot]@users.noreply.github.com
+          git config --global user.name badabump-bot[bot]
+          git config --global user.email 86060+badabump-bot[bot]@users.noreply.github.com
 
       - uses: "./.github/actions/run_tox"
         with:

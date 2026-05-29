@@ -37,12 +37,16 @@ def test_find_project_version_javascript(tmpdir, version):
     assert project_version == version
 
 
+@pytest.mark.parametrize("table_name", ("project", "tool.poetry"))
 @pytest.mark.parametrize("version", ("1.0.0", "1.0.0b2", "1.0.0rc0"))
-def test_find_project_version_python(tmpdir, version):
+def test_find_project_version_python(tmpdir, table_name: str, version: str):
+    if table_name == "project":
+        data = {"project": {"version": version}}
+    else:
+        data = {"tool": {"poetry": {"version": version}}}
+
     tmp_path = Path(tmpdir)
-    (tmp_path / "pyproject.toml").write_text(
-        tomli_w.dumps({"tool": {"poetry": {"version": version}}})
-    )
+    (tmp_path / "pyproject.toml").write_text(tomli_w.dumps(data))
 
     config = attrs.evolve(
         SEMVER_PROJECT_CONFIG,

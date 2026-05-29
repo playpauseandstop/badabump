@@ -50,8 +50,8 @@ jobs:
         run: |
           set -euo pipefail
 
-          git config user.name badabump[bot]
-          git config user.email 86060+badabump[bot]@users.noreply.github.com
+          git config user.name badabump-bot[bot]
+          git config user.email 86060+badabump-bot[bot]@users.noreply.github.com
 
           git tag -a ${{ steps.badabump.outputs.tag_name }} -F ./tag_message.txt
           git push --tag

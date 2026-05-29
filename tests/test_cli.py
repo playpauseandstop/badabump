@@ -18,24 +18,50 @@ PACKAGE_JSON = """{{
 }}
 """
 
-PYPROJECT_TOML = """[tool.poetry]
+PYPROJECT_TOML = """[project]
+name = "my-project"
+version = "{version}"
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "another-project=={version}"
+]
+"""
+
+PYPROJECT_TOML_POETRY = """[tool.poetry]
 name = "my-project"
 version = "{version}"
 
 [tool.poetry.dependencies]
-python = "^3"
+python = "^3.10"
+another-project = "{version}"
+"""
+
+PYPROJECT_TOML_POETRY_DEPENDENCIES = """[project]
+name = "my-project"
+version = "{version}"
+
+[tool.poetry.dependencies]
+python = "^3.10"
 another-project = "{version}"
 """
 
 
+@pytest.mark.parametrize(
+    "pyproject_toml",
+    (
+        PYPROJECT_TOML,
+        PYPROJECT_TOML_POETRY,
+        PYPROJECT_TOML_POETRY_DEPENDENCIES,
+    ),
+)
 def test_breaking_change_dry_run(
-    capsys, create_git_commit, create_git_repository
+    capsys, create_git_commit, create_git_repository, pyproject_toml: str
 ):
     git = create_git_repository(
         (
             "pyproject.toml",
             BADABUMP_CONFIG_SEMVER_TOML
-            + PYPROJECT_TOML.format(version="1.0.0"),
+            + pyproject_toml.format(version="1.0.0"),
             "feat: Initial commit",
         ),
         tag=("v1.0.0", "1.0.0 Release"),
@@ -69,6 +95,20 @@ Issue: AUTH-1
             "pyproject.toml",
             BADABUMP_CONFIG_SEMVER_TOML
             + PYPROJECT_TOML.format(version="1.0.0"),
+            "1.0.0",
+            "1.0.1",
+        ),
+        (
+            "pyproject.toml",
+            BADABUMP_CONFIG_SEMVER_TOML
+            + PYPROJECT_TOML_POETRY.format(version="1.0.0"),
+            "1.0.0",
+            "1.0.1",
+        ),
+        (
+            "pyproject.toml",
+            BADABUMP_CONFIG_SEMVER_TOML
+            + PYPROJECT_TOML_POETRY_DEPENDENCIES.format(version="1.0.0"),
             "1.0.0",
             "1.0.1",
         ),
@@ -119,7 +159,10 @@ def test_ci_output(
     next_content = (path / file_name).read_text()
     if file_name == "pyproject.toml":
         assert f'version = "{next_version}"' in next_content
-        assert f'another-project = "{version}"' in next_content
+        if "dependencies = [" in next_content:
+            assert f'    "another-project=={version}"' in next_content
+        else:
+            assert f'another-project = "{version}"' in next_content
     else:
         assert f'"version": "{next_version}"' in next_content
         assert f'"another-project": "{version}"' in next_content
@@ -138,7 +181,35 @@ def test_ci_output(
         (
             ProjectTypeEnum.python,
             "pyproject.toml",
+            PYPROJECT_TOML_POETRY,
+            "20.1.0",
+            "- Initial release",
+        ),
+        (
+            ProjectTypeEnum.python,
+            "pyproject.toml",
+            PYPROJECT_TOML_POETRY_DEPENDENCIES,
+            "20.1.0",
+            "- Initial release",
+        ),
+        (
+            ProjectTypeEnum.python,
+            "pyproject.toml",
             PYPROJECT_TOML,
+            "20.1.0a0",
+            "- Initial pre-release",
+        ),
+        (
+            ProjectTypeEnum.python,
+            "pyproject.toml",
+            PYPROJECT_TOML_POETRY,
+            "20.1.0a0",
+            "- Initial pre-release",
+        ),
+        (
+            ProjectTypeEnum.python,
+            "pyproject.toml",
+            PYPROJECT_TOML_POETRY_DEPENDENCIES,
             "20.1.0a0",
             "- Initial pre-release",
         ),
@@ -186,6 +257,14 @@ def test_initial_release(
 
 
 @pytest.mark.parametrize(
+    "pyproject_toml",
+    (
+        PYPROJECT_TOML,
+        PYPROJECT_TOML_POETRY,
+        PYPROJECT_TOML_POETRY_DEPENDENCIES,
+    ),
+)
+@pytest.mark.parametrize(
     "changelog_content", ("", "# 1.1.0 (In Development)\n\n")
 )
 def test_minor_change(
@@ -193,7 +272,8 @@ def test_minor_change(
     monkeypatch,
     create_git_commit,
     create_git_repository,
-    changelog_content,
+    pyproject_toml: str,
+    changelog_content: str,
 ):
     monkeypatch.setattr("sys.stdin", io.StringIO("y"))
 
@@ -201,7 +281,7 @@ def test_minor_change(
         (
             "pyproject.toml",
             BADABUMP_CONFIG_SEMVER_TOML
-            + PYPROJECT_TOML.format(version="1.0.0"),
+            + pyproject_toml.format(version="1.0.0"),
             "feat: Initial commit",
         ),
         tag=("v1.0.0", "1.0.0 Release"),
@@ -226,12 +306,22 @@ def test_minor_change(
     assert "Next version: 1.1.0\n" in captured.out
 
 
-def test_no_commits(capsys, create_git_commit, create_git_repository):
+@pytest.mark.parametrize(
+    "pyproject_toml",
+    (
+        PYPROJECT_TOML,
+        PYPROJECT_TOML_POETRY,
+        PYPROJECT_TOML_POETRY_DEPENDENCIES,
+    ),
+)
+def test_no_commits(
+    capsys, create_git_commit, create_git_repository, pyproject_toml: str
+):
     git = create_git_repository(
         (
             "pyproject.toml",
             BADABUMP_CONFIG_SEMVER_TOML
-            + PYPROJECT_TOML.format(version="1.0.0"),
+            + pyproject_toml.format(version="1.0.0"),
             "feat: Initial commit",
         ),
         tag=("v1.0.0", "1.0.0 Release"),
@@ -244,10 +334,20 @@ def test_no_commits(capsys, create_git_commit, create_git_repository):
     assert "Next version: " not in captured.out
 
 
-def test_no_commits_pre_release(capsys, monkeypatch, create_git_repository):
+@pytest.mark.parametrize(
+    "pyproject_toml",
+    (
+        PYPROJECT_TOML,
+        PYPROJECT_TOML_POETRY,
+        PYPROJECT_TOML_POETRY_DEPENDENCIES,
+    ),
+)
+def test_no_commits_pre_release(
+    capsys, monkeypatch, create_git_repository, pyproject_toml: str
+):
     monkeypatch.setattr("sys.stdin", io.StringIO("y"))
 
-    content = BADABUMP_CONFIG_SEMVER_TOML + PYPROJECT_TOML.format(
+    content = BADABUMP_CONFIG_SEMVER_TOML + pyproject_toml.format(
         version="1.0.0rc0"
     )
 
@@ -270,10 +370,20 @@ def test_no_commits_pre_release(capsys, monkeypatch, create_git_repository):
     assert content != (path / "pyproject.toml").read_text()
 
 
-def test_wrong_answer(capsys, monkeypatch, create_git_repository):
+@pytest.mark.parametrize(
+    "pyproject_toml",
+    (
+        PYPROJECT_TOML,
+        PYPROJECT_TOML_POETRY,
+        PYPROJECT_TOML_POETRY_DEPENDENCIES,
+    ),
+)
+def test_wrong_answer(
+    capsys, monkeypatch, create_git_repository, pyproject_toml: str
+):
     monkeypatch.setattr("sys.stdin", io.StringIO("n"))
 
-    content = BADABUMP_CONFIG_SEMVER_TOML + PYPROJECT_TOML.format(
+    content = BADABUMP_CONFIG_SEMVER_TOML + pyproject_toml.format(
         version="1.0.0rc0"
     )
 

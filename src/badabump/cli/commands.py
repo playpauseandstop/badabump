@@ -15,7 +15,7 @@ from badabump.constants import (
 )
 from badabump.enums import ChangeLogTypeEnum, FormatTypeEnum, ProjectTypeEnum
 from badabump.exceptions import ConfigError
-from badabump.loaders import loads_toml
+from badabump.loaders import get_pyproject_toml_metadata, loads_toml
 from badabump.versions import Version
 
 
@@ -56,12 +56,8 @@ def guess_version_files(config: ProjectConfig) -> Tuple[str, ...]:
     if maybe_pyproject_toml_path.exists():
         version_files.append(FILE_PYPROJECT_TOML)
 
-        real_project_name = (
-            loads_toml(maybe_pyproject_toml_path.read_text())
-            .get("tool", {})
-            .get("poetry", {})
-            .get("name")
-        )
+        pyproject_toml = loads_toml(maybe_pyproject_toml_path.read_text())
+        real_project_name = get_pyproject_toml_metadata(pyproject_toml, "name")
 
         if real_project_name:
             for project_name, package in itertools.product(

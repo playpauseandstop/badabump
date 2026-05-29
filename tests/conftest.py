@@ -6,7 +6,6 @@ import pytest
 
 from badabump.git import Git
 
-
 CommitTuple = Tuple[str, Union[str, None], str]
 TagTuple = Tuple[str, str]
 

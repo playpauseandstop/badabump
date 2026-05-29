@@ -16,7 +16,6 @@ from badabump.versions.parsing import parse_version
 from badabump.versions.pre_release import PreRelease
 from badabump.versions.semver import SemVer
 
-
 CalOrSemVer = Union[CalVer, SemVer]
 
 

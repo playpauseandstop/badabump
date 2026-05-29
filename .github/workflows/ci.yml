@@ -24,36 +24,52 @@ jobs:
 
     strategy:
       matrix:
-        os: ["ubuntu-latest", "macos-latest"]
+        os: ["ubuntu-24.04", "macos-26", "windows-2025"]
+
+        # https://raw.githubusercontent.com/actions/python-versions/main/versions-manifest.json
+        # does not have versions after 3.10.11 available for macOS or Windows :cry:
+        include:
+          - os: "ubuntu-24.04"
+            python-version: ""
+            python-version-file: ".python-version"
+
+          - os: "macos-26"
+            python-version: "3.10.11"
+            python-version-file: ""
+
+          - os: "windows-2025"
+            python-version: "3.10.11"
+            python-version-file: ""
 
     runs-on: "${{ matrix.os }}"
 
     steps:
-      - uses: "actions/checkout@v3.3.0"
+      - uses: "actions/checkout@v6.0.2"
 
       - uses: "./.github/actions/install_python_and_poetry"
         with:
           cache-key-suffix: "-main"
-          python-version-file: ".python-version"
+          python-version: "${{ matrix.python-version }}"
+          python-version-file: "${{ matrix.python-version-file }}"
 
       - name: "Install package"
         run: "poetry install --only main"
 
       - name: "Check that the poetry.lock file corresponds to the current version of pyproject.toml"
-        if: "${{ matrix.os == 'ubuntu-latest' }}"
-        run: "poetry lock --check"
+        if: "${{ matrix.os == 'ubuntu-24.04' }}"
+        run: "poetry check --lock"
 
       - name: "Import package"
-        run: "poetry run python3 -c 'import badabump'"
+        run: "poetry run python -c 'import badabump'"
 
       - name: "Invoke cli via Python"
-        run: "poetry run python3 -m badabump --help"
+        run: "poetry run python -m badabump --help"
 
       - name: "Invoke cli via shortcut"
         run: "poetry run badabump --help"
 
       - name: "Invoke CI cli via Python"
-        run: "poetry run python3 -m badabump.ci --help"
+        run: "poetry run python -m badabump.ci --help"
 
       - name: "Invoke CI cli via shortcut"
         run: "poetry run badabump-ci --help"
@@ -63,18 +79,18 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
         include:
           - cache-key-suffix: "-main-dev"
 
-          - python-version: "3.11"
+          - python-version: "3.10"
             cache-key-suffix: "-main-dev-test"
             dev: "true"
 
-    runs-on: "ubuntu-latest"
+    runs-on: "ubuntu-24.04"
 
     steps:
-      - uses: "actions/checkout@v3.3.0"
+      - uses: "actions/checkout@v6.0.2"
 
       - id: "python_and_poetry"
         uses: "./.github/actions/install_python_and_poetry"
@@ -92,8 +108,8 @@ jobs:
           set -euo pipefail
 
           git config --global init.defaultBranch main
-          git config --global user.name badabump-release-bot[bot]
-          git config --global user.email badabump-release-bot[bot]@users.noreply.github.com
+          git config --global user.name badabump[bot]
+          git config --global user.email 86060+badabump[bot]@users.noreply.github.com
 
       - uses: "./.github/actions/run_tox"
         with:
@@ -116,10 +132,10 @@ jobs:
 
     name: "Create GitHub release"
 
-    runs-on: "ubuntu-latest"
+    runs-on: "ubuntu-24.04"
 
     steps:
-      - uses: "actions/checkout@v3.3.0"
+      - uses: "actions/checkout@v6.0.2"
 
       - name: "Fetch git data"
         run: |

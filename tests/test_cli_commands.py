@@ -93,12 +93,10 @@ def test_guess_javascript_version_files(tmpdir):
 def test_guess_python_version_files(tmpdir, files, expected):
     path = Path(tmpdir)
 
-    (path / "pyproject.toml").write_text(
-        """[tool.poetry]
+    (path / "pyproject.toml").write_text("""[tool.poetry]
 name = "my-project"
 version = "1.0.0"
-"""
-    )
+""")
 
     for item in files:
         item_path = path.joinpath(item)
@@ -115,11 +113,9 @@ version = "1.0.0"
 
 def test_guess_python_version_files_invalid_poetry_config(tmpdir):
     path = Path(tmpdir)
-    (path / "pyproject.toml").write_text(
-        """[tool.poetry]
+    (path / "pyproject.toml").write_text("""[tool.poetry]
 version = "1.0.0"
-"""
-    )
+""")
     assert guess_version_files(
         ProjectConfig(path=path, project_type=ProjectTypeEnum.python)
     ) == ("pyproject.toml",)

@@ -7,7 +7,6 @@ import attrs
 
 from badabump.enums import ChangeLogTypeEnum, FormatTypeEnum
 
-
 BREAKING_CHANGE_IN_BODY = "BREAKING CHANGE:"
 BREAKING_CHANGE_IN_COMMIT_TYPE = "!"
 

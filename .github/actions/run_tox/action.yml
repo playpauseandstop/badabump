@@ -13,12 +13,12 @@ inputs:
   tox-version:
     description: "Tox version to use"
     required: false
-    default: "4.4.6"
+    default: "4.55.0"
 
   tox-gh-actions-version:
     description: "Tox GitHub Actions plugin version to use"
     required: false
-    default: "3.0.0"
+    default: "3.5.0"
 
   use-coveralls:
     description: "Send coverage to Coveralls"
@@ -41,7 +41,7 @@ runs:
       shell: "bash"
 
     - name: "Cache tox"
-      uses: "actions/cache@v3.2.6"
+      uses: "actions/cache@v5.0.5"
       with:
         path: ".tox/"
         key: "tox-${{ inputs.python-version }}"

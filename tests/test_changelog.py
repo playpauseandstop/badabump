@@ -10,7 +10,6 @@ from badabump.changelog import (
 )
 from badabump.enums import ChangeLogTypeEnum, FormatTypeEnum
 
-
 CI_BREAKING_COMMIT = "ci!: Use badabump release bot for pushing tags"
 
 DOCS_SCOPE_COMMIT = """docs(openapi): Update descriptions in OpenAPI schema
@@ -216,12 +215,9 @@ def test_changelog_ignore_footer_urls(ignore_footer_urls, expected):
         is_pre_release=False,
         ignore_footer_urls=ignore_footer_urls,
     )
-    assert (
-        content
-        == f"""## Fixes:
+    assert content == f"""## Fixes:
 
 - {expected}Update logic behind math operations"""
-    )
 
 
 def test_changelog_invalid_commit():
@@ -250,13 +246,10 @@ def test_changelog_merge_similar_commits():
         FormatTypeEnum.markdown,
         is_pre_release=False,
     )
-    assert (
-        content
-        == f"""## Fixes:
+    assert content == f"""## Fixes:
 
 - {FIX_COMMIT[5:]} (#42, #69, #9000)
 - Does not matter (#9999)"""
-    )
 
 
 @pytest.mark.parametrize(
@@ -340,13 +333,10 @@ def test_commit_feature():
     )
     assert commit.is_breaking_change is False
     assert commit.issues == ("DEV-55",)
-    assert (
-        commit.body
-        == """- Export types, enums, utils, themes
+    assert commit.body == """- Export types, enums, utils, themes
 - Update components to use styled-components ThemeProvider
 
 Issue: DEV-55"""
-    )
     assert commit.scope is None
     assert (
         commit.format(FormatTypeEnum.markdown)

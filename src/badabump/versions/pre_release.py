@@ -10,7 +10,6 @@ from badabump.enums import ProjectTypeEnum
 from badabump.versions.formatting import format_version
 from badabump.versions.parsing import parse_version
 
-
 SCHEMA_MAPPING: DefaultDict[ProjectTypeEnum, str] = DefaultDict(
     lambda: "-TYPE.NUMBER"
 )

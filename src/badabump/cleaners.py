@@ -1,7 +1,6 @@
 import re
 from typing import List
 
-
 CO_AUTHORED_BY = "Co-authored-by: "
 COMMIT_SUBJECT_WITH_PR_RE = re.compile(r"^(?P<subject>.+) \(\#\d+\)$")
 SIGNED_OFF_BY = "Signed-off-by: "

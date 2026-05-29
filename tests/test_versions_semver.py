@@ -3,7 +3,6 @@ import pytest
 from badabump.configs import UpdateConfig
 from badabump.versions.semver import SemVer
 
-
 VERSIONS = (
     (SemVer(major=0, minor=0, patch=1), "0.0.1"),
     (SemVer(major=0, minor=1, patch=2), "0.1.2"),

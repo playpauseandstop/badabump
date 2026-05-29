@@ -2,7 +2,6 @@ import subprocess
 
 import pytest
 
-
 COMMITS = (
     "feat: Initial commit",
     "feat: Add new file",

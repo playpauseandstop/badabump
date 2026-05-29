@@ -1,7 +1,6 @@
 from badabump import __app__
 from badabump.enums import FormatTypeEnum, ProjectTypeEnum, VersionTypeEnum
 
-
 CHANGELOG_UPPER = "CHANGELOG"
 CHANGELOG_LOWER = CHANGELOG_UPPER.lower()
 

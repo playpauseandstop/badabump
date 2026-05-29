@@ -1,16 +1,19 @@
 GIT_DIR = .git
 
-PYTHON_VERISON = $(shell cat .python-version)
+PYTHON_VERSION = $(shell cat .python-version)
 VENV_DIR = .venv
 PYTHON_BIN = $(VENV_DIR)/bin/python3
 
 STAGE ?= dev
-DOTENV ?= $(shell if [ -f dotenv.sh ]; then echo "./dotenv.sh"; fi)
-POETRY ?= $(DOTENV) poetry
+UV ?= uv
+UVX ?= uvx
+
+POETRY_VERSION ?= 2.4.1
+POETRY = $(UVX) -p $(PYTHON_VERSION) poetry==$(POETRY_VERSION)
 POETRY_INSTALL_ARGS ?=
-PRE_COMMIT ?= pre-commit
-PYENV ?= $(shell if [ -z "${CI}" ]; then echo "pyenv"; fi)
-PYTHON ?= $(DOTENV) $(PYTHON_BIN)
+PRE_COMMIT_VERSION ?= 4.6.0
+PRE_COMMIT = $(UVX) -p $(PYTHON_VERSION) pre-commit==$(PRE_COMMIT_VERSION)
+PYTHON ?= $(UV) run python
 PYTHON_DIST_DIR ?= dist
 
 .PHONY: build-python
@@ -35,13 +38,13 @@ distclean-python: clean-egg-info
 .PHONY: ensure-venv
 ensure-venv: .python-version
 	if [ -f "$(PYTHON_BIN)" ]; then \
-		if [ "$$("$(PYTHON_BIN)" -V)" != "Python $(PYTHON_VERISON)" ]; then \
-			echo "[python.mk] Updating virtualenv as venv version of $$("$(PYTHON_BIN)" -V) != $(PYTHON_VERISON)"; \
-			$(POETRY) env use $$($(PYENV) which python3); \
+		if [ "$$("$(PYTHON_BIN)" -V)" != "Python $(PYTHON_VERSION)" ]; then \
+			echo "[python.mk] Updating virtualenv as venv version of $$("$(PYTHON_BIN)" -V) != $(PYTHON_VERSION)"; \
+			$(POETRY) env use $$($(UV) python find $(PYTHON_VERSION)); \
 		fi; \
 	else \
-		echo "[python.mk] Tell poetry to use Python $(PYTHON_VERISON) for creating virtual env"; \
-		$(POETRY) env use $$($(PYENV) which python3); \
+		echo "[python.mk] Tell poetry to use Python $(PYTHON_VERSION) for creating virtual env"; \
+		$(POETRY) env use $$($(UV) python find $(PYTHON_VERSION)); \
 	fi
 
 .PHONY: install-python
@@ -80,9 +83,13 @@ poetry.toml:
 	$(POETRY) config --local virtualenvs.in-project true
 	$(POETRY) config --local virtualenvs.prefer-active-python true
 
+.PHONY: pre-commit
+pre-commit:
+	$(PRE_COMMIT) $(ARGS)
+
 .PHONY: python-version
 python-version:
-	@echo "Expected: Python $(PYTHON_VERISON)"
+	@echo "Expected: Python $(PYTHON_VERSION)"
 	@if [ -f "$(PYTHON_BIN)" ]; then echo "Virtual env: $$("$(PYTHON_BIN)" -V)"; else echo "Virtual env: -"; fi
 
 .PHONY: test-python

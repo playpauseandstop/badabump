@@ -1,11 +1,69 @@
+# Build system
+# https://packaging.python.org/en/latest/specifications/pyproject-toml/#declaring-build-system-dependencies-the-build-system-table
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
+# Project metadata
+# https://packaging.python.org/en/latest/specifications/pyproject-toml/#declaring-project-metadata-the-project-table
+[project]
+name = "badabump"
+version = "22.1.0"
+description = "Manage changelog and bump project version number using conventional commits from latest git tag. Support Python & JavaScript projects and CalVer & SemVer schemas. Designed to run at GitHub Actions."
+readme = "README.md"
+requires-python = ">=3.10,<4.0"
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
+authors = [
+  {name = "Igor Davydenko", email = "iam@igordavydenko.com"}
+]
+keywords = ["changelog", "conventional commit", "bump", "version", "calver", "semver", "pre release"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "Intended Audience :: System Administrators",
+  "Environment :: Console",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Software Development",
+  "Topic :: Utilities",
+  "Typing :: Typed",
+]
+dependencies = [
+  "attrs>=22.1.0,<23.0.0",
+  "tomli>=1.2.0,<3.0.0; python_version <= '3.11.0a6'",
+]
+
+[dependency-groups]
+dev = [
+  "mypy>=2.1.0,<3.0.0",
+]
+test = [
+  "coverage>=7.14.1,<8.0.0",
+  "coveralls>=4.1.0,<5.0.0",
+  "pytest>=9.0.3,<10.0.0",
+  "pytest-cov>=7.1.0,<8.0.0",
+  "time-machine>=3.2.0,<4.0.0",
+  "tomli-w>=1.2.0,<2.0.0",
+]
+
+[project.scripts]
+badabump = "badabump.cli.app:main"
+badabump-ci = "badabump.cli.ci_app:main"
+
+[project.urls]
+"Bug Tracker" = "https://github.com/playpauseandstop/badabump/issues"
+homepage = "https://igordavydenko.com/projects/#badabump"
+repository = "https://github.com/playpauseandstop/badabump"
+
+# black configuration
+# https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html#configuration-via-a-file
 [tool.black]
 line_length = 79
 target_version = ["py310"]
 
+# coverage configuration
+# https://coverage.readthedocs.io/en/latest/config.html#toml-syntax
 [tool.coverage.run]
 branch = true
 source = ["badabump"]
@@ -14,7 +72,7 @@ source = ["badabump"]
 source = ["src/"]
 
 [tool.coverage.report]
-exclude_lines = [
+exclude_also = [
   "if TYPE_CHECKING:",
   "@overload",
 ]
@@ -26,6 +84,8 @@ fail_under = 95
 skip_covered = true
 show_missing = true
 
+# isort configuration
+# https://pycqa.github.io/isort/docs/configuration/config_files.html#pyprojecttoml-preferred-format
 [tool.isort]
 profile = "black"
 combine_as_imports = true
@@ -34,6 +94,8 @@ lines_between_types = 0
 src_paths = ["src/"]
 virtual_env = ".venv/"
 
+# mypy configuration
+# https://mypy.readthedocs.io/en/stable/config_file.html
 [tool.mypy]
 allow_untyped_globals = true
 check_untyped_defs = true
@@ -57,55 +119,8 @@ warn_redundant_casts = true
 warn_return_any = true
 warn_unused_ignores = true
 
-[tool.poetry]
-name = "badabump"
-version = "22.1.0"
-description = "Manage changelog and bump project version number using conventional commits from latest git tag. Support Python & JavaScript projects and CalVer & SemVer schemas. Designed to run at GitHub Actions."
-authors = ["Igor Davydenko <iam@igordavydenko.com>"]
-license = "BSD-3-Clause"
-readme = "README.md"
-homepage = "https://igordavydenko.com/projects/#badabump"
-repository = "https://github.com/playpauseandstop/badabump"
-packages = [
-  {include = "badabump", from = "src/"},
-]
-keywords = ["changelog", "conventional commit", "bump", "version", "calver", "semver", "pre release"]
-classifiers = [
-  "Development Status :: 5 - Production/Stable",
-  "Intended Audience :: Developers",
-  "Intended Audience :: System Administrators",
-  "Environment :: Console",
-  "License :: OSI Approved :: BSD License",
-  "Operating System :: OS Independent",
-  "Programming Language :: Python :: 3 :: Only",
-  "Topic :: Software Development",
-  "Topic :: Utilities",
-  "Typing :: Typed",
-]
-
-[tool.poetry.dependencies]
-python = "^3.10"
-attrs = "^22.1.0"
-tomli = {python = "<=3.11.0a6", version = ">=1.2.0,<3"}
-
-[tool.poetry.group.dev.dependencies]
-mypy = "^2.1.0"
-
-[tool.poetry.group.test.dependencies]
-coverage = "^7.14.1"
-coveralls = "^4.1.0"
-pytest = "^9.0.3"
-pytest-cov = "^7.1.0"
-time-machine = "^3.2.0"
-tomli-w = "^1.2.0"
-
-[tool.poetry.scripts]
-badabump = "badabump.cli.app:main"
-badabump-ci = "badabump.cli.ci_app:main"
-
-[tool.poetry.urls]
-"Bug Tracker" = "https://github.com/playpauseandstop/badabump/issues"
-
+# pytest configuration
+# https://docs.pytest.org/en/stable/reference/customize.html#pyproject-toml
 [tool.pytest.ini_options]
 minversion = "9.0.3"
 testpaths = ["tests/"]

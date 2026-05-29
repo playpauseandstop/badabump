@@ -191,7 +191,7 @@ description = "Cross-platform colored terminal text."
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*,>=2.7"
 groups = ["test"]
-markers = "sys_platform == \"win32\" or platform_system == \"Windows\""
+markers = "platform_system == \"Windows\" or sys_platform == \"win32\""
 files = [
     {file = "colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"},
     {file = "colorama-0.4.6.tar.gz", hash = "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44"},
@@ -860,7 +860,7 @@ files = [
     {file = "tomli-2.0.1-py3-none-any.whl", hash = "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc"},
     {file = "tomli-2.0.1.tar.gz", hash = "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"},
 ]
-markers = {main = "python_full_version <= \"3.11.0\"", dev = "python_version == \"3.10\"", test = "python_full_version <= \"3.11.0a6\""}
+markers = {main = "python_version <= \"3.11.0a6\"", dev = "python_version == \"3.10\"", test = "python_full_version <= \"3.11.0a6\""}
 
 [[package]]
 name = "tomli-w"
@@ -923,5 +923,5 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
 [metadata]
 lock-version = "2.1"
-python-versions = "^3.10"
-content-hash = "2139f3a66a72a4fbcb47d2f3dc16a658902787215a436420f62258705a6de4ef"
+python-versions = ">=3.10,<4.0"
+content-hash = "0ffc0893bd8e90dace962b26c8eb48955ee1def41b26fd9ea1e495c6d7b0aaaa"

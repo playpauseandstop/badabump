@@ -26,6 +26,21 @@ jobs:
       matrix:
         os: ["ubuntu-24.04", "macos-26", "windows-2025"]
 
+        # https://raw.githubusercontent.com/actions/python-versions/main/versions-manifest.json
+        # does not have versions after 3.10.11 available for macOS or Windows :cry:
+        include:
+          - os: "ubuntu-24.04"
+            python-version: ""
+            python-version-file: ".python-version"
+
+          - os: "macos-26"
+            python-version: "3.10.11"
+            python-version-file: ""
+
+          - os: "windows-2025"
+            python-version: "3.10.11"
+            python-version-file: ""
+
     runs-on: "${{ matrix.os }}"
 
     steps:
@@ -34,7 +49,8 @@ jobs:
       - uses: "./.github/actions/install_python_and_poetry"
         with:
           cache-key-suffix: "-main"
-          python-version-file: ".python-version"
+          python-version: "${{ matrix.python-version }}"
+          python-version-file: "${{ matrix.python-version-file }}"
 
       - name: "Install package"
         run: "poetry install --only main"

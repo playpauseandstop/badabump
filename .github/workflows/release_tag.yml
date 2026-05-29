@@ -35,24 +35,23 @@ jobs:
           python-version-file: ".python-version"
 
       - name: "Install badabump"
-        run: "poetry install --no-dev"
+        run: "poetry install --only=main"
 
       - id: "badabump"
         name: "Run badabump"
         run: "poetry run python3 -m badabump.ci prepare_tag"
 
       - name: "Save tag message into the file"
-        run: |
-          with open("./tag_message.txt", "w+") as handler:
-              handler.write("""${{ steps.badabump.outputs.tag_message }}""")
-        shell: "python"
+        env:
+          TAG_MESSAGE: "${{ steps.badabump.outputs.tag_message }}"
+        run: printf '%s' "${TAG_MESSAGE}" > ./tag_message.txt
 
       - name: "Create release tag from latest commit"
         run: |
           set -euo pipefail
 
-          git config user.name badabump-release-bot[bot]
-          git config user.email badabump-release-bot[bot]@users.noreply.github.com
+          git config user.name badabump[bot]
+          git config user.email 86060+badabump[bot]@users.noreply.github.com
 
           git tag -a ${{ steps.badabump.outputs.tag_name }} -F ./tag_message.txt
           git push --tag

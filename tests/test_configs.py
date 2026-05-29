@@ -4,7 +4,6 @@ from badabump.configs import ProjectConfig, UpdateConfig
 from badabump.constants import DEFAULT_SEMVER_SCHEMA
 from badabump.enums import VersionTypeEnum
 
-
 DEFAULT_KWARGS = {
     "is_breaking_change": False,
     "is_minor_change": False,

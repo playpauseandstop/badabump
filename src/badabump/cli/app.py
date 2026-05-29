@@ -145,9 +145,11 @@ def main(argv: Union[Argv, None] = None) -> int:
         )
         changelog = ChangeLog.from_git_commits(
             (
-                INITIAL_PRE_RELEASE_COMMIT
-                if next_version.pre_release is not None
-                else INITIAL_RELEASE_COMMIT,
+                (
+                    INITIAL_PRE_RELEASE_COMMIT
+                    if next_version.pre_release is not None
+                    else INITIAL_RELEASE_COMMIT
+                ),
             ),
         )
 

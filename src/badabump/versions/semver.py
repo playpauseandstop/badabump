@@ -9,7 +9,6 @@ from badabump.versions.exceptions import VersionParseError
 from badabump.versions.formatting import format_version
 from badabump.versions.parsing import parse_version
 
-
 SCHEMA_PARTS_FORMATTING = {
     "MAJOR": "{major}",
     "MINOR": "{minor}",

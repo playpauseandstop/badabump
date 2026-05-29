@@ -2,7 +2,6 @@ import os
 from difflib import ndiff
 from typing import Union
 
-
 EMPTY = "-"
 
 

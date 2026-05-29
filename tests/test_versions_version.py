@@ -18,7 +18,6 @@ from badabump.versions.version import (
     Version,
 )
 
-
 SEMVER_PROJECT_CONFIG = ProjectConfig(version_type=VersionTypeEnum.semver)
 
 

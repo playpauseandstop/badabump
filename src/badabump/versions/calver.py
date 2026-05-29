@@ -10,7 +10,6 @@ from badabump.versions.exceptions import VersionError, VersionParseError
 from badabump.versions.formatting import format_version
 from badabump.versions.parsing import parse_version
 
-
 DEFAULT_MINOR = 1
 DEFAULT_MICRO = 0
 

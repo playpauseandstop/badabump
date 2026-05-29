@@ -1,7 +1,6 @@
 import re
 from typing import Pattern
 
-
 VAR_RE = re.compile(r"\{(?P<var>[^\{]+)\}")
 
 

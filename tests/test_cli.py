@@ -5,7 +5,6 @@ import pytest
 from badabump.cli.app import main
 from badabump.enums import ProjectTypeEnum
 
-
 BADABUMP_CONFIG_SEMVER_TOML = """[tool.badabump]
 version_type = "semver"
 """

@@ -6,7 +6,6 @@ from badabump.configs import UpdateConfig
 from badabump.enums import ProjectTypeEnum
 from badabump.versions.pre_release import PreRelease, PreReleaseTypeEnum
 
-
 PRE_RELEASES: Tuple[Tuple[PreRelease, ProjectTypeEnum, str], ...] = (
     (
         PreRelease(pre_release_type=PreReleaseTypeEnum.alpha, number=0),

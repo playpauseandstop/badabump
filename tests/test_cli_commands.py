@@ -64,8 +64,9 @@ def test_guess_javascript_version_files(tmpdir):
     ) == ("package.json",)
 
 
+@pytest.mark.parametrize("table_name", ("project", "tool.poetry"))
 @pytest.mark.parametrize(
-    "files, expected",
+    ("files", "expected"),
     (
         ((), ("pyproject.toml",)),
         (
@@ -90,10 +91,12 @@ def test_guess_javascript_version_files(tmpdir):
         ),
     ),
 )
-def test_guess_python_version_files(tmpdir, files, expected):
+def test_guess_python_version_files(
+    tmpdir, table_name: str, files: tuple[str, ...], expected: tuple[str, ...]
+):
     path = Path(tmpdir)
 
-    (path / "pyproject.toml").write_text("""[tool.poetry]
+    (path / "pyproject.toml").write_text(f"""[{table_name}]
 name = "my-project"
 version = "1.0.0"
 """)
@@ -111,9 +114,12 @@ version = "1.0.0"
     )
 
 
-def test_guess_python_version_files_invalid_poetry_config(tmpdir):
+@pytest.mark.parametrize("table_name", ("project", "tool.poetry"))
+def test_guess_python_version_files_invalid_poetry_config(
+    tmpdir, table_name: str
+):
     path = Path(tmpdir)
-    (path / "pyproject.toml").write_text("""[tool.poetry]
+    (path / "pyproject.toml").write_text(f"""[{table_name}]
 version = "1.0.0"
 """)
     assert guess_version_files(

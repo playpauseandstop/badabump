@@ -1,11 +1,11 @@
+from __future__ import annotations
+
 import json
 from contextlib import suppress
-from typing import cast, Type, Union
+from typing import cast, TYPE_CHECKING, TypeAlias, Union
 
 import attrs
 
-from badabump.annotations import DictStrStr
-from badabump.configs import ProjectConfig, UpdateConfig
 from badabump.enums import ProjectTypeEnum, VersionTypeEnum
 from badabump.loaders import get_pyproject_toml_metadata, loads_toml
 from badabump.regexps import to_regexp
@@ -16,7 +16,13 @@ from badabump.versions.parsing import parse_version
 from badabump.versions.pre_release import PreRelease
 from badabump.versions.semver import SemVer
 
-CalOrSemVer = Union[CalVer, SemVer]
+if TYPE_CHECKING:
+    from typing_extensions import Self
+
+    from badabump.annotations import DictStrStr
+    from badabump.configs import ProjectConfig, UpdateConfig
+
+    CalOrSemVer: TypeAlias = Union[CalVer, SemVer]
 
 
 @attrs.frozen(slots=True, kw_only=True)
@@ -25,34 +31,35 @@ class Version:
     pre_release: Union[PreRelease, None] = None
 
     @classmethod
-    def from_tag(cls, value: str, *, config: ProjectConfig) -> "Version":
+    def from_tag(cls, value: str, *, config: ProjectConfig) -> Self:
         return cls.parse(
             guess_version_from_tag(value, tag_format=config.tag_format),
             config=config,
         )
 
-    def format(self, *, config: ProjectConfig) -> str:  # noqa: A003
-        if self.pre_release:
-            return (
-                f"{self.version.format()}"
-                f"{self.pre_release.format(project_type=config.project_type)}"
-            )
-        return self.version.format()
-
     @classmethod
     def guess_initial_version(
         cls, *, config: ProjectConfig, is_pre_release: bool
-    ) -> "Version":
-        version = guess_initial_version(config)
-        if version.pre_release is None and is_pre_release:
-            return attrs.evolve(version, pre_release=PreRelease())
-        return version
+    ) -> Self:
+        maybe_version_str = find_project_version(config)
+        if maybe_version_str:
+            return cls.parse(
+                maybe_version_str, config=config
+            ).enforce_pre_release(is_pre_release)
+
+        if config.version_type == VersionTypeEnum.semver:
+            return cls(version=SemVer.initial()).enforce_pre_release(
+                is_pre_release
+            )
+        return cls(
+            version=CalVer.initial(schema=config.version_schema)
+        ).enforce_pre_release(is_pre_release)
 
     @classmethod
-    def parse(cls, value: str, *, config: ProjectConfig) -> "Version":
+    def parse(cls, value: str, *, config: ProjectConfig) -> Self:
         schema = config.version_schema
 
-        version_cls: Type[CalOrSemVer]
+        version_cls: type[CalOrSemVer]
         full_schema_parts: DictStrStr
         if config.version_type == VersionTypeEnum.semver:
             version_cls = semver.SemVer
@@ -82,22 +89,37 @@ class Version:
 
         raise VersionParseError(schema, value)
 
-    def update(self, config: UpdateConfig) -> "Version":
+    def enforce_pre_release(self, is_pre_release: bool) -> Self:
+        if self.pre_release is None and is_pre_release:
+            return attrs.evolve(self, pre_release=PreRelease())
+        return self
+
+    def format(self, *, config: ProjectConfig) -> str:  # noqa: A003
         if self.pre_release:
-            return Version(
+            return (
+                f"{self.version.format()}"
+                f"{self.pre_release.format(project_type=config.project_type)}"
+            )
+        return self.version.format()
+
+    def update(self, config: UpdateConfig) -> Self:
+        version_class = self.__class__
+
+        if self.pre_release:
+            return version_class(
                 version=self.version,
                 pre_release=self.pre_release.update(config),
             )
 
         if config.is_pre_release:
-            return Version(
+            return version_class(
                 version=self.version.update(
                     attrs.evolve(config, is_pre_release=False)
                 ),
                 pre_release=PreRelease(),
             )
 
-        return Version(version=self.version.update(config))
+        return version_class(version=self.version.update(config))
 
 
 def find_project_version(config: ProjectConfig) -> Union[str, None]:
@@ -106,7 +128,7 @@ def find_project_version(config: ProjectConfig) -> Union[str, None]:
         if package_json_path.exists():
             with suppress(KeyError, ValueError):
                 return cast(
-                    str, json.loads(package_json_path.read_text())["version"]
+                    "str", json.loads(package_json_path.read_text())["version"]
                 )
     else:
         pyproject_toml_path = config.path / "pyproject.toml"
@@ -115,16 +137,6 @@ def find_project_version(config: ProjectConfig) -> Union[str, None]:
             return get_pyproject_toml_metadata(pyproject_toml, "version")
 
     return None
-
-
-def guess_initial_version(config: ProjectConfig) -> Version:
-    maybe_version_str = find_project_version(config)
-    if maybe_version_str:
-        return Version.parse(maybe_version_str, config=config)
-
-    if config.version_type == VersionTypeEnum.semver:
-        return Version(version=SemVer.initial())
-    return Version(version=CalVer.initial(schema=config.version_schema))
 
 
 def guess_version_from_tag(value: str, *, tag_format: str) -> str:

@@ -1,11 +1,18 @@
+from __future__ import annotations
+
 import datetime
 import logging
 import re
-from typing import Iterator, List, Tuple, Union
+from typing import TYPE_CHECKING, Union
 
 import attrs
 
 from badabump.enums import ChangeLogTypeEnum, FormatTypeEnum
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+
+    from typing_extensions import Self
 
 BREAKING_CHANGE_IN_BODY = "BREAKING CHANGE:"
 BREAKING_CHANGE_IN_COMMIT_TYPE = "!"
@@ -78,9 +85,7 @@ class ConventionalCommit:
         return f"{prefix}{self.description}"
 
     @classmethod
-    def from_git_commit(
-        cls, git_commit: str, *, strict: bool = True
-    ) -> "ConventionalCommit":
+    def from_git_commit(cls, git_commit: str, *, strict: bool = True) -> Self:
         subject, *body = git_commit.splitlines()
         body_str = "\n".join(body[1:]) if body else None
 
@@ -116,7 +121,7 @@ class ConventionalCommit:
         )
 
     @property
-    def issues(self) -> Tuple[str, ...]:
+    def issues(self) -> tuple[str, ...]:
         if self.body is None:
             return ()
         return tuple(item.strip() for _, item in ISSUE_RE.findall(self.body))
@@ -134,18 +139,18 @@ class ConventionalCommit:
 
 @attrs.frozen(slots=True, kw_only=True)
 class ChangeLog:
-    commits: Tuple[ConventionalCommit, ...]
+    commits: tuple[ConventionalCommit, ...]
 
-    feature_commits: Tuple[ConventionalCommit, ...] = attrs.field(init=False)
-    fix_commits: Tuple[ConventionalCommit, ...] = attrs.field(init=False)
-    refactor_commits: Tuple[ConventionalCommit, ...] = attrs.field(init=False)
-    other_commits: Tuple[ConventionalCommit, ...] = attrs.field(init=False)
+    feature_commits: tuple[ConventionalCommit, ...] = attrs.field(init=False)
+    fix_commits: tuple[ConventionalCommit, ...] = attrs.field(init=False)
+    refactor_commits: tuple[ConventionalCommit, ...] = attrs.field(init=False)
+    other_commits: tuple[ConventionalCommit, ...] = attrs.field(init=False)
 
     def __attrs_post_init__(self) -> None:
-        feature_commits: List[ConventionalCommit] = []
-        fix_commits: List[ConventionalCommit] = []
-        refactor_commits: List[ConventionalCommit] = []
-        other_commits: List[ConventionalCommit] = []
+        feature_commits: list[ConventionalCommit] = []
+        fix_commits: list[ConventionalCommit] = []
+        refactor_commits: list[ConventionalCommit] = []
+        other_commits: list[ConventionalCommit] = []
 
         for commit in self.commits:
             if commit.commit_type == COMMIT_TYPE_FEATURE:
@@ -177,7 +182,7 @@ class ChangeLog:
         is_rst = format_type == FormatTypeEnum.rst
 
         def format_block(
-            label: str, commits: Tuple[ConventionalCommit, ...]
+            label: str, commits: tuple[ConventionalCommit, ...]
         ) -> Union[str, None]:
             if not commits:
                 return None
@@ -223,8 +228,8 @@ class ChangeLog:
 
     @classmethod
     def from_git_commits(
-        cls, git_commits: Tuple[str, ...], *, strict: bool = True
-    ) -> "ChangeLog":
+        cls, git_commits: tuple[str, ...], *, strict: bool = True
+    ) -> Self:
         return cls(
             commits=tuple(
                 ConventionalCommit.from_git_commit(item, strict=strict)
@@ -283,7 +288,7 @@ def prepare_formatted_commits(
     format_type: FormatTypeEnum,
     *,
     ignore_footer_urls: bool,
-) -> List[str]:
+) -> list[str]:
     storage = []
 
     for commit in commits:

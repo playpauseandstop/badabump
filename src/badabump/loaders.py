@@ -1,13 +1,16 @@
+from __future__ import annotations
+
 import sys
 from contextlib import suppress
-from typing import cast, Union
-
-from badabump.annotations import DictStrAny
+from typing import cast, TYPE_CHECKING, Union
 
 if sys.version_info >= (3, 11):
     import tomllib
 else:
     import tomli as tomllib
+
+if TYPE_CHECKING:
+    from badabump.annotations import DictStrAny
 
 
 def get_pyproject_toml_metadata(

@@ -1,11 +1,12 @@
+from __future__ import annotations
+
 import itertools
 import subprocess
-from pathlib import Path
-from typing import Iterator, Set, Tuple, Union
+from typing import TYPE_CHECKING, Union
 
-from badabump.changelog import ChangeLog, in_development_header, version_header
+from badabump.changelog import in_development_header, version_header
 from badabump.cli.output import diff, echo_message
-from badabump.configs import find_changelog_file, ProjectConfig
+from badabump.configs import find_changelog_file
 from badabump.constants import (
     CHANGELOG_UPPER,
     FILE_PACKAGE_JSON,
@@ -16,7 +17,14 @@ from badabump.constants import (
 from badabump.enums import ChangeLogTypeEnum, FormatTypeEnum, ProjectTypeEnum
 from badabump.exceptions import ConfigError
 from badabump.loaders import get_pyproject_toml_metadata, loads_toml
-from badabump.versions import Version
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+    from pathlib import Path
+
+    from badabump.changelog import ChangeLog
+    from badabump.configs import ProjectConfig
+    from badabump.versions import Version
 
 
 def find_changelog_path(config: ProjectConfig) -> Path:
@@ -45,7 +53,7 @@ def format_version_str(item: Path, version_str: str) -> str:
     return version_str
 
 
-def guess_version_files(config: ProjectConfig) -> Tuple[str, ...]:
+def guess_version_files(config: ProjectConfig) -> tuple[str, ...]:
     if config.project_type == ProjectTypeEnum.javascript:
         return (FILE_PACKAGE_JSON,)
 
@@ -235,7 +243,7 @@ def update_version_files(
     current_version_str = current_version.format(config=config)
     next_version_str = next_version.format(config=config)
 
-    updated: Set[bool] = set()
+    updated: set[bool] = set()
 
     for item in version_files:
         if item.startswith("..") or item.startswith("/"):

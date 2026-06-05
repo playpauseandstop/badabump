@@ -1,11 +1,12 @@
+from __future__ import annotations
+
 import argparse
 import json
 import os
 import sys
-from typing import cast, Union
+from typing import cast, TYPE_CHECKING, Union
 
 from badabump import __app__, __version__
-from badabump.annotations import Argv
 from badabump.cleaners import clean_body, clean_commit_subject, clean_tag_ref
 from badabump.cli.arguments import add_path_argument
 from badabump.cli.output import github_actions_output
@@ -13,6 +14,9 @@ from badabump.configs import ProjectConfig
 from badabump.git import Git
 from badabump.regexps import to_regexp
 from badabump.versions import Version
+
+if TYPE_CHECKING:
+    from badabump.annotations import Argv
 
 
 def parse_args(argv: Argv) -> argparse.Namespace:
@@ -110,4 +114,4 @@ def main(argv: Union[Argv, None] = None) -> int:
         return 1
 
     config = ProjectConfig.from_path(args.path)
-    return cast(int, args.func(args, config=config))
+    return cast("int", args.func(args, config=config))

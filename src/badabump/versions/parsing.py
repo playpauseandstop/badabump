@@ -1,11 +1,15 @@
-import re
-from typing import Pattern, Union
+from __future__ import annotations
 
-from badabump.annotations import DictStrStr
+import re
+from typing import TYPE_CHECKING, Union
+
 from badabump.regexps import ensure_regexp_dots
 
+if TYPE_CHECKING:
+    from badabump.annotations import DictStrStr
 
-def build_schema_regexp(schema: str, parts: DictStrStr) -> Pattern[str]:
+
+def build_schema_regexp(schema: str, parts: DictStrStr) -> re.Pattern[str]:
     schema = ensure_regexp_dots(schema)
     for part, regexp in parts.items():
         schema = schema.replace(part, regexp)

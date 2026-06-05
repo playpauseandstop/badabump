@@ -1,10 +1,11 @@
+from __future__ import annotations
+
 from pathlib import Path
-from typing import Tuple, Union
+from typing import TYPE_CHECKING, Union
 
 import attrs
 
 from badabump import __app__
-from badabump.annotations import DictStrAny, T
 from badabump.constants import (
     CHANGELOG_LOWER,
     DEFAULT_CHANGELOG_FILE_INCLUDE_DATE,
@@ -24,6 +25,11 @@ from badabump.constants import (
 from badabump.enums import FormatTypeEnum, ProjectTypeEnum, VersionTypeEnum
 from badabump.loaders import loads_toml
 
+if TYPE_CHECKING:
+    from typing_extensions import Self
+
+    from badabump.annotations import DictStrAny, T
+
 
 @attrs.frozen(slots=True, kw_only=True)
 class ProjectConfig:
@@ -33,7 +39,7 @@ class ProjectConfig:
 
     version_type: VersionTypeEnum = DEFAULT_VERSION_TYPE
     version_schema: str = DEFAULT_VERSION_SCHEMA
-    version_files: Tuple[str, ...] = attrs.Factory(tuple)
+    version_files: tuple[str, ...] = attrs.Factory(tuple)
 
     tag_format: str = DEFAULT_TAG_FORMAT
     tag_subject_format: str = DEFAULT_TAG_SUBJECT_FORMAT
@@ -57,7 +63,7 @@ class ProjectConfig:
             object.__setattr__(self, "version_schema", DEFAULT_SEMVER_SCHEMA)
 
     @classmethod
-    def from_path(cls, path: Path) -> "ProjectConfig":
+    def from_path(cls, path: Path) -> Self:
         if not path.is_dir() or not path.exists():
             raise ValueError(f"Project path does not exist: {path!r}")
 
@@ -183,7 +189,7 @@ def if_defined(value: Union[T, None], default: T) -> T:
 
 def load_project_config_data(
     path: Path,
-) -> Union[Tuple[Path, DictStrAny], None]:
+) -> Union[tuple[Path, DictStrAny], None]:
     for item in (f".{__app__}.toml", "pyproject.toml"):
         maybe_config_path = path / item
         if not maybe_config_path.exists():

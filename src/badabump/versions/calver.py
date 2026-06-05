@@ -1,14 +1,21 @@
+from __future__ import annotations
+
 import datetime
-from typing import Union
+from typing import TYPE_CHECKING, Union
 
 import attrs
 
-from badabump.annotations import DictStrAny, DictStrStr
-from badabump.configs import UpdateConfig
 from badabump.constants import DEFAULT_VERSION_SCHEMA
 from badabump.versions.exceptions import VersionError, VersionParseError
 from badabump.versions.formatting import format_version
 from badabump.versions.parsing import parse_version
+
+if TYPE_CHECKING:
+    from typing_extensions import Self
+
+    from badabump.annotations import DictStrAny, DictStrStr
+    from badabump.configs import UpdateConfig
+
 
 DEFAULT_MINOR = 1
 DEFAULT_MICRO = 0
@@ -60,7 +67,7 @@ class CalVer:
         )
 
     @classmethod
-    def from_parsed_dict(cls, parsed: DictStrStr, *, schema: str) -> "CalVer":
+    def from_parsed_dict(cls, parsed: DictStrStr, *, schema: str) -> Self:
         maybe_year = guess_year(parsed.get("year"), parsed.get("short_year"))
         if maybe_year is None:
             raise VersionError("CalVer version should contains at least year")
@@ -75,11 +82,8 @@ class CalVer:
             schema=schema,
         )
 
-    def get_format_context(self) -> DictStrAny:
-        return {**attrs.asdict(self), "short_year": self.short_year}
-
     @classmethod
-    def initial(cls, *, schema: str) -> "CalVer":
+    def initial(cls, *, schema: str) -> Self:
         utcnow = datetime.datetime.utcnow()
         return cls(
             year=utcnow.year,
@@ -92,21 +96,16 @@ class CalVer:
         )
 
     @classmethod
-    def parse(cls, value: str, *, schema: str) -> "CalVer":
+    def parse(cls, value: str, *, schema: str) -> Self:
         maybe_parsed = parse_version(schema, SCHEMA_PARTS_PARSING, value)
         if maybe_parsed:
             return cls.from_parsed_dict(maybe_parsed, schema=schema)
         raise VersionParseError(schema, value)
 
-    @property
-    def short_year(self) -> Union[int, None]:
-        if self.year is None:
-            return None
-        if self.year < SHORT_YEAR_START:
-            return None
-        return self.year - SHORT_YEAR_START
+    def get_format_context(self) -> DictStrAny:
+        return {**attrs.asdict(self), "short_year": self.short_year}
 
-    def update(self, config: UpdateConfig) -> "CalVer":
+    def update(self, config: UpdateConfig) -> Self:
         utcnow = datetime.datetime.utcnow()
 
         next_minor: Union[int, None] = None
@@ -167,6 +166,14 @@ class CalVer:
             minor=next_minor if next_minor is not None else self.minor,
             micro=next_micro if next_micro is not None else self.micro,
         )
+
+    @property
+    def short_year(self) -> Union[int, None]:
+        if self.year is None:
+            return None
+        if self.year < SHORT_YEAR_START:
+            return None
+        return self.year - SHORT_YEAR_START
 
 
 def get_week(value: datetime.datetime) -> int:

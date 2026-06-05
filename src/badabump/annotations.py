@@ -1,6 +1,7 @@
-from typing import Any, Dict, Sequence, TypeVar
+from collections.abc import Sequence
+from typing import Any, TypeAlias, TypeVar
 
 Argv = Sequence[str]
-DictStrAny = Dict[str, Any]
-DictStrStr = Dict[str, str]
+DictStrAny: TypeAlias = dict[str, Any]
+DictStrStr: TypeAlias = dict[str, str]
 T = TypeVar("T")

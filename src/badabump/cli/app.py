@@ -1,10 +1,11 @@
+from __future__ import annotations
+
 import argparse
 import os
 import sys
-from typing import Union
+from typing import TYPE_CHECKING, Union
 
 from badabump import __app__, __version__
-from badabump.annotations import Argv
 from badabump.changelog import ChangeLog
 from badabump.cli.arguments import add_path_argument
 from badabump.cli.commands import (
@@ -21,6 +22,9 @@ from badabump.constants import (
 from badabump.enums import ChangeLogTypeEnum
 from badabump.git import Git
 from badabump.versions import Version
+
+if TYPE_CHECKING:
+    from badabump.annotations import Argv
 
 
 def create_update_config(

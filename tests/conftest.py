@@ -1,13 +1,13 @@
 import subprocess
 from pathlib import Path
-from typing import Tuple, Union
+from typing import TypeAlias, Union
 
 import pytest
 
 from badabump.git import Git
 
-CommitTuple = Tuple[str, Union[str, None], str]
-TagTuple = Tuple[str, str]
+CommitTuple: TypeAlias = tuple[str, Union[str, None], str]
+TagTuple: TypeAlias = tuple[str, str]
 
 
 @pytest.fixture(scope="function", autouse=True)

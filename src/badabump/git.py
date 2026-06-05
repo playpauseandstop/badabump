@@ -1,17 +1,22 @@
+from __future__ import annotations
+
 import subprocess
 from contextlib import suppress
-from pathlib import Path
-from typing import Iterator, List, Tuple, Union
+from typing import TYPE_CHECKING, Union
 
 import attrs
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+    from pathlib import Path
 
 
 @attrs.frozen(slots=True, kw_only=True)
 class Git:
     path: Path
 
-    def list_commits(self, from_ref: str) -> Tuple[str, ...]:
-        def iter_commtis(commit_ids: List[str]) -> Iterator[str]:
+    def list_commits(self, from_ref: str) -> tuple[str, ...]:
+        def iter_commtis(commit_ids: list[str]) -> Iterator[str]:
             for commit_id in commit_ids:
                 yield self._check_output(
                     ["git", "log", "-1", "--format=%B", commit_id]
@@ -43,7 +48,7 @@ class Git:
             ["git", "tag", "-l", "--format=%(subject)", tag]
         )
 
-    def _check_output(self, args: List[str]) -> str:
+    def _check_output(self, args: list[str]) -> str:
         maybe_output = subprocess.check_output(args, cwd=self.path)
         if maybe_output is not None:
             return maybe_output.strip().decode("utf-8")

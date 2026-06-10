@@ -1,3 +1,20 @@
+# 26.1.0 (In Development)
+
+## 26.1.0a0 (2026-06-10)
+
+### Features:
+
+- Ensure PEP 621 support for pyproject.toml files (#221)
+
+### Other:
+
+- Monthly maintenance (Dec 2022) (#212)
+- Monthly maintenance (Jan 2023) (#214)
+- Bump dev Python version to 3.11.2 (#217)
+- Update Python dev version to use to 3.10.20 (#220)
+- Introduce pyproject-fmt pre-commit hook (#223)
+- Modernize type annotations (#224)
+
 # 22.1.0 (2022-12-20)
 
 First stable `badabump` release in **2022**, which provides more stability to the project and, most importantly, update outputs at GitHub Actions to silence `::set-output ...` deprecation warnings.

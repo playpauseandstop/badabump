@@ -8,7 +8,7 @@ requires = [ "poetry-core>=1.0.0" ]
 # https://packaging.python.org/en/latest/specifications/pyproject-toml/#declaring-project-metadata-the-project-table
 [project]
 name = "badabump"
-version = "22.1.0"
+version = "26.1.0a0"
 description = """\
   Manage changelog and bump project version number using conventional commits from latest git tag. Support Python & \
   JavaScript projects and CalVer & SemVer schemas. Designed to run at GitHub Actions.\

@@ -52,12 +52,12 @@ jobs:
           python-version: "${{ matrix.python-version }}"
           python-version-file: "${{ matrix.python-version-file }}"
 
-      - name: "Install package"
-        run: "poetry install --only main"
-
       - name: "Check that the poetry.lock file corresponds to the current version of pyproject.toml"
         if: "${{ matrix.os == 'ubuntu-24.04' }}"
         run: "poetry check --lock"
+
+      - name: "Install package"
+        run: "poetry install --only main"
 
       - name: "Import package"
         run: "poetry run python -c 'import badabump'"
@@ -122,9 +122,6 @@ jobs:
     needs: ["test"]
 
     uses: "./.github/workflows/ci_package.yml"
-    secrets:
-      pypi-user: "${{ secrets.PYPI_USERNAME }}"
-      pypi-password: "${{ secrets.PYPI_PASSWORD }}"
 
   release:
     needs: ["package"]
@@ -136,13 +133,9 @@ jobs:
 
     steps:
       - uses: "actions/checkout@v6.0.3"
-
-      - name: "Fetch git data"
-        run: |
-          set -euo pipefail
-
-          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-          git fetch --prune --unshallow
+        with:
+          fetch-depth: 0
+          fetch-tags: true
 
       - uses: "./.github/actions/install_python_and_poetry"
         with:

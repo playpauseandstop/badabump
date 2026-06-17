@@ -23,7 +23,7 @@ jobs:
     runs-on: "ubuntu-24.04"
 
     steps:
-      - uses: "actions/checkout@v6.0.2"
+      - uses: "actions/checkout@v6.0.3"
         with:
           ref: "${{ github.repository.default_branch }}"
           fetch-depth: 0

@@ -31,7 +31,7 @@ classifiers = [
   "Typing :: Typed",
 ]
 dependencies = [
-  "attrs>=22.1.0,<23.0.0",
+  "attrs>=22.1.0,<27.0.0",
   "tomli>=1.2.0,<3.0.0; python_version<='3.11.0a6'",
 ]
 [project.scripts]

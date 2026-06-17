@@ -1,7 +1,7 @@
 # badabump
 
 [![CalVer](https://img.shields.io/badge/calver-YY.MINOR.MICRO-22bfda)](https://calver.org)
-[![CI Workflow](https://github.com/playpauseandstop/badabump/workflows/ci/badge.svg)](https://github.com/playpauseandstop/badabump/actions?query=workflow%3A%22ci%22)
+[![CI](https://github.com/playpauseandstop/badabump/actions/workflows/ci.yml/badge.svg)](https://github.com/playpauseandstop/badabump/actions/workflows/ci.yml)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://pre-commit.com)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](https://github.com/commitizen-tools/commitizen#integrating-with-pre-commit)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)

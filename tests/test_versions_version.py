@@ -1,12 +1,12 @@
-import datetime
+import dataclasses
 import json
 from pathlib import Path
 
-import attrs
 import pytest
 import tomli_w
 
 from badabump.configs import ProjectConfig, UpdateConfig
+from badabump.datetimes import utcnow_naive
 from badabump.enums import ProjectTypeEnum, VersionTypeEnum
 from badabump.versions.calver import CalVer, SHORT_YEAR_START
 from badabump.versions.exceptions import VersionParseError
@@ -26,7 +26,7 @@ def test_find_project_version_javascript(tmpdir, version):
     tmp_path = Path(tmpdir)
     (tmp_path / "package.json").write_text(json.dumps({"version": version}))
 
-    config = attrs.evolve(
+    config = dataclasses.replace(
         SEMVER_PROJECT_CONFIG,
         path=tmp_path,
         project_type=ProjectTypeEnum.javascript,
@@ -48,7 +48,7 @@ def test_find_project_version_python(tmpdir, table_name: str, version: str):
     tmp_path = Path(tmpdir)
     (tmp_path / "pyproject.toml").write_text(tomli_w.dumps(data))
 
-    config = attrs.evolve(
+    config = dataclasses.replace(
         SEMVER_PROJECT_CONFIG,
         path=tmp_path,
         project_type=ProjectTypeEnum.python,
@@ -63,7 +63,7 @@ def test_find_project_version_python(tmpdir, table_name: str, version: str):
     "project_type", (ProjectTypeEnum.javascript, ProjectTypeEnum.python)
 )
 def test_find_project_version_empty(tmpdir, project_type):
-    config = attrs.evolve(SEMVER_PROJECT_CONFIG, path=Path(tmpdir))
+    config = dataclasses.replace(SEMVER_PROJECT_CONFIG, path=Path(tmpdir))
     assert find_project_version(config=config) is None
 
 
@@ -75,7 +75,7 @@ def test_find_project_version_empty(tmpdir, project_type):
     ),
 )
 def test_guess_initial_version(tmpdir, config, is_pre_release, expected):
-    tmp_config = attrs.evolve(config, path=Path(tmpdir))
+    tmp_config = dataclasses.replace(config, path=Path(tmpdir))
     assert (
         Version.guess_initial_version(
             config=tmp_config, is_pre_release=is_pre_release
@@ -230,7 +230,7 @@ def test_version_from_tag(tag, config, expected):
     ),
 )
 def test_version_update_calver(current_suffix, update_config, expected_suffix):
-    short_year = datetime.datetime.utcnow().year - SHORT_YEAR_START
+    short_year = utcnow_naive().year - SHORT_YEAR_START
 
     current = f"{short_year}.{current_suffix}"
     expected = f"{short_year}.{expected_suffix}"

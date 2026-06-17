@@ -1,11 +1,10 @@
 from __future__ import annotations
 
+import dataclasses
 from collections import defaultdict
 from contextlib import suppress
 from enum import Enum, unique
 from typing import TYPE_CHECKING, Union
-
-import attrs
 
 from badabump.enums import ProjectTypeEnum
 from badabump.versions.formatting import format_version
@@ -55,7 +54,7 @@ PRE_RELEASE_TYPE_MAPPING = {
 }
 
 
-@attrs.frozen(slots=True, kw_only=True)
+@dataclasses.dataclass(frozen=True, slots=True, kw_only=True)
 class PreRelease:
     pre_release_type: PreReleaseTypeEnum = PreReleaseTypeEnum.alpha
     number: int = 0

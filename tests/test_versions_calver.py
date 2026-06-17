@@ -1,12 +1,11 @@
-import datetime
-
 import pytest
 import time_machine
 
 from badabump.configs import UpdateConfig
+from badabump.datetimes import utcnow_naive
 from badabump.versions.calver import CalVer, SHORT_YEAR_START
 
-UTCNOW = datetime.datetime.utcnow()
+UTCNOW = utcnow_naive()
 
 YEAR = UTCNOW.year
 SHORT_YEAR = YEAR - SHORT_YEAR_START

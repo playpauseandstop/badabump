@@ -1,5 +1,3 @@
-import datetime
-
 import pytest
 
 from badabump.changelog import (
@@ -8,6 +6,7 @@ from badabump.changelog import (
     ConventionalCommit,
     version_header,
 )
+from badabump.datetimes import utcnow_naive
 from badabump.enums import ChangeLogTypeEnum, FormatTypeEnum
 
 CI_BREAKING_COMMIT = "ci!: Use badabump release bot for pushing tags"
@@ -129,7 +128,7 @@ Other:
 - **BREAKING CHANGE:** Use badabump release bot for pushing tags
 - [#123] (**openapi**) Update descriptions in OpenAPI schema"""
 
-UTCNOW = datetime.datetime.utcnow()
+UTCNOW = utcnow_naive()
 
 
 @pytest.mark.parametrize(

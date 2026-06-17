@@ -1,17 +1,16 @@
 from __future__ import annotations
 
+import dataclasses
 import subprocess
 from contextlib import suppress
 from typing import TYPE_CHECKING, Union
-
-import attrs
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
     from pathlib import Path
 
 
-@attrs.frozen(slots=True, kw_only=True)
+@dataclasses.dataclass(frozen=True, slots=True, kw_only=True)
 class Git:
     path: Path
 

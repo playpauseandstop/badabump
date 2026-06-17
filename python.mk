@@ -47,6 +47,10 @@ ensure-venv: .python-version
 		$(POETRY) env use $$($(UV) python find $(PYTHON_VERSION)); \
 	fi
 
+.PHONY: install-pre-commit
+install-pre-commit: .python-version
+	$(PRE_COMMIT) install
+
 .PHONY: install-python
 install-python: .install-python
 .install-python: poetry.toml $(PYTHON_BIN) poetry.lock

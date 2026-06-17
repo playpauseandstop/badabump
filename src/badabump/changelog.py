@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-import datetime
+import dataclasses
 import logging
 import re
 from typing import TYPE_CHECKING, Union
 
-import attrs
-
+from badabump.datetimes import utcnow_naive
 from badabump.enums import ChangeLogTypeEnum, FormatTypeEnum
 
 if TYPE_CHECKING:
@@ -42,7 +41,7 @@ FORMATTED_COMMIT_WITH_PR_RE = re.compile(
 logger = logging.getLogger(__name__)
 
 
-@attrs.frozen(slots=True, kw_only=True)
+@dataclasses.dataclass(frozen=True, slots=True, kw_only=True)
 class ConventionalCommit:
     raw_commit_type: str
     description: str
@@ -137,16 +136,22 @@ class ConventionalCommit:
         return None
 
 
-@attrs.frozen(slots=True, kw_only=True)
+@dataclasses.dataclass(frozen=True, slots=True, kw_only=True)
 class ChangeLog:
     commits: tuple[ConventionalCommit, ...]
 
-    feature_commits: tuple[ConventionalCommit, ...] = attrs.field(init=False)
-    fix_commits: tuple[ConventionalCommit, ...] = attrs.field(init=False)
-    refactor_commits: tuple[ConventionalCommit, ...] = attrs.field(init=False)
-    other_commits: tuple[ConventionalCommit, ...] = attrs.field(init=False)
+    feature_commits: tuple[ConventionalCommit, ...] = dataclasses.field(
+        init=False
+    )
+    fix_commits: tuple[ConventionalCommit, ...] = dataclasses.field(init=False)
+    refactor_commits: tuple[ConventionalCommit, ...] = dataclasses.field(
+        init=False
+    )
+    other_commits: tuple[ConventionalCommit, ...] = dataclasses.field(
+        init=False
+    )
 
-    def __attrs_post_init__(self) -> None:
+    def __post_init__(self) -> None:
         feature_commits: list[ConventionalCommit] = []
         fix_commits: list[ConventionalCommit] = []
         refactor_commits: list[ConventionalCommit] = []
@@ -357,7 +362,7 @@ def version_header(
 ) -> str:
     content = version
     if include_date:
-        now = datetime.datetime.utcnow()
+        now = utcnow_naive()
         content = f"{version} ({now.date().isoformat()})"
 
     is_rst = format_type == FormatTypeEnum.rst

@@ -31,7 +31,6 @@ classifiers = [
   "Typing :: Typed",
 ]
 dependencies = [
-  "attrs>=22.1.0,<23.0.0",
   "tomli>=1.2.0,<3.0.0; python_version<='3.11.0a6'",
 ]
 [project.scripts]
@@ -154,5 +153,5 @@ commands =
 [testenv:py310-minimum-requirements]
 commands_pre =
   poetry install --only main,test
-  python3 -m pip install attrs==22.1.0 tomli==1.2.0
+  python3 -m pip install tomli==1.2.0
 """

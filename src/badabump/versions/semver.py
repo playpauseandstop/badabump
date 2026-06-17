@@ -1,8 +1,7 @@
 from __future__ import annotations
 
+import dataclasses
 from typing import TYPE_CHECKING, Union
-
-import attrs
 
 from badabump.constants import DEFAULT_SEMVER_SCHEMA as SCHEMA
 from badabump.versions.exceptions import VersionParseError
@@ -28,7 +27,7 @@ SCHEMA_PARTS_PARSING = {
 }
 
 
-@attrs.frozen(slots=True, kw_only=True)
+@dataclasses.dataclass(frozen=True, slots=True, kw_only=True)
 class SemVer:
     major: int
     minor: int
@@ -60,7 +59,7 @@ class SemVer:
 
     def format(self) -> str:  # noqa: A003
         return format_version(
-            self.schema, SCHEMA_PARTS_FORMATTING, attrs.asdict(self)
+            self.schema, SCHEMA_PARTS_FORMATTING, dataclasses.asdict(self)
         )
 
     def update(self, config: UpdateConfig) -> Self:
@@ -68,11 +67,13 @@ class SemVer:
             return self
 
         if config.is_breaking_change:
-            return attrs.evolve(self, major=self.major + 1, minor=0, patch=0)
+            return dataclasses.replace(
+                self, major=self.major + 1, minor=0, patch=0
+            )
 
         if config.is_minor_change:
-            return attrs.evolve(
+            return dataclasses.replace(
                 self, major=self.major, minor=self.minor + 1, patch=0
             )
 
-        return attrs.evolve(self, patch=self.patch + 1)
+        return dataclasses.replace(self, patch=self.patch + 1)

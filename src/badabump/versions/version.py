@@ -1,10 +1,9 @@
 from __future__ import annotations
 
+import dataclasses
 import json
 from contextlib import suppress
 from typing import cast, TYPE_CHECKING, TypeAlias, Union
-
-import attrs
 
 from badabump.enums import ProjectTypeEnum, VersionTypeEnum
 from badabump.loaders import get_pyproject_toml_metadata, loads_toml
@@ -25,7 +24,7 @@ if TYPE_CHECKING:
     CalOrSemVer: TypeAlias = Union[CalVer, SemVer]
 
 
-@attrs.frozen(slots=True, kw_only=True)
+@dataclasses.dataclass(frozen=True, slots=True, kw_only=True)
 class Version:
     version: CalOrSemVer
     pre_release: Union[PreRelease, None] = None
@@ -91,7 +90,7 @@ class Version:
 
     def enforce_pre_release(self, is_pre_release: bool) -> Self:
         if self.pre_release is None and is_pre_release:
-            return attrs.evolve(self, pre_release=PreRelease())
+            return dataclasses.replace(self, pre_release=PreRelease())
         return self
 
     def format(self, *, config: ProjectConfig) -> str:  # noqa: A003
@@ -114,7 +113,7 @@ class Version:
         if config.is_pre_release:
             return version_class(
                 version=self.version.update(
-                    attrs.evolve(config, is_pre_release=False)
+                    dataclasses.replace(config, is_pre_release=False)
                 ),
                 pre_release=PreRelease(),
             )

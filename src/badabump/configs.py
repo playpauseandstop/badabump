@@ -1,9 +1,8 @@
 from __future__ import annotations
 
+import dataclasses
 from pathlib import Path
 from typing import TYPE_CHECKING, Union
-
-import attrs
 
 from badabump import __app__
 from badabump.constants import (
@@ -31,15 +30,15 @@ if TYPE_CHECKING:
     from badabump.annotations import DictStrAny, T
 
 
-@attrs.frozen(slots=True, kw_only=True)
+@dataclasses.dataclass(frozen=True, slots=True, kw_only=True)
 class ProjectConfig:
-    path: Path = attrs.Factory(Path.cwd)
+    path: Path = dataclasses.field(default_factory=Path.cwd)
 
     project_type: ProjectTypeEnum = DEFAULT_PROJECT_TYPE
 
     version_type: VersionTypeEnum = DEFAULT_VERSION_TYPE
     version_schema: str = DEFAULT_VERSION_SCHEMA
-    version_files: tuple[str, ...] = attrs.Factory(tuple)
+    version_files: tuple[str, ...] = dataclasses.field(default_factory=tuple)
 
     tag_format: str = DEFAULT_TAG_FORMAT
     tag_subject_format: str = DEFAULT_TAG_SUBJECT_FORMAT
@@ -58,7 +57,7 @@ class ProjectConfig:
     post_bump_hook: Union[str, None] = None
     strict_mode: bool = DEFAULT_STRICT_MODE
 
-    def __attrs_post_init__(self) -> None:
+    def __post_init__(self) -> None:
         if self.version_type == VersionTypeEnum.semver:
             object.__setattr__(self, "version_schema", DEFAULT_SEMVER_SCHEMA)
 
@@ -117,14 +116,14 @@ class ProjectConfig:
         )
 
 
-@attrs.frozen(slots=True, kw_only=True)
+@dataclasses.dataclass(frozen=True, slots=True, kw_only=True)
 class UpdateConfig:
     is_breaking_change: bool = False
     is_minor_change: bool = False
     is_micro_change: bool = True
     is_pre_release: bool = False
 
-    def __attrs_post_init__(self) -> None:
+    def __post_init__(self) -> None:
         values = sorted(
             [
                 self.is_breaking_change,
@@ -134,8 +133,8 @@ class UpdateConfig:
         )
         if values != [False, False, True]:
             raise ValueError(
-                "Update config allow to be initialized only with one "
-                "breaking, minor, or micro change at a time."
+                "Update config allow to be initialized only with one"
+                " breaking, minor, or micro change at a time."
             )
 
 

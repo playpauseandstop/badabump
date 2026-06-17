@@ -1,16 +1,17 @@
 from __future__ import annotations
 
-import datetime
+import dataclasses
 from typing import TYPE_CHECKING, Union
 
-import attrs
-
 from badabump.constants import DEFAULT_VERSION_SCHEMA
+from badabump.datetimes import utcnow_naive
 from badabump.versions.exceptions import VersionError, VersionParseError
 from badabump.versions.formatting import format_version
 from badabump.versions.parsing import parse_version
 
 if TYPE_CHECKING:
+    import datetime
+
     from typing_extensions import Self
 
     from badabump.annotations import DictStrAny, DictStrStr
@@ -50,7 +51,7 @@ SCHEMA_PARTS_PARSING = {
 }
 
 
-@attrs.frozen(slots=True, kw_only=True)
+@dataclasses.dataclass(frozen=True, slots=True, kw_only=True)
 class CalVer:
     year: int
     month: Union[int, None] = None
@@ -84,7 +85,7 @@ class CalVer:
 
     @classmethod
     def initial(cls, *, schema: str) -> Self:
-        utcnow = datetime.datetime.utcnow()
+        utcnow = utcnow_naive()
         return cls(
             year=utcnow.year,
             month=utcnow.month,
@@ -103,10 +104,10 @@ class CalVer:
         raise VersionParseError(schema, value)
 
     def get_format_context(self) -> DictStrAny:
-        return {**attrs.asdict(self), "short_year": self.short_year}
+        return {**dataclasses.asdict(self), "short_year": self.short_year}
 
     def update(self, config: UpdateConfig) -> Self:
-        utcnow = datetime.datetime.utcnow()
+        utcnow = utcnow_naive()
 
         next_minor: Union[int, None] = None
         next_micro: Union[int, None] = None
@@ -157,7 +158,7 @@ class CalVer:
             if next_micro is not None and config.is_micro_change:
                 next_micro += 1
 
-        return attrs.evolve(
+        return dataclasses.replace(
             self,
             year=next_year,
             month=next_month,

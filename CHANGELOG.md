@@ -1,6 +1,6 @@
 # 26.1.0 (2026-08-19)
 
-First stable `badabump` release in **4 years**: raised minimum Python version to 3.10 and dropped the `attrs` dependency in favor of standard library `dataclasses`.
+First stable `badabump` release in **4 years**: raised minimum Python version to **3.10** and dropped the `attrs` dependency in favor of standard library `dataclasses`.
 
 ## Features:
 

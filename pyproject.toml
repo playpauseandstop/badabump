@@ -33,13 +33,13 @@ classifiers = [
 dependencies = [
   "tomli>=1.2.0,<3.0.0; python_version<='3.11.0a6'",
 ]
-[project.scripts]
-badabump = "badabump.cli.app:main"
-badabump-ci = "badabump.cli.ci_app:main"
 [project.urls]
 "Bug Tracker" = "https://github.com/playpauseandstop/badabump/issues"
 homepage = "https://igordavydenko.com/projects/#badabump"
 repository = "https://github.com/playpauseandstop/badabump"
+[project.scripts]
+badabump = "badabump.cli.app:main"
+badabump-ci = "badabump.cli.ci_app:main"
 
 [dependency-groups]
 dev = [
@@ -99,6 +99,9 @@ log_level = "info"
 
 # coverage configuration
 # https://coverage.readthedocs.io/en/latest/config.html#toml-syntax
+[tool.coverage.run]
+branch = true
+source = [ "badabump" ]
 [tool.coverage.paths]
 source = [ "src/" ]
 [tool.coverage.report]
@@ -113,14 +116,12 @@ omit = [
 fail_under = 95
 skip_covered = true
 show_missing = true
-[tool.coverage.run]
-branch = true
-source = [ "badabump" ]
 
 # tox configuration
 # https://tox.wiki/en/stable/reference/config.html#pyproject-toml-ini
 [tool.tox]
 legacy_tox_ini = """
+
 [tox]
 envlist = py310,py310-minimum-requirements,py311,py312,py313,py314
 skipsdist = True

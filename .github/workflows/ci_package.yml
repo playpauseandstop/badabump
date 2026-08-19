@@ -7,7 +7,7 @@ on:
         description: "Twine version to use."
         type: "string"
         required: false
-        default: "6.2.0"
+        default: "7.0.0"
 
 jobs:
   package:

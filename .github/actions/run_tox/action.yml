@@ -13,7 +13,7 @@ inputs:
   tox-version:
     description: "Tox version to use"
     required: false
-    default: "4.55.1"
+    default: "4.60.0"
 
   tox-gh-actions-version:
     description: "Tox GitHub Actions plugin version to use"

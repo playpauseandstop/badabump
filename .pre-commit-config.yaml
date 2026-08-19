@@ -4,7 +4,7 @@ exclude: ^(archive|assets|migrations)/.*|.*/(migrations|test-data|vendor)/.*|.*\
 minimum_pre_commit_version: "1.17.0"
 repos:
   - repo: "https://github.com/commitizen-tools/commitizen"
-    rev: "v4.16.2"
+    rev: "v4.17.1"
     hooks:
       - id: "commitizen"
         # By default commitizen using `python3` language version, so
@@ -22,7 +22,7 @@ repos:
         name: "Check poetry.lock"
 
   - repo: "https://github.com/tox-dev/pyproject-fmt"
-    rev: "v2.23.0"
+    rev: "v2.28.0"
     hooks:
       - id: "pyproject-fmt"
         name: "Format pyproject.toml"
@@ -86,7 +86,7 @@ repos:
           - "flake8-bugbear==25.11.29"
           - "flake8-builtins==3.1.0"
           - "flake8-comprehensions==3.17.0"
-          - "flake8-implicit-str-concat==0.6.0"
+          - "flake8-implicit-str-concat==0.7.0"
           - "flake8-isort==7.0.0"
           - "flake8-logging==1.8.0"
           - "flake8-mutable==1.2.0"

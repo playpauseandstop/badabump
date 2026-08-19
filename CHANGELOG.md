@@ -1,5 +1,7 @@
 # 26.1.0 (2026-08-19)
 
+First stable `badabump` release in **4 years**, which ensures that Python 3.10+ is required and, as result, drop `attrs` dependency in favor of standard `dataclasses`.
+
 ## Features:
 
 - Ensure PEP 621 support for pyproject.toml files (#221)

@@ -1,5 +1,7 @@
 # 26.1.0 (2026-08-19)
 
+First stable `badabump` release in **4 years**: raised minimum Python version to **3.10** and dropped the `attrs` dependency in favor of standard library `dataclasses`.
+
 ## Features:
 
 - Ensure PEP 621 support for pyproject.toml files (#221)
@@ -20,8 +22,6 @@
 - Fix CODEOWNERS (#227)
 - Update CI status badge in README (#229)
 - (**deps**) Bump the ci-dependencies group across 4 directories with 6 updates (#232)
-- 26.1.0 Release (#233)
-- 26.1.0 Release (#233)" (#234)
 - Fix permissions for reusable publishing job (#235)
 
 # 22.1.0 (2022-12-20)

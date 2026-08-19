@@ -1,3 +1,10 @@
+# 26.1.1 (2026-08-19)
+
+## Other:
+
+- 26.1.0 Release (#233)" (#234)
+- Fix permissions for reusable publishing job (#235)
+
 # 22.1.0 (2022-12-20)
 
 First stable `badabump` release in **2022**, which provides more stability to the project and, most importantly, update outputs at GitHub Actions to silence `::set-output ...` deprecation warnings.

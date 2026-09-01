@@ -24,19 +24,15 @@ jobs:
         with:
           persist-credentials: false
 
-      - id: "python-and-poetry"
-        uses: "./.github/actions/install_python_and_poetry"
-        with:
-          python-version-file: ".python-version"
+      - uses: "./.github/actions/setup_uv"
 
       - name: "Build package"
-        run: "poetry build"
+        run: "uv build"
 
       - name: "Check package"
         env:
-          PYTHON: "${{ steps.python-and-poetry.outputs.python-path }}"
           TWINE_VERSION: "${{ inputs.twine-version }}"
-        run: 'pipx run --python="${PYTHON}" twine=="${TWINE_VERSION}" check dist/*'
+        run: 'uvx -p "$(cat ".python-version")" twine=="${TWINE_VERSION}" check dist/*'
 
       - name: "Publish package"
         if: "${{ startsWith(github.ref, 'refs/tags/') }}"

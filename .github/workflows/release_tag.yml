@@ -22,6 +22,8 @@ jobs:
     name: "Create Release Tag"
 
     runs-on: "ubuntu-24.04"
+    env:
+      UV_NO_DEFAULT_GROUPS: "true"
 
     steps:
       - id: "token"
@@ -37,18 +39,15 @@ jobs:
           # zizmor: ignore[artipacked] git push --tag needs these credentials
           token: "${{ steps.token.outputs.token }}"
 
-      - uses: "./.github/actions/install_python_and_poetry"
-        with:
-          cache-key-suffix: "-main"
-          python-version-file: ".python-version"
+      - uses: "./.github/actions/setup_uv"
 
       - name: "Install badabump"
-        run: "poetry install --only=main"
+        run: "make install"
 
       - id: "badabump"
         name: "Run badabump"
         env:
-          BADABUMP_CI: "poetry run python3 -m badabump-ci"
+          BADABUMP_CI: "uv run -m badabump.ci"
         run: "${BADABUMP_CI} prepare_tag"
 
       - name: "Save tag message into the file"

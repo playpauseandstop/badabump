@@ -2,10 +2,14 @@ PROJECT = badabump
 
 include python.mk
 
-TOX_VERSION ?= 4.55.0
-TOX = $(UVX) -p $(PYTHON_VERSION) tox==$(TOX_VERSION)
+TOX_VERSION ?= 4.61.2
+TOX_UV_VERSION ?= 1.36.0
+TOX = $(UVX) --with="tox-uv==$(TOX_UV_VERSION)" tox==$(TOX_VERSION)
 
 all: install
+
+.PHONY: build
+build: build-python
 
 .PHONY: clean
 clean: clean-python

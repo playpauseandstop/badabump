@@ -33,11 +33,15 @@ runs:
   using: "composite"
   steps:
     - name: "Install tox & tox-gh-actions"
+      env:
+        PYTHON: "${{ inputs.python-path }}"
+        TOX_GH_ACTIONS_VERSION: "${{ inputs.tox-gh-actions-version }}"
+        TOX_VERSION: "${{ inputs.tox-version }}"
       run: |
         set -euo pipefail
 
-        pipx install --python='${{ inputs.python-path }}' tox==${{ inputs.tox-version }}
-        pipx inject tox tox-gh-actions==${{ inputs.tox-gh-actions-version }}
+        pipx install --python="${PYTHON}" tox==${TOX_VERSION}
+        pipx inject tox tox-gh-actions==${TOX_GH_ACTIONS_VERSION}
       shell: "bash"
 
     - name: "Cache tox"

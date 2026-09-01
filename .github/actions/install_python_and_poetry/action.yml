@@ -46,7 +46,10 @@ runs:
 
     - name: "Install poetry"
       shell: "bash"
-      run: "pipx install --python='${{ steps.python.outputs.python-path }}' poetry==${{ inputs.poetry-version }}"
+      env:
+        PYTHON: "${{ steps.python.outputs.python-path }}"
+        POETRY_VERSION: "${{ inputs.poetry-version }}"
+      run: 'pipx install --python="${PYTHON}" poetry==${POETRY_VERSION}'
 
     - name: "Cache venv"
       uses: "actions/cache@v6.1.0"

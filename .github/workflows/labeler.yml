@@ -1,6 +1,9 @@
 defaults:
   run:
     shell: "bash"
+permissions:
+  contents: "read"
+  pull-requests: "write"
 
 name: "[AUTO] Pull Request Labeler"
 
@@ -10,10 +13,6 @@ on:
 jobs:
   labeler:
     name: "Pull Request Labeler"
-
-    permissions:
-      contents: "read"
-      pull-requests: "write"
 
     runs-on: "ubuntu-24.04"
 

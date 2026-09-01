@@ -1,4 +1,8 @@
-name: "(Reusable) Build & Deploy Package"
+defaults:
+  run:
+    shell: "bash"
+
+name: "[REUSABLE] Build & Deploy Package"
 
 on:
   workflow_call:
@@ -17,8 +21,10 @@ jobs:
 
     steps:
       - uses: "actions/checkout@v7.0.1"
+        with:
+          persist-credentials: false
 
-      - id: "python_and_poetry"
+      - id: "python-and-poetry"
         uses: "./.github/actions/install_python_and_poetry"
         with:
           python-version-file: ".python-version"
@@ -27,7 +33,10 @@ jobs:
         run: "poetry build"
 
       - name: "Check package"
-        run: "pipx run --python='${{ steps.python_and_poetry.outputs.python-path }}' twine==${{ inputs.twine-version }} check dist/*"
+        env:
+          PYTHON: "${{ steps.python-and-poetry.outputs.python-path }}"
+          TWINE_VERSION: "${{ inputs.twine-version }}"
+        run: 'pipx run --python="${PYTHON}" twine=="${TWINE_VERSION}" check dist/*'
 
       - name: "Publish package"
         if: "${{ startsWith(github.ref, 'refs/tags/') }}"

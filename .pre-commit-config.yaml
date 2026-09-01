@@ -4,7 +4,7 @@ exclude: ^(archive|assets|migrations)/.*|.*/(migrations|test-data|vendor)/.*|.*\
 minimum_pre_commit_version: "1.17.0"
 repos:
   - repo: "https://github.com/commitizen-tools/commitizen"
-    rev: "v4.17.1"
+    rev: "v4.18.0"
     hooks:
       - id: "commitizen"
         # By default commitizen using `python3` language version, so
@@ -122,3 +122,18 @@ repos:
     hooks:
       - id: "shellcheck"
         name: "Lint scripts (shellcheck)"
+
+  - repo: "https://github.com/Mateusz-Grzelinski/actionlint-py"
+    rev: "v1.7.12.24"
+    hooks:
+      - id: "actionlint"
+        name: "Lint workflows (actionlint)"
+        additional_dependencies:
+          - "shellcheck-py==0.11.0.1"
+
+  - repo: "https://github.com/zizmorcore/zizmor-pre-commit"
+    rev: "v1.29.0"
+    hooks:
+      - id: "zizmor"
+        name: "Lint workflows (zizmor)"
+        args: ["--no-progress", "--fix"]

@@ -1,37 +1,45 @@
 defaults:
   run:
     shell: "bash"
+permissions:
+  contents: "read"
 
-name: "Auto Create Release Tag"
+name: "[AUTO] Create Release Tag"
 
 on:
-  pull_request:
+  # zizmor: ignore[dangerous-triggers] gated on merged chore/release-* PRs; checks out main, never PR head
+  pull_request_target:
     types: ["closed"]
+    branches: ["main"]
 
 env:
   PYTHONUNBUFFERED: "1"
 
 jobs:
   create_release_tag:
-    if: "${{ startsWith(github.head_ref, 'chore/release-') && github.event.pull_request.merged == true }}"
-    name: "Auto Create Release Tag"
+    if: >-
+      ${{ startsWith(github.event.pull_request.head.ref, 'chore/release-') && github.event.pull_request.merged == true }}
+    name: "Create Release Tag"
 
     runs-on: "ubuntu-24.04"
 
     steps:
       - id: "token"
-        uses: "tibdex/github-app-token@v2.1.0"
+        uses: "actions/create-github-app-token@v3.2.0"
         with:
-          app_id: "${{ secrets.BADABUMP_APP_ID }}"
-          private_key: "${{ secrets.BADABUMP_APP_PRIVATE_KEY }}"
+          app-id: "${{ secrets.BADABUMP_APP_ID }}"
+          private-key: "${{ secrets.BADABUMP_APP_PRIVATE_KEY }}"
+          permission-contents: "write"
 
       - uses: "actions/checkout@v7.0.1"
         with:
+          ref: "main"
+          # zizmor: ignore[artipacked] git push --tag needs these credentials
           token: "${{ steps.token.outputs.token }}"
-          ref: "${{ github.repository.default_branch }}"
 
       - uses: "./.github/actions/install_python_and_poetry"
         with:
+          cache-key-suffix: "-main"
           python-version-file: ".python-version"
 
       - name: "Install badabump"
@@ -39,7 +47,9 @@ jobs:
 
       - id: "badabump"
         name: "Run badabump"
-        run: "poetry run python3 -m badabump.ci prepare_tag"
+        env:
+          BADABUMP_CI: "poetry run python3 -m badabump-ci"
+        run: "${BADABUMP_CI} prepare_tag"
 
       - name: "Save tag message into the file"
         env:
@@ -47,11 +57,13 @@ jobs:
         run: printf '%s' "${TAG_MESSAGE}" > ./tag_message.txt
 
       - name: "Create release tag from latest commit"
+        env:
+          TAG_NAME: "${{ steps.badabump.outputs.tag_name }}"
         run: |
           set -euo pipefail
 
           git config user.name badabump-bot[bot]
           git config user.email 86060+badabump-bot[bot]@users.noreply.github.com
 
-          git tag -a ${{ steps.badabump.outputs.tag_name }} -F ./tag_message.txt
+          git tag -a "${TAG_NAME}" -F ./tag_message.txt
           git push --tag

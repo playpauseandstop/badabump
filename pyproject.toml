@@ -1,8 +1,8 @@
 # Build system
 # https://packaging.python.org/en/latest/specifications/pyproject-toml/#declaring-build-system-dependencies-the-build-system-table
 [build-system]
-build-backend = "poetry.core.masonry.api"
-requires = [ "poetry-core>=1.0.0" ]
+build-backend = "uv_build"
+requires = [ "uv-build>=0.11.8,<0.13.0" ]
 
 # Project metadata
 # https://packaging.python.org/en/latest/specifications/pyproject-toml/#declaring-project-metadata-the-project-table
@@ -53,6 +53,13 @@ test = [
   "time-machine>=3.2.0,<4.0.0",
   "tomli-w>=1.2.0,<2.0.0",
 ]
+
+# uv configuration
+# https://docs.astral.sh/uv/concepts/configuration-files/
+[tool.uv]
+required-version = ">=0.11.8"
+default-groups = [ "dev", "test" ]
+add-bounds = "major"
 
 # black configuration
 # https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html#configuration-via-a-file
@@ -124,7 +131,6 @@ legacy_tox_ini = """
 
 [tox]
 envlist = py310,py310-minimum-requirements,py311,py312,py313,py314
-skipsdist = True
 
 [gh-actions]
 python =
@@ -139,20 +145,16 @@ passenv =
   HOME
   PYTEST_ADDOPTS
   PYTHONUNBUFFERED
-skip_install = True
 allowlist_externals =
   git
-  poetry
-commands_pre =
-  poetry install --only main,test
+runner = uv-venv-lock-runner
 commands =
-  git config init.defaultBranch
+  - git config init.defaultBranch
   git config user.name
   git config user.email
-  python3 -m pytest
+  python -m pytest
 
 [testenv:py310-minimum-requirements]
 commands_pre =
-  poetry install --only main,test
-  python3 -m pip install tomli==1.2.0
+  uv pip install tomli==1.2.0
 """

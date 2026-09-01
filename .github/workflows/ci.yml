@@ -4,7 +4,7 @@ defaults:
 permissions:
   contents: "read"
 
-name: "CI"
+name: "[AUTO] CI"
 
 on:
   push:
@@ -33,50 +33,48 @@ jobs:
         include:
           - os: "ubuntu-24.04"
             python-version: ""
-            python-version-file: ".python-version"
 
           - os: "macos-26"
             python-version: "3.10.11"
-            python-version-file: ""
 
           - os: "windows-2025"
             python-version: "3.10.11"
-            python-version-file: ""
+            make-install-args: "PYTHON_BIN=.venv/Scripts/python.exe"
 
     runs-on: "${{ matrix.os }}"
+    env:
+      UV_NO_DEFAULT_GROUPS: "true"
 
     steps:
       - uses: "actions/checkout@v7.0.1"
         with:
           persist-credentials: false
 
-      - uses: "./.github/actions/install_python_and_poetry"
+      - uses: "./.github/actions/setup_uv"
         with:
-          cache-key-suffix: "-main"
           python-version: "${{ matrix.python-version }}"
-          python-version-file: "${{ matrix.python-version-file }}"
-
-      - name: "Check that the poetry.lock file corresponds to the current version of pyproject.toml"
-        if: "${{ matrix.os == 'ubuntu-24.04' }}"
-        run: "poetry check --lock"
 
       - name: "Install package"
-        run: "poetry install --only main"
+        env:
+          MAKE_INSTALL_ARGS: "${{ matrix.make-install-args }}"
+        run: |
+          # shellcheck disable=SC2086
+          make install ${MAKE_INSTALL_ARGS}
 
       - name: "Import package"
-        run: "poetry run python -c 'import badabump'"
+        run: "uv run python -c 'import badabump'"
 
       - name: "Invoke cli via Python"
-        run: "poetry run python -m badabump --help"
+        run: "uv run -m badabump --help"
 
       - name: "Invoke cli via shortcut"
-        run: "poetry run badabump --help"
+        run: "uv run badabump --help"
 
       - name: "Invoke CI cli via Python"
-        run: "poetry run python -m badabump.ci --help"
+        run: "uv run -m badabump.ci --help"
 
       - name: "Invoke CI cli via shortcut"
-        run: "poetry run badabump-ci --help"
+        run: "uv run badabump-ci --help"
 
   test:
     name: "Python ${{ matrix.python-version }}"
@@ -85,10 +83,7 @@ jobs:
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
         include:
-          - cache-key-suffix: "-main-dev"
-
           - python-version: "3.10"
-            cache-key-suffix: "-main-dev-test"
             dev: "true"
 
     runs-on: "ubuntu-24.04"
@@ -98,16 +93,16 @@ jobs:
         with:
           persist-credentials: false
 
-      - id: "python_and_poetry"
-        uses: "./.github/actions/install_python_and_poetry"
+      - id: "uv"
+        uses: "./.github/actions/setup_uv"
         with:
-          cache-key-suffix: "${{ matrix.cache-key-suffix }}"
           python-version: "${{ matrix.python-version }}"
 
       - if: "${{ matrix.dev == 'true' }}"
         uses: "./.github/actions/run_pre_commit"
         with:
-          python-version: "${{ steps.python_and_poetry.outputs.python-version }}"
+          python-version: "${{ steps.uv.outputs.python-version }}"
+          install-cmd: "make install"
 
       - name: "Setup git for test needs"
         run: |
@@ -119,9 +114,9 @@ jobs:
 
       - uses: "./.github/actions/run_tox"
         with:
-          python-path: "${{ steps.python_and_poetry.outputs.python-path }}"
-          python-version: "${{ steps.python_and_poetry.outputs.python-version }}"
+          python-version: "${{ steps.uv.outputs.python-version }}"
           use-coveralls: "${{ matrix.dev }}"
+          install-cmd: "make install"
           coveralls-token: "${{ secrets.GITHUB_TOKEN }}"
 
   package:
@@ -142,6 +137,8 @@ jobs:
     name: "Create GitHub Release"
 
     runs-on: "ubuntu-24.04"
+    env:
+      UV_NO_DEFAULT_GROUPS: "true"
 
     steps:
       - uses: "actions/checkout@v7.0.1"
@@ -150,18 +147,15 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
-      - uses: "./.github/actions/install_python_and_poetry"
-        with:
-          cache-key-suffix: "-main"
-          python-version-file: ".python-version"
+      - uses: "./.github/actions/setup_uv"
 
       - name: "Install badabump"
-        run: "poetry install --only=main"
+        run: "make install"
 
       - id: "badabump"
         name: "Run badabump"
         env:
-          BADABUMP_CI: "poetry run python3 -m badabump-ci"
+          BADABUMP_CI: "uv run -m badabump.ci"
         run: '${BADABUMP_CI} prepare_release "${GITHUB_REF}"'
 
       - name: "Create new release"

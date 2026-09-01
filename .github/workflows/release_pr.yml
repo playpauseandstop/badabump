@@ -23,6 +23,8 @@ jobs:
     name: "Create Release PR"
 
     runs-on: "ubuntu-24.04"
+    env:
+      UV_NO_DEFAULT_GROUPS: "true"
 
     steps:
       - uses: "actions/checkout@v7.0.1"
@@ -32,18 +34,15 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
-      - uses: "./.github/actions/install_python_and_poetry"
-        with:
-          cache-key-suffix: "-main"
-          python-version-file: ".python-version"
+      - uses: "./.github/actions/setup_uv"
 
       - name: "Install badabump"
-        run: "poetry install --only=main"
+        run: "make install"
 
       - id: "badabump"
         name: "Run badabump"
         env:
-          BADABUMP: "poetry run python3 -m badabump"
+          BADABUMP: "uv run -m badabump"
           BADABUMP_ARGS: "${{ github.event.inputs.args }}"
         run: |
           # shellcheck disable=SC2086

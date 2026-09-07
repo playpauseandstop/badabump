@@ -23,9 +23,6 @@ install: install-python
 .PHONY: lint
 lint: lint-python
 
-.PHONY: lint-and-test
-lint-and-test: lint test
-
 .PHONY: list-outdated
 list-outdated: list-outdated-python
 
@@ -34,8 +31,8 @@ test: install clean test-only
 
 .PHONY: test-only
 test-only:
-	TOXENV=$(TOXENV) $(TOX)
+	TOXENV=$(TOXENV) $(TOX) $(TOX_ARGS)
 
 .PHONY: test-%
 test-%: install clean
-	TOXENV=$(subst test-,,$@) $(TOX)
+	TOXENV=$(subst test-,,$@) $(TOX) $(TOX_ARGS)

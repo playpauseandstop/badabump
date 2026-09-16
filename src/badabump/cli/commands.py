@@ -9,10 +9,9 @@ from badabump.cli.output import diff, echo_message
 from badabump.configs import find_changelog_file
 from badabump.constants import (
     CHANGELOG_UPPER,
+    DEFAULT_POST_BUMP_HOOK,
     FILE_PACKAGE_JSON,
-    FILE_PACKAGE_LOCK_JSON,
     FILE_PYPROJECT_TOML,
-    FILE_YARN_LOCK,
 )
 from badabump.enums import ChangeLogTypeEnum, FormatTypeEnum, ProjectTypeEnum
 from badabump.exceptions import ConfigError
@@ -106,11 +105,13 @@ def run_post_bump_hook(
     path = config.path
     cmd = config.post_bump_hook
 
-    if cmd is None and config.project_type == ProjectTypeEnum.javascript:
-        if (path / FILE_PACKAGE_LOCK_JSON).exists():
-            cmd = "npm install"
-        elif (path / FILE_YARN_LOCK).exists():
-            cmd = "yarn install"
+    if cmd is None:
+        for file_name, cmd_to_use in DEFAULT_POST_BUMP_HOOK[
+            config.project_type
+        ].items():
+            if (path / file_name).exists():
+                cmd = cmd_to_use
+                break
 
     if cmd is None:
         return None

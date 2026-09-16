@@ -160,7 +160,7 @@ jobs:
 
       - name: "Create new release"
         env:
-          GH_TOKEN: "${{ secrets.release-token }}"
+          GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           IS_PRE_RELEASE: "${{ steps.badabump.outputs.is_pre_release }}"
           RELEASE_BODY: "${{ steps.badabump.outputs.release_body }}"
           RELEASE_NAME: "${{ steps.badabump.outputs.release_name }}"

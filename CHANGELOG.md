@@ -1,5 +1,7 @@
 # 26.2.0 (2026-09-16)
 
+Another major `badabump` release in which it auto syncs `uv.lock` file if it present in the project.
+
 ## Features:
 
 - [#241] Auto sync uv.lock file if present (#242)

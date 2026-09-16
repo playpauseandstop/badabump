@@ -1,3 +1,19 @@
+# 26.2.0 (2026-09-16)
+
+## Features:
+
+- [#241] Auto sync uv.lock file if present (#242)
+
+## Refactoring:
+
+- Remove typing.Union imports (#243)
+
+## Other:
+
+- Introduce zizmor pre-commit check (#238)
+- Use uv for managing dependencies and building wheels (#239)
+- Support passing args to the tox via Makefile targets (#240)
+
 # 26.1.0 (2026-08-19)
 
 First stable `badabump` release in **4 years**: raised minimum Python version to **3.10** and dropped the `attrs` dependency in favor of standard library `dataclasses`.

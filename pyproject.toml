@@ -26,12 +26,18 @@ classifiers = [
   "Intended Audience :: System Administrators",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.15",
   "Topic :: Software Development",
   "Topic :: Utilities",
   "Typing :: Typed",
 ]
 dependencies = [
-  "tomli>=1.2.0,<3.0.0; python_version<='3.11.0a6'",
+  "tomli>=1.2.0,<3.0.0; python_version<'3.11.0'",
 ]
 [project.urls]
 "Bug Tracker" = "https://github.com/playpauseandstop/badabump/issues"
@@ -81,7 +87,6 @@ virtual_env = ".venv/"
 # https://pyproject-fmt.readthedocs.io/en/latest/configuration.html
 [tool.pyproject-fmt]
 keep_full_version = true
-generate_python_version_classifiers = false
 table_format = "long"
 collapse_tables = [ "project.authors" ]
 
@@ -107,22 +112,22 @@ testpaths = [ "tests/" ]
 # coverage configuration
 # https://coverage.readthedocs.io/en/latest/config.html#toml-syntax
 [tool.coverage.run]
-branch = true
 source = [ "badabump" ]
+branch = true
 [tool.coverage.paths]
 source = [ "src/" ]
 [tool.coverage.report]
-exclude_also = [
-  "if TYPE_CHECKING:",
-  'if sys\.version_info',
-  "@abstractmethod",
-  "@overload",
-]
+fail_under = 95
 omit = [
   "src/**/__main__.py",
   "src/**/annotations.py",
 ]
-fail_under = 95
+exclude_also = [
+  "@abstractmethod",
+  "@overload",
+  'if sys\.version_info',
+  "if TYPE_CHECKING:",
+]
 skip_covered = true
 show_missing = true
 
@@ -132,7 +137,7 @@ show_missing = true
 legacy_tox_ini = """
 
 [tox]
-envlist = py310,py310-minimum-requirements,py311,py312,py313,py314
+envlist = py310,py310-minimum-requirements,py311,py312,py313,py314,py315
 
 [gh-actions]
 python =
@@ -141,6 +146,7 @@ python =
   3.12: py312
   3.13: py313
   3.14: py314
+  3.15: py315
 
 [testenv]
 passenv =

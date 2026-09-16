@@ -75,7 +75,7 @@ name = "badabump"
 version = "26.1.0"
 source = { editable = "." }
 dependencies = [
-    { name = "tomli", marker = "python_full_version < '3.12'" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
 
 [package.dev-dependencies]
@@ -92,7 +92,7 @@ test = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "tomli", marker = "python_full_version < '3.12'", specifier = ">=1.2.0,<3.0.0" }]
+requires-dist = [{ name = "tomli", marker = "python_full_version < '3.11'", specifier = ">=1.2.0,<3.0.0" }]
 
 [package.metadata.requires-dev]
 dev = [

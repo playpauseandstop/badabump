@@ -139,37 +139,72 @@ def test_guess_python_version_files_no_pyproject_toml(tmpdir):
 
 
 @pytest.mark.parametrize(
-    "file_name, expected",
-    (("package-lock.json", "npm install"), ("yarn.lock", "yarn install")),
+    ("project_type", "file_name", "expected"),
+    (
+        (ProjectTypeEnum.python, "poetry.lock", None),
+        (ProjectTypeEnum.python, "uv.lock", "uv sync"),
+        (ProjectTypeEnum.javascript, "package.json", None),
+        (ProjectTypeEnum.javascript, "package-lock.json", "npm install"),
+        (ProjectTypeEnum.javascript, "yarn.lock", "yarn install"),
+    ),
 )
-def test_run_post_bump_hook(capsys, monkeypatch, tmpdir, file_name, expected):
-    monkeypatch.setattr("subprocess.check_call", Mock())
+def test_run_post_bump_hook(
+    capsys: pytest.CaptureFixture,
+    monkeypatch: pytest.MonkeyPatch,
+    tmpdir: str,
+    project_type: ProjectTypeEnum,
+    file_name: str,
+    expected: str | None,
+):
+    monkeypatch.setattr("subprocess.check_call", mock_check_call := Mock())
 
     path = Path(tmpdir)
     (path / file_name).write_text("")
 
     run_post_bump_hook(
-        ProjectConfig(path=path, project_type=ProjectTypeEnum.javascript),
-        is_dry_run=False,
-    )
-
-
-@pytest.mark.parametrize(
-    "file_name, expected",
-    (("package-lock.json", "npm install"), ("yarn.lock", "yarn install")),
-)
-def test_run_post_bump_hook_dry_run(capsys, tmpdir, file_name, expected):
-    path = Path(tmpdir)
-    (path / file_name).write_text("")
-
-    run_post_bump_hook(
-        ProjectConfig(path=path, project_type=ProjectTypeEnum.javascript),
-        is_dry_run=True,
+        ProjectConfig(path=path, project_type=project_type), is_dry_run=False
     )
 
     captured = capsys.readouterr()
     assert captured.err == ""
-    assert expected in captured.out
+
+    if expected:
+        mock_check_call.assert_called_once_with(expected, cwd=path, shell=True)
+        assert captured.out == f"Running post-bump hook: {expected}\n"
+    else:
+        mock_check_call.assert_not_called()
+        assert captured.out == ""
+
+
+@pytest.mark.parametrize(
+    ("project_type", "file_name", "expected"),
+    (
+        (ProjectTypeEnum.python, "poetry.lock", None),
+        (ProjectTypeEnum.python, "uv.lock", "uv sync"),
+        (ProjectTypeEnum.javascript, "package.json", None),
+        (ProjectTypeEnum.javascript, "package-lock.json", "npm install"),
+        (ProjectTypeEnum.javascript, "yarn.lock", "yarn install"),
+    ),
+)
+def test_run_post_bump_hook_javascript_dry_run(
+    capsys: pytest.CaptureFixture,
+    tmpdir: str,
+    project_type: ProjectTypeEnum,
+    file_name: str,
+    expected: str | None,
+):
+    path = Path(tmpdir)
+    (path / file_name).write_text("")
+
+    run_post_bump_hook(
+        ProjectConfig(path=path, project_type=project_type), is_dry_run=True
+    )
+
+    captured = capsys.readouterr()
+    assert captured.err == ""
+    assert captured.out == (
+        f"[DRY-RUN] Running post-bump hook: {expected}\n" if expected else ""
+    )
 
 
 def test_update_file_does_not_exist(tmpdir):

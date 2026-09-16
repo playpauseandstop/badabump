@@ -1,5 +1,13 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from badabump import __app__
 from badabump.enums import FormatTypeEnum, ProjectTypeEnum, VersionTypeEnum
+
+if TYPE_CHECKING:
+    from badabump.annotations import DictStrStr
+
 
 CHANGELOG_UPPER = "CHANGELOG"
 CHANGELOG_LOWER = CHANGELOG_UPPER.lower()
@@ -19,11 +27,19 @@ DEFAULT_STRICT_MODE = False
 DEFAULT_CALVER_SCHEMA = DEFAULT_VERSION_SCHEMA = "YY.MINOR.MICRO"
 DEFAULT_SEMVER_SCHEMA = "MAJOR.MINOR.PATCH"
 
+DEFAULT_POST_BUMP_HOOK: dict[ProjectTypeEnum, DictStrStr] = {
+    ProjectTypeEnum.python: {
+        "uv.lock": "uv sync",
+    },
+    ProjectTypeEnum.javascript: {
+        "package-lock.json": "npm install",
+        "yarn.lock": "yarn install",
+    },
+}
+
 INITIAL_RELEASE_COMMIT = "feat: Initial release"
 INITIAL_PRE_RELEASE_COMMIT = "feat: Initial pre-release"
 
 FILE_CONFIG_TOML = f".{__app__}.toml"
 FILE_PACKAGE_JSON = "package.json"
-FILE_PACKAGE_LOCK_JSON = "package-lock.json"
 FILE_PYPROJECT_TOML = "pyproject.toml"
-FILE_YARN_LOCK = "yarn.lock"

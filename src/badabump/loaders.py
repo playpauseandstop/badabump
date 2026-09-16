@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import sys
 from contextlib import suppress
-from typing import cast, TYPE_CHECKING, Union
+from typing import cast, TYPE_CHECKING
 
 if sys.version_info >= (3, 11):
     import tomllib
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 def get_pyproject_toml_metadata(
     pyproject_toml: DictStrAny, key: str
-) -> Union[str, None]:
+) -> str | None:
     if "project" in pyproject_toml:
         with suppress(KeyError, ValueError):
             return cast("str", pyproject_toml["project"][key])

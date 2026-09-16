@@ -3,7 +3,7 @@ from __future__ import annotations
 import dataclasses
 import subprocess
 from contextlib import suppress
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -32,7 +32,7 @@ class Git:
     def retrieve_last_tag(self) -> str:
         return self._check_output(["git", "describe", "--abbrev=0", "--tags"])
 
-    def retrieve_last_tag_or_none(self) -> Union[str, None]:
+    def retrieve_last_tag_or_none(self) -> str | None:
         with suppress(subprocess.CalledProcessError, ValueError):
             return self.retrieve_last_tag()
         return None

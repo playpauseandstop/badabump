@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import dataclasses
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from badabump.constants import DEFAULT_SEMVER_SCHEMA as SCHEMA
 from badabump.versions.exceptions import VersionParseError
@@ -37,7 +37,7 @@ class SemVer:
 
     @classmethod
     def from_parsed_dict(
-        cls, parsed: DictStrStr, *, schema: Union[str, None] = None
+        cls, parsed: DictStrStr, *, schema: str | None = None
     ) -> Self:
         return cls(
             major=int(parsed["major"]),
@@ -47,11 +47,11 @@ class SemVer:
         )
 
     @classmethod
-    def initial(cls, *, schema: Union[str, None] = None) -> Self:
+    def initial(cls, *, schema: str | None = None) -> Self:
         return cls(major=1, minor=0, patch=0, schema=schema or SCHEMA)
 
     @classmethod
-    def parse(cls, value: str, *, schema: Union[str, None] = None) -> Self:
+    def parse(cls, value: str, *, schema: str | None = None) -> Self:
         maybe_parsed = parse_version(SCHEMA, SCHEMA_PARTS_PARSING, value)
         if maybe_parsed:
             return cls.from_parsed_dict(maybe_parsed, schema=schema)

@@ -4,7 +4,7 @@ import dataclasses
 from collections import defaultdict
 from contextlib import suppress
 from enum import Enum, unique
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from badabump.enums import ProjectTypeEnum
 from badabump.versions.formatting import format_version
@@ -98,7 +98,7 @@ class PreRelease:
 
         return format_version(schema, SCHEMA_PARTS_FORMATTING, context)
 
-    def update(self, config: UpdateConfig) -> Union[Self, None]:
+    def update(self, config: UpdateConfig) -> Self | None:
         if config.is_pre_release is False:
             return None
 

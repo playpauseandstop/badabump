@@ -98,11 +98,11 @@ show_error_codes = true
 
 # pytest configuration
 # https://docs.pytest.org/en/stable/reference/customize.html#pyproject-toml
-[tool.pytest.ini_options]
+[tool.pytest]
+addopts = [ "--cov", "--no-cov-on-fail" ]
+log_level = "info"
 minversion = "9.0.3"
 testpaths = [ "tests/" ]
-addopts = "--cov --no-cov-on-fail"
-log_level = "info"
 
 # coverage configuration
 # https://coverage.readthedocs.io/en/latest/config.html#toml-syntax
@@ -114,11 +114,13 @@ source = [ "src/" ]
 [tool.coverage.report]
 exclude_also = [
   "if TYPE_CHECKING:",
+  'if sys\.version_info',
+  "@abstractmethod",
   "@overload",
 ]
 omit = [
-  "src/*/__main__.py",
-  "src/*/annotations.py",
+  "src/**/__main__.py",
+  "src/**/annotations.py",
 ]
 fail_under = 95
 skip_covered = true

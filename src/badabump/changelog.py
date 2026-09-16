@@ -3,7 +3,7 @@ from __future__ import annotations
 import dataclasses
 import logging
 import re
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from badabump.datetimes import utcnow_naive
 from badabump.enums import ChangeLogTypeEnum, FormatTypeEnum
@@ -46,7 +46,7 @@ class ConventionalCommit:
     raw_commit_type: str
     description: str
 
-    body: Union[str, None] = None
+    body: str | None = None
 
     @property
     def clean_commit_type(self) -> str:
@@ -126,7 +126,7 @@ class ConventionalCommit:
         return tuple(item.strip() for _, item in ISSUE_RE.findall(self.body))
 
     @property
-    def scope(self) -> Union[str, None]:
+    def scope(self) -> str | None:
         commit_type = self.clean_commit_type
 
         maybe_matched = COMMIT_TYPE_SCOPE_RE.match(commit_type)
@@ -188,7 +188,7 @@ class ChangeLog:
 
         def format_block(
             label: str, commits: tuple[ConventionalCommit, ...]
-        ) -> Union[str, None]:
+        ) -> str | None:
             if not commits:
                 return None
 

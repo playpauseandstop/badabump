@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import dataclasses
 from pathlib import Path
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from badabump import __app__
 from badabump.constants import (
@@ -20,6 +20,9 @@ from badabump.constants import (
     DEFAULT_TAG_SUBJECT_FORMAT,
     DEFAULT_VERSION_SCHEMA,
     DEFAULT_VERSION_TYPE,
+    FILE_CONFIG_TOML,
+    FILE_PACKAGE_JSON,
+    FILE_PYPROJECT_TOML,
 )
 from badabump.enums import FormatTypeEnum, ProjectTypeEnum, VersionTypeEnum
 from badabump.loaders import loads_toml
@@ -54,7 +57,7 @@ class ProjectConfig:
     changelog_file_include_date: bool = DEFAULT_CHANGELOG_FILE_INCLUDE_DATE
     changelog_ignore_footer_urls: bool = DEFAULT_CHANGELOG_IGNORE_FOOTER_URLS
 
-    post_bump_hook: Union[str, None] = None
+    post_bump_hook: str | None = None
     strict_mode: bool = DEFAULT_STRICT_MODE
 
     def __post_init__(self) -> None:
@@ -138,7 +141,7 @@ class UpdateConfig:
             )
 
 
-def find_changelog_file(path: Path, pattern: str) -> Union[Path, None]:
+def find_changelog_file(path: Path, pattern: str) -> Path | None:
     for item in path.glob(pattern):
         if item.stem.lower() == CHANGELOG_LOWER:
             return item
@@ -146,7 +149,7 @@ def find_changelog_file(path: Path, pattern: str) -> Union[Path, None]:
 
 
 def guess_changelog_format_type_file(
-    value: Union[str, None], path: Path
+    value: str | None, path: Path
 ) -> FormatTypeEnum:
     if value:
         return FormatTypeEnum[value]
@@ -160,36 +163,36 @@ def guess_changelog_format_type_file(
     return DEFAULT_CHANGELOG_FORMAT_TYPE_FILE
 
 
-def guess_changelog_format_type_git(value: Union[str, None]) -> FormatTypeEnum:
+def guess_changelog_format_type_git(value: str | None) -> FormatTypeEnum:
     if value:
         return FormatTypeEnum[value]
     return DEFAULT_CHANGELOG_FORMAT_TYPE_GIT
 
 
-def guess_project_type(value: Union[str, None], path: Path) -> ProjectTypeEnum:
+def guess_project_type(value: str | None, path: Path) -> ProjectTypeEnum:
     if value:
         return ProjectTypeEnum[value]
 
-    if (path / "package.json").exists():
+    if (path / FILE_PACKAGE_JSON).exists():
         return ProjectTypeEnum.javascript
 
     return DEFAULT_PROJECT_TYPE
 
 
-def guess_version_type(value: Union[str, None]) -> VersionTypeEnum:
+def guess_version_type(value: str | None) -> VersionTypeEnum:
     if value:
         return VersionTypeEnum[value]
     return DEFAULT_VERSION_TYPE
 
 
-def if_defined(value: Union[T, None], default: T) -> T:
+def if_defined(value: T | None, default: T) -> T:
     return value if value is not None else default
 
 
 def load_project_config_data(
     path: Path,
-) -> Union[tuple[Path, DictStrAny], None]:
-    for item in (f".{__app__}.toml", "pyproject.toml"):
+) -> tuple[Path, DictStrAny] | None:
+    for item in (FILE_CONFIG_TOML, FILE_PYPROJECT_TOML):
         maybe_config_path = path / item
         if not maybe_config_path.exists():
             continue

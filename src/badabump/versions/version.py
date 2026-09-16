@@ -3,8 +3,9 @@ from __future__ import annotations
 import dataclasses
 import json
 from contextlib import suppress
-from typing import cast, TYPE_CHECKING, TypeAlias, Union
+from typing import cast, TYPE_CHECKING, TypeAlias
 
+from badabump.constants import FILE_PACKAGE_JSON, FILE_PYPROJECT_TOML
 from badabump.enums import ProjectTypeEnum, VersionTypeEnum
 from badabump.loaders import get_pyproject_toml_metadata, loads_toml
 from badabump.regexps import to_regexp
@@ -21,13 +22,13 @@ if TYPE_CHECKING:
     from badabump.annotations import DictStrStr
     from badabump.configs import ProjectConfig, UpdateConfig
 
-    CalOrSemVer: TypeAlias = Union[CalVer, SemVer]
+    AnyVer: TypeAlias = CalVer | SemVer
 
 
 @dataclasses.dataclass(frozen=True, slots=True, kw_only=True)
 class Version:
-    version: CalOrSemVer
-    pre_release: Union[PreRelease, None] = None
+    version: AnyVer
+    pre_release: PreRelease | None = None
 
     @classmethod
     def from_tag(cls, value: str, *, config: ProjectConfig) -> Self:
@@ -58,7 +59,7 @@ class Version:
     def parse(cls, value: str, *, config: ProjectConfig) -> Self:
         schema = config.version_schema
 
-        version_cls: type[CalOrSemVer]
+        version_cls: type[AnyVer]
         full_schema_parts: DictStrStr
         if config.version_type == VersionTypeEnum.semver:
             version_cls = semver.SemVer
@@ -121,16 +122,16 @@ class Version:
         return version_class(version=self.version.update(config))
 
 
-def find_project_version(config: ProjectConfig) -> Union[str, None]:
+def find_project_version(config: ProjectConfig) -> str | None:
     if config.project_type == ProjectTypeEnum.javascript:
-        package_json_path = config.path / "package.json"
+        package_json_path = config.path / FILE_PACKAGE_JSON
         if package_json_path.exists():
             with suppress(KeyError, ValueError):
                 return cast(
                     "str", json.loads(package_json_path.read_text())["version"]
                 )
     else:
-        pyproject_toml_path = config.path / "pyproject.toml"
+        pyproject_toml_path = config.path / FILE_PYPROJECT_TOML
         if pyproject_toml_path.exists():
             pyproject_toml = loads_toml(pyproject_toml_path.read_text())
             return get_pyproject_toml_metadata(pyproject_toml, "version")

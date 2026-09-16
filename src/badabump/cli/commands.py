@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import itertools
 import subprocess
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from badabump.changelog import in_development_header, version_header
 from badabump.cli.output import diff, echo_message
@@ -43,10 +43,10 @@ def find_changelog_path(config: ProjectConfig) -> Path:
 
 
 def format_version_str(item: Path, version_str: str) -> str:
-    if item.name == "pyproject.toml":
+    if item.name == FILE_PYPROJECT_TOML:
         return f'version = "{version_str}"'
 
-    if item.name == "package.json":
+    if item.name == FILE_PACKAGE_JSON:
         return f'"version": "{version_str}"'
 
     return version_str
@@ -224,7 +224,7 @@ def update_file(
 
 def update_version_files(
     config: ProjectConfig,
-    current_version: Union[Version, None],
+    current_version: Version | None,
     next_version: Version,
     *,
     is_dry_run: bool = False,

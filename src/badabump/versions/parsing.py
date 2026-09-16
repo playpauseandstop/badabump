@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from badabump.regexps import ensure_regexp_dots
 
@@ -18,7 +18,7 @@ def build_schema_regexp(schema: str, parts: DictStrStr) -> re.Pattern[str]:
 
 def parse_version(
     schema: str, parts: DictStrStr, value: str
-) -> Union[DictStrStr, None]:
+) -> DictStrStr | None:
     maybe_matched = build_schema_regexp(schema, parts).match(value)
     if maybe_matched:
         return maybe_matched.groupdict()

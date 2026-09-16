@@ -1,12 +1,12 @@
 import subprocess
 from pathlib import Path
-from typing import TypeAlias, Union
+from typing import TypeAlias
 
 import pytest
 
 from badabump.git import Git
 
-CommitTuple: TypeAlias = tuple[str, Union[str, None], str]
+CommitTuple: TypeAlias = tuple[str, str | None, str]
 TagTuple: TypeAlias = tuple[str, str]
 
 

@@ -4,7 +4,7 @@ import argparse
 import json
 import os
 import sys
-from typing import cast, TYPE_CHECKING, Union
+from typing import cast, TYPE_CHECKING
 
 from badabump import __app__, __version__
 from badabump.cleaners import clean_body, clean_commit_subject, clean_tag_ref
@@ -103,7 +103,7 @@ def prepare_tag(args: argparse.Namespace, *, config: ProjectConfig) -> int:
     return 0
 
 
-def main(argv: Union[Argv, None] = None) -> int:
+def main(argv: Argv | None = None) -> int:
     args = parse_args(argv if argv is not None else sys.argv[1:])
     # TODO: Fix this by providing required flag on adding subparsers
     if getattr(args, "func", None) is None:

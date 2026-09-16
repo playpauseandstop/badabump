@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import os
 import sys
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from badabump import __app__, __version__
 from badabump.changelog import ChangeLog
@@ -86,7 +86,7 @@ def parse_args(argv: Argv) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-def main(argv: Union[Argv, None] = None) -> int:
+def main(argv: Argv | None = None) -> int:
     # Parse arguments
     args = parse_args(argv or sys.argv[1:])
 
@@ -104,7 +104,7 @@ def main(argv: Union[Argv, None] = None) -> int:
         ci_name="current_tag",
     )
 
-    current_version: Union[Version, None] = None
+    current_version: Version | None = None
     if current_tag is not None:
         current_version = Version.from_tag(current_tag, config=project_config)
 

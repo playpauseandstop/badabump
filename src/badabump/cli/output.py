@@ -1,6 +1,5 @@
 import os
 from difflib import ndiff
-from typing import Union
 
 EMPTY = "-"
 
@@ -23,7 +22,7 @@ def echo_value(
     value: str,
     *,
     is_ci: bool = False,
-    ci_name: Union[str, None] = None,
+    ci_name: str | None = None,
 ) -> None:
     if is_ci and ci_name:
         github_actions_output(ci_name, value)
